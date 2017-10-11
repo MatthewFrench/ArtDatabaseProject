@@ -1,0 +1,24 @@
+Server -> Client
+
+Game Set: "MiniGame",{game: "Tag"}
+Who's Online: "OnlineList", {online: "Name, Name, Name"}
+Chat: "Chat", {chat: chat}
+ID: {uID: uID}
+
+Tag Mini Game:
+Position Update: 1(8int), p.uID(16int), p.x(float), p.y(float), rotation(float)
+Tagged Update: 2(8int), taggedID(16int)
+Add Player: 'AddPlayer', {uID:p.uID, x:p.x,y:p.y, name:connection.name}
+Remove Player: 'RemovePlayer', {uID:connection.uID}
+
+
+
+Client -> Server
+Name: "Name", {name: name}
+Chat: "Chat", {chat: chat}
+Right Arrow: 0(8int), 1(8int)
+Left Arrow: 1(8int), 1(8int)
+Up Arrow: 2(8int), 1(8int)
+Down Arrow: 3(8int), 1(8int)
+Mouse Position: 4(8int), x(16int), y(16int)
+Mouse: 5(8int), 0 or 1(8int);
