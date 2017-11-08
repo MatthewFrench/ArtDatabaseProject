@@ -1,0 +1,23 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Server for pixel platformer.",
+  "main": "main.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MatthewFrench/ArtDatabaseProject.git"
+  },
+  "keywords": [
+    "pixel",
+    "platformer"
+  ],
+  "author": "Matthew French, Tim Viles, Ryan Bates, Cre Moore, Bryant Worcester, Derek Pockrandt, Devlin Smiley, Steven Mercier",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MatthewFrench/ArtDatabaseProject/issues"
+  },
+  "homepage": "https://github.com/MatthewFrench/ArtDatabaseProject#readme"
+}
