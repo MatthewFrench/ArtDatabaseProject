@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/MatthewFrench/ArtDatabaseProject/issues"
   },
-  "homepage": "https://github.com/MatthewFrench/ArtDatabaseProject#readme"
+  "homepage": "https://github.com/MatthewFrench/ArtDatabaseProject#readme",
+  "dependencies": {
+    "mysql": "^2.15.0"
+  }
 }
