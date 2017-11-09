@@ -4,7 +4,8 @@
   "description": "Server for pixel platformer.",
   "main": "main.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "run": "node $NODE_DEBUG_OPTION main.js"
   },
   "repository": {
     "type": "git",
