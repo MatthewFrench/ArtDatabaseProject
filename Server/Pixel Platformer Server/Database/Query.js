@@ -1,5 +1,6 @@
 let mysql = require("mysql");
 let {Database} = require("./Database.js");
+const {Configuration} = require("../Configuration.js");
 
 //This will hold every function for querying the database:
 //begin transaction
@@ -16,8 +17,10 @@ class Query {
    * Initialize the database.
    * @constructor
    */
-  static Initialize() {
-    databaseInstance = new Database(/*Connection Info*/);
+  static Initialize(connectCallback) {
+    databaseInstance = new Database(Configuration.GetHost(),
+                                    Configuration.GetDBUsername(),
+                                    Configuration.GETDBPassword(), connectCallback);
   }
 
   /**
