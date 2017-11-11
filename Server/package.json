@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "test": "test",
-    "run": "node $NODE_DEBUG_OPTION main.js"
+    "run": "node main.js"
   },
   "repository": {
     "type": "git",

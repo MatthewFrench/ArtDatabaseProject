@@ -19,6 +19,7 @@ class Query {
    */
   static Initialize(connectCallback) {
     databaseInstance = new Database(Configuration.GetHost(),
+                                    Configuration.GetPort(),
                                     Configuration.GetDBUsername(),
                                     Configuration.GETDBPassword(), connectCallback);
   }
