@@ -10,8 +10,8 @@ class Network {
 
     server.on('connection', function (socket) {
       Network.ClientConnected(socket);
-      socket.on('message', function () {
-        Network.ClientMessage(socket);
+      socket.on('message', function (message) {
+        Network.ClientMessage(socket, message);
       });
       socket.on('disconnect', function () {
         Network.ClientDisconnected(socket);
@@ -22,7 +22,7 @@ class Network {
     //Client connected
     console.log('Client Connected!');
   }
-  static ClientMessage(socket) {
+  static ClientMessage(socket, message) {
     console.log('Got message from client!');
   }
   static ClientDisconnected(socket) {
