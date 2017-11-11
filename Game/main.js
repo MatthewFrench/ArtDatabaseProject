@@ -1,5 +1,5 @@
 //Require all project CSS
-require("./CSS/Global.scss");
+import './CSS/Global.scss';
 //Require game
 import {PixelPlatformerGame} from './Javascript/PixelplatformerGame.js';
 
