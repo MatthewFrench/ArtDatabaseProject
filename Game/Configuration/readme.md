@@ -14,6 +14,8 @@ npm install NodeTemplatePlugin --save-dev
 
 npm install css-loader --save-dev
 
+npm install stacktrace-js --save-dev
+
 npm link webpack
 
 Sudo everything if it doesn't work.

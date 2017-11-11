@@ -1,4 +1,5 @@
-import {Utility} from "./Utility.js";
+//Require outside libraries
+let StackTrace = require('stacktrace-js');
 
 /**
  * Handles interface logic. Such as creation and displaying certain elements.
@@ -7,15 +8,27 @@ let MissedErrorDiv = null;
 export class Interface {
   static InitializeMissedErrorTracker() {
     MissedErrorDiv = Interface.Create({type: 'div', className:"MissedErrorDiv"});
-    window.onerror = (errorMsg, url, lineNumber) => {
-      Interface.Create({type: 'div', elements: [
-        {type: 'span', text: errorMsg},
-        {type: 'p'},
-        {type: 'span', text: 'Error URL: ' + url},
-        {type: 'p'},
-        {type: 'span', text: 'Error Line Number: ' + lineNumber},
-        {type: 'p'}
-      ], appendTo: MissedErrorDiv});
+    window.onerror = (errorMsg, url, lineNumber, columnNumber, error) => {
+      let errorString = '';
+      errorString += errorMsg;
+      errorString += '\n';
+
+      let stackGeneration = function(stackFrames) {
+        stackFrames.forEach(function(sf) {
+          errorString += '\t' + sf.fileName.replace('webpack:///', '') + '\n';
+          errorString += '\t\t' + sf.functionName + '\n';
+          if (sf.args !== undefined) {
+            errorString += '\t\t' + JSON.stringify(sf.args) + '\n';
+          }
+          errorString += '\t\t' + 'Line: ' + sf.lineNumber + ', Column: ' + sf.columnNumber + '\n';
+        });
+        errorString += '\n';
+
+        Interface.Create({type: 'div', text: errorString,
+                          appendTo: MissedErrorDiv});
+      };
+
+      StackTrace.fromError(error).then(stackGeneration);
 
       document.body.appendChild(MissedErrorDiv);
     };

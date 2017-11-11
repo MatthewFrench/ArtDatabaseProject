@@ -1,5 +1,3 @@
-
-
 export class Utility {
   /**
    * Executes an AJAX get request.
