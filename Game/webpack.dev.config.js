@@ -1,4 +1,5 @@
 let HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 
 module.exports = {
   context: __dirname,
@@ -21,7 +22,18 @@ module.exports = {
           }, {
               loader: "sass-loader" // compiles Sass to CSS
           }]
-      }]
+      },
+        {
+          test: /\.js$/,
+          exclude: /(node_modules|bower_components)/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['es2015'],
+              plugins: ['transform-class-properties']
+            }
+          }
+        }]
   },
   plugins: [new HtmlWebpackPlugin()]
 };

@@ -1,3 +1,6 @@
+@import 'Pages/Login';
+@import 'Pages/Registration';
+
 html {
   background: #f9ffcd;
 }
@@ -16,73 +19,4 @@ html {
   padding: 0;
   margin: 0;
   overflow-y: auto;
-}
-
-.LoginPage{
-  position: relative;
-  text-align: center;
-  border: solid 1px gray;
-  border-radius: 15px;
-  box-shadow: 1px 1px 5px 2px gray;
-  background-color: white;
-  padding: 20px;
-  .orText{
-    padding: 20px;
-  }
-  .loginText{
-    padding-bottom: 10px;
-  }
-  .username{
-    padding-left: 5px;
-    width: 300px;
-    height: 30px;
-  }
-  .passw{
-    padding-left: 5px;
-    width: 300px;
-    height: 30px;
-  }
-  button{
-    font-size: 20px;
-    padding: 10px;
-    border-radius: 5px;
-    transition: all 1s;
-  }
-  button:hover{
-    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
-  }
-}
-
-.RegisterPage{
-  text-align: center;
-  border: solid 1px gray;
-  border-radius: 15px;
-  box-shadow: 1px 1px 5px 2px rgba(128, 128, 128, 0.75);
-  padding-top: 20px;
-  padding-bottom: 20px;
-  background-color: white;
-  .username{
-    padding-left: 5px;
-    width: 300px;
-    height: 30px;
-  }
-  .passw{
-    padding-left: 5px;
-    width: 300px;
-    height: 30px;
-  }
-  .email{
-    padding-left: 5px;
-    width: 300px;
-    height: 30px;
-  }
-  .registerBtn{
-    font-size: 20px;
-    padding: 10px;
-    border-radius: 5px;
-    transition: all 1s;
-  }
-  .registerBtn:hover{
-    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
-  }
 }

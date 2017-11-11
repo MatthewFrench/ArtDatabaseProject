@@ -16,7 +16,16 @@ module.exports = {
           }, {
               loader: "sass-loader" // compiles Sass to CSS
           }]
-      }]
+      }],
+    loaders: [
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['es2015']
+        }
+      }
+    ]
   },
   plugins: [new HtmlWebpackPlugin()]
 };
