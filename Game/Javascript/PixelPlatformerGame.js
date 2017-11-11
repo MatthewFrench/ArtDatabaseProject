@@ -1,1 +1,7 @@
-module.exports = "It works from content.js. Bar";
+
+
+export class PixelPlatformerGame {
+  constructor() {
+    document.write('Pixel platformer game initialized.');
+  }
+}
