@@ -1,10 +1,15 @@
 let HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
+  context: __dirname,
   entry: "./main.js",
   output: {
     path: __dirname + '/Build/',
     filename: "./bundle.js"
+  },
+  devtool: 'source-map',
+  devServer: {
+    overlay: true
   },
   module: {
       rules: [{
