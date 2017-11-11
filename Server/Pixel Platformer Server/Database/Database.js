@@ -9,7 +9,7 @@ class Database {
     this.connection = mysql.createConnection({
       host: host,
       port: port,
-      user: username, 
+      user: username,
       password: password
     });
     console.log(`Connecting to database: ${host} on port ${port}`);
