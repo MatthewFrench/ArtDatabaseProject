@@ -1,20 +1,20 @@
 Run:
 
-npm install webpack --save-dev
+npm install webpack
 
-npm install webpack-dev-server --save-dev
+npm install webpack-dev-server
 
-npm install html-webpack-plugin --save-dev
+npm install html-webpack-plugin
 
-npm install sass-loader node-sass --save-dev
+npm install sass-loader node-sass
 
-npm install --save-dev style-loader
+npm install style-loader
 
-npm install NodeTemplatePlugin --save-dev
+npm install NodeTemplatePlugin
 
-npm install css-loader --save-dev
+npm install css-loader
 
-npm install stacktrace-js --save-dev
+npm install stacktrace-js
 
 npm link webpack
 
