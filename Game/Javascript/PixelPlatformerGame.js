@@ -2,6 +2,6 @@
 
 export class PixelPlatformerGame {
   constructor() {
-    document.write('Pixel platformer game initialized.');
+    document.body.innerText = 'Pixel platformer game initialized.';
   }
 }
