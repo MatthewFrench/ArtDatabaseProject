@@ -15,8 +15,7 @@ export class Interface {
 
       let stackGeneration = function(stackFrames) {
         stackFrames.forEach(function(sf) {
-          errorString += '\t' + sf.fileName.replace('webpack:///', '') + '\n';
-          errorString += '\t\t' + sf.functionName + '\n';
+          errorString += '\t' + sf.fileName.replace('webpack:///', '') + ' : ' + sf.functionName + '\n';
           if (sf.args !== undefined) {
             errorString += '\t\t' + JSON.stringify(sf.args) + '\n';
           }

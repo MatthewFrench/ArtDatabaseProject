@@ -1,9 +1,11 @@
 import {Interface} from "./Utility/Interface.js";
 import {Registration} from "./Pages/Registration";
 import {Login} from "./Pages/Login";
+import {Network} from "./Networking/Network";
 
 export class PixelPlatformerGame {
   constructor() {
+    Network.Initialize();
     this.mainDiv = Interface.Create({type: 'div', appendTo: document.body});
     this.currentPage = null;
     this.registerPage = new Registration(() => {
