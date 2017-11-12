@@ -7,3 +7,6 @@ package-lock.json
 Game/.idea/workspace.xml
 Game/.idea/watcherTasks.xml
 Game/package-lock.json
+Game/Build/bundle.js
+Game/.idea/watcherTasks.xml
+Game/.idea/misc.xml
