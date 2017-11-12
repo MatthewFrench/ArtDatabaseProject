@@ -1,34 +1,6 @@
 Run:
 
-npm install webpack
-
-npm install webpack-dev-server
-
-npm install html-webpack-plugin
-
-npm install sass-loader node-sass
-
-npm install style-loader
-
-npm install NodeTemplatePlugin
-
-npm install css-loader
-
-npm install stacktrace-js
-
-npm install babel-loader babel-core babel-preset-es2015
-
-npm install babel-plugin-transform-class-properties
-
-npm install babel-preset-es2015
-
-npm install babel-preset-stage-0
-
-npm install babel-polyfill
-
-npm install babel-runtime
-
-npm install babel-plugin-transform-runtime
+npm install webpack webpack-dev-server html-webpack-plugin sass-loader node-sass style-loader NodeTemplatePlugin css-loader stacktrace-js babel-loader babel-core babel-preset-es2015 babel-plugin-transform-class-properties babel-preset-es2015 babel-preset-stage-0 babel-polyfill babel-runtime babel-plugin-transform-runtime socket.io socket.io-client
 
 npm link webpack
 
