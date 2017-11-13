@@ -9,6 +9,7 @@ let ConfigurationPath = './Configuration.json';
 let LoadedConfigurationJSON = {};
 let HOST_KEY = 'Host';
 let DB_PORT = 'Port';
+let DATABASE = 'Database';
 let DB_USERNAME = 'Database Username';
 let DB_PASSWORD = 'Database Password';
 
@@ -26,6 +27,9 @@ class Configuration {
   }
   static GetPort() {
     return LoadedConfigurationJSON[DB_PORT];
+  }
+  static GetDatabase() {
+    return LoadedConfigurationJSON[DATABASE];
   }
   static GetDBUsername() {
     return LoadedConfigurationJSON[DB_USERNAME];
