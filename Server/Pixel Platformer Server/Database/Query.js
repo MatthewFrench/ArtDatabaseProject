@@ -20,11 +20,47 @@ class Query {
   static Initialize(connectCallback) {
     databaseInstance = new Database(Configuration.GetHost(),
                                     Configuration.GetPort(),
+                                    Configuration.GetDatabase(),
                                     Configuration.GetDBUsername(),
-                                    Configuration.GETDBPassword(), connectCallback);
+                                    Configuration.GETDBPassword(),
+                                    connectCallback);
   }
 
-			/****** TILE QUERIES ******/
+  //Example queries to setup the others
+  static CreateAccount(username, hashedPassword) {
+    //let statement = mysql.createQuery("select * FROM Users where user=? and pass=?",
+    //  [username, hashedPassword]);
+    //Execute on database
+    //Get user
+    //Return user or null if none
+
+    var sql = "INSERT INTO customers (name, address) VALUES ('Company Inc', 'Highway 37')";
+    databaseInstance.query(sql, [parameters], function (err, result) {
+      if (err) throw err;
+      console.log("1 record inserted");
+    });
+  }
+  static GetAccounts(username, hashedPassword) {
+    let statement = mysql.createQuery("select * FROM Users where user=? and pass=?",
+      [username, hashedPassword]);
+    //Execute on database
+    //Get user
+    //Return user or null if none
+
+    databaseInstance.query("SELECT * FROM customers", [parameters], function (err, result, fields) {
+      if (err) throw err;
+      console.log(result);
+    });
+  }
+
+  static SetDisplayNameOfAccount() {
+
+    databaseInstance.query('UPDATE user SET first_name = "'+ fName +'" WHERE username = "'+username+'"', [parameters], function(err, result){
+      console.log('updated user! ' + element.username);
+    });
+  }
+
+  /****** TILE QUERIES ******/
   /**	GetAllTiles
   * Retrieves all "tile information."
   * (Params) - boardID
@@ -46,13 +82,7 @@ class Query {
    * @param hashedPassword
    * @constructor
    */
-  static GetUserInformationWithLoginInfo(username, hashedPassword) {
-    let statement = mysql.createQuery("select * FROM Users where user=? and pass=?",
-                        [username, hashedPassword]);
-    //Execute on database
-    //Get user
-    //Return user or null if none
-  }	
+
 
  /**	SetPlayerLocation
 * Periodically store the coordinate location as well as
