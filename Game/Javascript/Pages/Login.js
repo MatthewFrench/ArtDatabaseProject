@@ -1,6 +1,7 @@
 
 
 import {Interface} from "../Utility/Interface.js";
+import {ScorePopover} from "./Game/ScorePopover.js";
 
 export class Login {
     constructor(switchToRegisterPage) {
@@ -14,7 +15,11 @@ export class Login {
             {type: 'div', text: "Login", className: 'loginBtn'},
             {type: 'p'},
             {type: 'div', text: "Need an account? Register here:", className: 'loginText'},
-            {type: 'div', text:'Register', className: 'registerBtn', onClick: () => {switchToRegisterPage();}}
+            {type: 'div', text:'Register', className: 'registerBtn', onClick: () => {switchToRegisterPage();}},
+            {type: 'div', text:'Open Scoreboard', className: 'registerBtn', onClick: () => {
+                let scorePopoverPage = new ScorePopover();
+                this.mainDiv.appendChild(scorePopoverPage.getDiv());
+            }}
           ]}
         ]});
     }
