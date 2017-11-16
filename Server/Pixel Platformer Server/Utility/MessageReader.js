@@ -9,47 +9,47 @@ class MessageReader {
     }
   }
   getUint8() {
-    let data = this.byteData.readUInt8(this.currentLoc);
+    let data = this.byteData.readUInt8(this.currentLoc, true);
     this.currentLoc += 1;
     return data;
   }
   getInt8() {
-    let data = this.byteData.readInt8(this.currentLoc);
+    let data = this.byteData.readInt8(this.currentLoc, true);
     this.currentLoc += 1;
     return data;
   }
   getUint16() {
-    let data = this.byteData.readUInt16BE(this.currentLoc);
+    let data = this.byteData.readUInt16BE(this.currentLoc, true);
     this.currentLoc += 2;
     return data;
   }
   getInt16() {
-    let data = this.byteData.readInt16BE(this.currentLoc);
+    let data = this.byteData.readInt16BE(this.currentLoc, true);
     this.currentLoc += 2;
     return data;
   }
   getUint32() {
-    let data = this.byteData.readUInt32BE(this.currentLoc);
+    let data = this.byteData.readUInt32BE(this.currentLoc, true);
     this.currentLoc += 4;
     return data;
   }
   getInt32() {
-    let data = this.byteData.readInt32BE(this.currentLoc);
+    let data = this.byteData.readInt32BE(this.currentLoc, true);
     this.currentLoc += 4;
     return data;
   }
   getDouble() {
-    let data = this.byteData.readDoubleBE(this.currentLoc);
+    let data = this.byteData.readDoubleBE(this.currentLoc, true);
     this.currentLoc += 8;
     return data;
   }
   getFloat() {
-    let data = this.byteData.readFloatBE(this.currentLoc);
+    let data = this.byteData.readFloatBE(this.currentLoc, true);
     this.currentLoc += 4;
     return data;
   }
   getString() {
-    let length = this.byteData.readUInt32BE(this.currentLoc);
+    let length = this.byteData.readUInt32BE(this.currentLoc, true);
     this.currentLoc += 4;
     let innerLength = length - 4;
     let string = this.byteData.toString("utf8", this.currentLoc, this.currentLoc + innerLength);
@@ -57,7 +57,7 @@ class MessageReader {
     return string;
   }
   getBinary() {
-      let length = this.byteData.readUInt32BE(this.currentLoc);
+      let length = this.byteData.readUInt32BE(this.currentLoc, true);
       this.currentLoc += 4;
       let innerLength = length - 4;
       let buffer = new Buffer(innerLength);
