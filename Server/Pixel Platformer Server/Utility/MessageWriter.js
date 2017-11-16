@@ -9,6 +9,11 @@ MessageDataUint32} = require("./MessageData.js");
  * length (4 bytes) + binary data (any size)
  */
 
+  /*
+  This is currently very slow. Use ideas from:
+  https://github.com/brianc/node-buffer-writer/blob/master/index.js
+   */
+
 class MessageWriter {
   constructor() {
     this.dataArray = [];
@@ -21,7 +26,7 @@ class MessageWriter {
     let byteData = new Buffer(totalLength);
     let loc = 0;
     //Append the message length
-    byteData.writeUInt32BE(totalLength, loc);
+    byteData.writeUInt32BE(totalLength, loc, true);
     loc += 4;
     //Append the message
     for (let data of this.dataArray) {
