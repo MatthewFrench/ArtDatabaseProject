@@ -1,6 +1,7 @@
 const assert = require('assert');
 const {MessageReader} = require("../Pixel Platformer Server/Utility/MessageReader.js");
 const {MessageWriter} = require("../Pixel Platformer Server/Utility/MessageWriter.js");
+const NS_PER_SEC = 1e9;
 
 class MessageTest {
   constructor() {
@@ -9,8 +10,8 @@ class MessageTest {
   }
 
   testAllDataValues() {
-    console.log('Testing all data values');
-    let messageLooping = 1000;
+    let messageLooping = 100;
+    let timeStamp = process.hrtime();
     let message = new MessageWriter();
     for (let index = 0; index < messageLooping; index++) {
       message.addUint8(1);
@@ -25,12 +26,17 @@ class MessageTest {
       message.addBinary(new Buffer([ 8, 6, 7, 5, 3, 0, 9]));
     }
     let calculatedMessageLength = message.getLength();
-    console.log('Written Message Length: ' + calculatedMessageLength);
     let buffer = message.toBuffer();
-    console.log('Buffer Length: ' + buffer.length);
+
+    let difference = process.hrtime(timeStamp);
+    let milliseconds = (difference[0] + difference[1] / NS_PER_SEC) * 1000;
+    console.log('Write Message Duration(ms): ' + milliseconds);
+
+
     assert.equal(buffer.length, calculatedMessageLength,
       "Calculated message length and buffer length should be equal.");
 
+    timeStamp = process.hrtime();
     let messageReader = new MessageReader(buffer);
 
     for (let index = 0; index < messageLooping; index++) {
@@ -52,6 +58,11 @@ class MessageTest {
         "Buffers should be the same");
     }
 
+    difference = process.hrtime(timeStamp);
+    milliseconds = (difference[0] + difference[1] / NS_PER_SEC) * 1000;
+    console.log('Read Message Duration(ms): ' + milliseconds);
+
+    console.log('Message Length(bytes): ' + buffer.length.toLocaleString());
     console.log('\nMessage Writer and Reader Test Success');
   }
 }
