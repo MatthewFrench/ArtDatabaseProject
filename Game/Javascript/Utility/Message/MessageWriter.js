@@ -11,10 +11,10 @@ MessageDataUint32} = require("./MessageData.js");
  * length (4 bytes) + binary data (any size)
  */
 
-  /*
+/*
   This is currently very slow. Use ideas from:
   https://github.com/brianc/node-buffer-writer/blob/master/index.js
-   */
+*/
 
 class MessageWriter {
   constructor() {
