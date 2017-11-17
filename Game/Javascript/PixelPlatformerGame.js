@@ -1,6 +1,7 @@
 import {Interface} from "./Utility/Interface.js";
 import {Registration} from "./Pages/Registration";
 import {Login} from "./Pages/Login";
+import {Game} from "./Pages/Game/Game";
 import {Network} from "./Networking/Network";
 
 export class PixelPlatformerGame {
@@ -13,7 +14,13 @@ export class PixelPlatformerGame {
     });
     this.loginPage = new Login(() => {
       this.switchToPage(this.registerPage);
+    }, () => {
+        this.switchToPage(this.gamePage);
     });
+    this.gamePage = new Game(() => {
+        this.switchToPage(this.loginPage);
+    });
+
 
     this.switchToPage(this.loginPage);
   }
