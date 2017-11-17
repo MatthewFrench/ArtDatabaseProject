@@ -17,13 +17,12 @@ class Query {
    * Initialize the database.
    * @constructor
    */
-  static Initialize(connectCallback) {
+  static Initialize() {
     databaseInstance = new Database(Configuration.GetHost(),
                                     Configuration.GetPort(),
                                     Configuration.GetDatabase(),
                                     Configuration.GetDBUsername(),
-                                    Configuration.GETDBPassword(),
-                                    connectCallback);
+                                    Configuration.GETDBPassword());
   }
 
   //Example queries to setup the others
@@ -61,6 +60,23 @@ class Query {
     databaseInstance.query('UPDATE user SET first_name = "'+ fName +
       '" WHERE username = "'+username+'"', [parameters], function(err, result){
       console.log('updated user! ' + element.username);
+    });
+  }
+
+  static GetSprites(resultCallback) {
+    //Get a connection
+    databaseInstance.getConnection((connection)=>{
+      //Create SQL
+      let sql = "SELECT * FROM Sprites";
+      //Execute Query
+      connection.query(sql, [], function (err, result) {
+        //Crash on error
+        if (err) console.log('Error: ' + err);
+        //Release the connection
+        connection.release();
+        //Pass back results
+        resultCallback(result);
+      });
     });
   }
 
