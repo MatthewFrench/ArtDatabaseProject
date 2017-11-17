@@ -19,6 +19,7 @@ class Database {
     this.connectionPool.getConnection(function(err, connection) {
       if (err) {
         console.log('Get connection error: ' + err);
+        throw err;
       }
       connectionCallback(connection);
     });
