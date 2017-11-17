@@ -14,9 +14,9 @@ class DatabaseTest {
   async testAllDataValues() {
     console.log('Testing Database Queries');
 
-    for (let index = 0; index < 10; index++) {
-      await this.getSpriteTest();
-    }
+    await this.getSpriteTest();
+
+    await this.getAllTilesTest();
 
     assert.equal(true, true, "True is not true");
 
@@ -35,6 +35,20 @@ class DatabaseTest {
 
     //Test print out sprites
     console.log("Sprites: " + JSON.stringify(spriteResults));
+  }
+
+  async getAllTilesTest() {
+    let timeStamp = process.hrtime();
+
+    //Query
+    let spriteResults = await Query.getAllTiles(1);
+
+    let difference = process.hrtime(timeStamp);
+    let milliseconds = (difference[0] + difference[1] / NS_PER_SEC) * 1000;
+    console.log('Tiles Test Duration(ms): ' + milliseconds);
+
+    //Test print out sprites
+    console.log("Tiles: " + JSON.stringify(spriteResults));
   }
 }
 
