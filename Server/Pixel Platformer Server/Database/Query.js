@@ -28,17 +28,20 @@ class Query {
 
   //Example queries to setup the others
   static CreateAccount(username, hashedPassword) {
+    databaseInstance.getConnection((connection)=>{
+      var sql = "INSERT INTO customers (name, address) VALUES ('Company Inc', 'Highway 37')";
+      connection.query(sql, [parameters], function (err, result) {
+        if (err) throw err;
+        console.log("1 record inserted");
+        connection.release();
+      });
+    });
+
     //let statement = mysql.createQuery("select * FROM Users where user=? and pass=?",
     //  [username, hashedPassword]);
     //Execute on database
     //Get user
     //Return user or null if none
-
-    var sql = "INSERT INTO customers (name, address) VALUES ('Company Inc', 'Highway 37')";
-    databaseInstance.query(sql, [parameters], function (err, result) {
-      if (err) throw err;
-      console.log("1 record inserted");
-    });
   }
   static GetAccounts(username, hashedPassword) {
     let statement = mysql.createQuery("select * FROM Users where user=? and pass=?",
@@ -55,7 +58,8 @@ class Query {
 
   static SetDisplayNameOfAccount() {
 
-    databaseInstance.query('UPDATE user SET first_name = "'+ fName +'" WHERE username = "'+username+'"', [parameters], function(err, result){
+    databaseInstance.query('UPDATE user SET first_name = "'+ fName +
+      '" WHERE username = "'+username+'"', [parameters], function(err, result){
       console.log('updated user! ' + element.username);
     });
   }
