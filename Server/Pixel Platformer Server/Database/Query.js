@@ -91,10 +91,26 @@ class Query {
   /**	SetTile
   * After changing a tile in local memory, send the
   * update information to the board’s database.
- *  (Params) - “tile info”
+  *  (Params) - “tile info”
   * (Returns) - boolean
   */
+  static setTile(tileID, boardID, x, y, color, creatorID, lastModifiedID)
+  {
+   var sql = "insert into Tile (tile_id,board_id,x,y,color,creator_id, last_modified_id) values (tileID, boardID, x, y, color, creatorID, lastModifiedID) on duplicate key update  
 
+  static CreateAccount(username, hashedPassword) {
+    //let statement = mysql.createQuery("select * FROM Users where user=? and pass=?",
+    //  [username, hashedPassword]);
+    //Execute on database
+    //Get user
+    //Return user or null if none
+
+    var sql = "INSERT INTO customers (name, address) VALUES ('Company Inc', 'Highway 37')";
+    databaseInstance.query(sql, [parameters], function (err, result) {
+      if (err) throw err;
+      console.log("1 record inserted");
+    });
+  }
 		/****** PLAYER QUERIES ******/
   /**
    * Get user information.
