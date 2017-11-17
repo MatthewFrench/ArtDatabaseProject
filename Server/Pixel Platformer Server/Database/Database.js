@@ -1,4 +1,4 @@
-let mysql = require("mysql");
+let mysql = require("mysql2/promise");
 
 //MySQL database initialization
 
@@ -15,14 +15,8 @@ class Database {
     });
   }
 
-  getConnection(connectionCallback) {
-    this.connectionPool.getConnection(function(err, connection) {
-      if (err) {
-        console.log('Get connection error: ' + err);
-        throw err;
-      }
-      connectionCallback(connection);
-    });
+  async getConnection() {
+    return await this.connectionPool.getConnection();
   }
 }
 
