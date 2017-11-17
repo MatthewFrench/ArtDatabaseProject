@@ -139,7 +139,52 @@ class Query {
    * @param hashedPassword
    * @constructor
    */
+  static async createAccount(displayName, username, pw, email)
+  {
+ 
+      let connection = await databaseInstance.getConnection();
+      await connection.beginTransaction();
+      //Create SQL
+      let sql = "Select * from Players where username = ?";
+      let results = await connection.query(sql, [username] );
+      if(results.length > 0)
+      {
+      await connection.rollback();
+      connection.release();
+      return false;
+      }
 
+      let sql = "INSERT INTO Players (display_name, username, encrypted_password, sprite_id) VALUES (?, ?, ?, 1)";
+      await connection.query(sql, [displayName, username, encrypted_password]);
+      await connection.commit();
+              //Release the connection
+              connection.release();
+      return true; 
+ 
+  }
+  
+  /**
+  *User Login
+  *
+  *
+  *
+  */
+  static userLogin(signin, pw)
+  {
+      let connection = await databaseInstance.getConnection();
+      //Create SQL
+      let sql = "Select * from Players where username = ? and encrypted_password = ?";
+      
+      let results = await connection.query(sql, [signin, pw]);
+      
+      if(results.length == 0)
+      {
+      return null;
+      }
+      //Release the connection
+      connection.release();
+      return results[0];
+  }
 
   /**  SetPlayerLocation
    * Periodically store the coordinate location as well as
@@ -147,6 +192,18 @@ class Query {
    * (Params) - playerID, x, y, boardID
    * (Returns) - boolean
    */
+  static async setPlayerLocation(playerID, x, y, boardID) {
+    //Get a connection
+    let connection = await databaseInstance.getConnection();
+    //Create SQL
+    let sql = "insert into PlayerLocation(player_id,board_id,location_x,location_y) values (?,?,?,?) on duplicate key update location_y = ? AND location_x =? and board_id = ?";
+    //Execute Query
+    let [result, fields] = await connection.query(sql, [playerID, boardID, x, y, y, x, boardID]);
+    //Release the connection
+    connection.release();
+    //Pass back results
+    return result;
+  }
 
   /**    GetPlayerLocation
    * Retrieve last known player location and board.
@@ -154,6 +211,18 @@ class Query {
    * (Returns) - x, y, boardID
    */
 
+  static async getPlayerLocation(playerID) {
+    //Get a connection
+    let connection = await databaseInstance.getConnection();
+    //Create SQL
+    let sql = "Select board_id, location_x, location_y from PlayerLocation where player_id = ?";
+    //Execute Query
+    let [result, fields] = await connection.query(sql, [playerID]);
+    //Release the connection
+    connection.release();
+    //Pass back results
+    return result;
+  }
   /**    SetPlayerSprite
    * Replaces any existing sprite for a player with
    * a new sprite.
@@ -161,24 +230,72 @@ class Query {
    * (Returns) - boolean
    */
 
+  static async setPlayerSprite(playerID, spriteID) {
+    //Get a connection
+    let connection = await databaseInstance.getConnection();
+    //Create SQL
+    let sql = "update Players set sprite_id = ? where player_id = ?";
+    //Execute Query
+    let [result, fields] = await connection.query(sql, [spriteID,playerID]);
+    //Release the connection
+    connection.release();
+    //Pass back results
+    return result;
+  }
   /**    GetPlayerSprite
    * Finds the sprite of a given player.
    * (Params) - playerID
    * (Returns) - spriteName
    */
 
+  static async getPlayerSprite(playerID) {
+    //Get a connection
+    let connection = await databaseInstance.getConnection();
+    //Create SQL
+    let sql = "Select sprite_id from Players where player_id = ?";
+    //Execute Query
+    let [result, fields] = await connection.query(sql, [playerID]);
+    //Release the connection
+    connection.release();
+    //Pass back results
+    return result;
+  }
   /**    UpdateDisplayName
    * Updates a given player’s display name
    * (Params) - playerID, newName
    * (Returns) - boolean
    */
 
+  static async updateDisplayName(playerID, newName) {
+    //Get a connection
+    let connection = await databaseInstance.getConnection();
+    //Create SQL
+    let sql = "update Players set display_name = ? where player_id = ?";
+    //Execute Query
+    let [result, fields] = await connection.query(sql, [newName, playerID]);
+    //Release the connection
+    connection.release();
+    //Pass back results
+    return result;
+  }
   /**    UpdatePassword
    * Updates a given player’s password
    * (Params) - playerID, newHashedPassword
    * (Returns) - boolean
    */
 
+  static async updatePassword(playerID,updatePassword) {
+    //Get a connection
+    let connection = await databaseInstance.getConnection();
+    //Create SQL
+    let sql = "update Players set encrypted_password = ? where player_id = ?";
+    //Execute Query
+    let [result, fields] = await connection.query(sql, [updatePassword, playerID]);
+    //Release the connection
+    connection.release();
+    //Pass back results
+    return result;
+  }
   /****** BOARD QUERIES ******/
 
   /**  CreateBoard
@@ -256,13 +373,13 @@ static async getAllSprites() {
 * (Params) - playerID
 * (Returns) - boolean
 */
-static async TITLE() {
+static async makeAdmin(playerID, roleDescription) {
   //Get a connection
   let connection = await databaseInstance.getConnection();
   //Create SQL
-  let sql = "";
+  let sql = "insert into Admin(player_id, role_description) values (?,?)";
   //Execute Query
-  let [result, fields] = await connection.query(sql, []);
+  let [result, fields] = await connection.query(sql, [playerID, roleDescription]);
   //Release the connection
   connection.release();
     //Pass back results
@@ -274,18 +391,18 @@ static async TITLE() {
 * (Params) - playerID
 * (Returns) - boolean
 */
-static async TITLE() {
-  //Get a connection
-  let connection = await databaseInstance.getConnection();
-  //Create SQL
-  let sql = "";
-  //Execute Query
-  let [result, fields] = await connection.query(sql, []);
-  //Release the connection
-  connection.release();
-  //Pass back results
-  return result;
-}
+  static async removeAdmin(playerID) {
+    //Get a connection
+    let connection = await databaseInstance.getConnection();
+    //Create SQL
+    let sql = "delete from Admin where player_id = ?";
+    //Execute Query
+    let [result, fields] = await connection.query(sql, [playerID]);
+    //Release the connection
+    connection.release();
+    //Pass back results
+    return result;
+  }
 
 			/****** HISTORY QUERIES ******/
 /**		SetHistory
@@ -293,18 +410,18 @@ static async TITLE() {
 * (Params) - historyID, date_time, tile_id, player_id, color
 * (Returns) - boolean
 */
-static async TITLE() {
-  //Get a connection
-  let connection = await databaseInstance.getConnection();
-  //Create SQL
-  let sql = "";
-  //Execute Query
-  let [result, fields] = await connection.query(sql, []);
-  //Release the connection
-  connection.release();
-  //Pass back results
-  return result;
-}
+  static async setHistory(historyID, dateTime, tileID, playerID, color) {
+    //Get a connection
+    let connection = await databaseInstance.getConnection();
+    //Create SQL
+    let sql = "insert into History(history_id, date_time, tile_id, player_id, color) values (?,?,?,?,?)";
+    //Execute Query
+    let [result, fields] = await connection.query(sql, [historyID, dateTime,tileID, playerID, color]);
+    //Release the connection
+    connection.release();
+    //Pass back results
+    return result;
+  }
 
 }
 
