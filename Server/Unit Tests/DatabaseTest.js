@@ -1,11 +1,12 @@
 const assert = require('assert');
-const {Database} = require("../Pixel Platformer Server/Database/Database.js");
 const {Query} = require("../Pixel Platformer Server/Database/Query.js");
+const {Configuration} = require("../Pixel Platformer Server/Configuration.js");
 const NS_PER_SEC = 1e9;
 
 class DatabaseTest {
   constructor() {
     console.log('Running Database Tests');
+    Configuration.Initialize(); //Load the config file
     Query.Initialize();
     this.testAllDataValues();
   }
@@ -18,9 +19,7 @@ class DatabaseTest {
     Query.GetSprites((spriteResults) => {
       //Test print out sprites
       console.log("Sprites: " + JSON.stringify(spriteResults));
-
-
-
+      
       let difference = process.hrtime(timeStamp);
       let milliseconds = (difference[0] + difference[1] / NS_PER_SEC) * 1000;
       console.log('Database Test Duration(ms): ' + milliseconds);
@@ -33,4 +32,4 @@ class DatabaseTest {
   }
 }
 
-exports.MessageTest = MessageTest;
+exports.DatabaseTest = DatabaseTest;
