@@ -5,21 +5,22 @@ let mysql = require("mysql");
 //Execute Query Function
 
 class Database {
-  constructor(host, port, database, username, password, connectCallback) {
-    this.connection = mysql.createConnection({
+  constructor(host, port, database, username, password) {
+    this.connectionPool = mysql.createPool({
       host: host,
       port: port,
       database: database,
       user: username,
       password: password
     });
-    console.log(`Connecting to database: ${database} at ${host} on port ${port}`);
-    console.log(`Database username: ${username}`);
-    console.log(`Database password: ${password}`);
-    this.connection.connect(function(err) {
-      if (err) throw err;
-      console.log(`Connected to ${host}!`);
-      connectCallback();
+  }
+
+  getConnection(connectionCallback) {
+    this.connectionPool.getConnection(function(err, connection) {
+      if (err) {
+        console.log('Get connection error: ' + err);
+      }
+      connectionCallback(connection);
     });
   }
 }
