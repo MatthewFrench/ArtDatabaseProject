@@ -230,7 +230,6 @@ class Query {
     //Release the connection
     connection.release();
   }
-<<<<<<< HEAD
 			/****** SPRITE QUERIES ******/
 /**		GetAllSprites
 * Pull all sprite information to local memory for later loading.
@@ -306,35 +305,6 @@ static async TITLE() {
   //Pass back results
   return result;
 }
-=======
-
-  /****** SPRITE QUERIES ******/
-  /**    GetAllSprites
-   * Pull all sprite information to local memory for later loading.
-   * (Params) - ????????
-   * (Returns) - Array[SpriteInfo]
-   */
-
-  /****** ADMIN QUERIES ******/
-  /**    MakeAdmin
-   * Adds a player to the admin table.
-   * (Params) - playerID
-   * (Returns) - boolean
-   */
-
-  /**    RemoveAdmin
-   * Adds a player to the admin table.
-   * (Params) - playerID
-   * (Returns) - boolean
-   */
-
-  /****** HISTORY QUERIES ******/
-  /**    SetHistory
-   * Inserts into the History table
-   * (Params) - historyID, date_time, tile_id, player_id, color
-   * (Returns) - boolean
-   */
->>>>>>> c0fd7327a4d30cb8da1ed3a239b40e13811bfa8c
 
 }
 
