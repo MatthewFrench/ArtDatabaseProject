@@ -104,11 +104,11 @@ class Query {
    */
   static async getAllTiles(boardID) {
     //Get a connection
-    let connection = databaseInstance.getConnection();
+    let connection = await databaseInstance.getConnection();
     //Create SQL
     let sql = "Select * from Tile where board_id = ?";
     //Execute Query
-    let [results, fields] = connection.query(sql, [boardID]);
+    let [results, fields] = await connection.query(sql, [boardID]);
     //Release the connection
     connection.release();
     //Pass back results
@@ -190,7 +190,7 @@ class Query {
 
   static async createBoard(boardID, boardName, playerID) {
     //Get a connection
-    let connection = databaseInstance.getConnection();
+    let connection = await databaseInstance.getConnection();
     //Create SQL
     let sql = "insert into Board(board_id, name, creator_id) values (?,?,?)";
     //Execute Query
