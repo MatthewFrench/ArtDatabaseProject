@@ -1,4 +1,4 @@
-let mysql = require("mysql");
+let mysql = require("mysql2/promise");
 let {Database} = require("./Database.js");
 const {Configuration} = require("../Configuration.js");
 
@@ -26,15 +26,12 @@ class Query {
   }
 
   //Example queries to setup the others
-  static CreateAccount(username, hashedPassword) {
-    databaseInstance.getConnection((connection)=>{
-      var sql = "INSERT INTO customers (name, address) VALUES ('Company Inc', 'Highway 37')";
-      connection.query(sql, [parameters], function (err, result) {
-        if (err) throw err;
-        console.log("1 record inserted");
-        connection.release();
-      });
-    });
+  static async CreateAccount(username, hashedPassword) {
+    let connection = await databaseInstance.getConnection();
+    var sql = "INSERT INTO customers (name, address) VALUES ('Company Inc', 'Highway 37')";
+    let result = await connection.query(sql, [parameters]);
+    console.log("1 record inserted");
+    connection.release();
 
     //let statement = mysql.createQuery("select * FROM Users where user=? and pass=?",
     //  [username, hashedPassword]);
@@ -42,42 +39,41 @@ class Query {
     //Get user
     //Return user or null if none
   }
-  static GetAccounts(username, hashedPassword) {
-    let statement = mysql.createQuery("select * FROM Users where user=? and pass=?",
-      [username, hashedPassword]);
+  static async GetAccounts(username, hashedPassword) {
+    //let statement = await mysql.createQuery("select * FROM Users where user=? and pass=?",
+      //[username, hashedPassword]);
     //Execute on database
     //Get user
     //Return user or null if none
 
+    /*
     databaseInstance.query("SELECT * FROM customers", [parameters], function (err, result, fields) {
       if (err) throw err;
       console.log(result);
     });
+    */
   }
 
-  static SetDisplayNameOfAccount() {
-
+  static async SetDisplayNameOfAccount() {
+/*
     databaseInstance.query('UPDATE user SET first_name = "'+ fName +
       '" WHERE username = "'+username+'"', [parameters], function(err, result){
       console.log('updated user! ' + element.username);
     });
+    */
   }
 
-  static GetSprites(resultCallback) {
+  static async GetSprites() {
     //Get a connection
-    databaseInstance.getConnection((connection)=>{
-      //Create SQL
-      let sql = "SELECT * FROM Sprites";
-      //Execute Query
-      connection.query(sql, [], function (err, result) {
-        //Crash on error
-        if (err) console.log('Error: ' + err);
-        //Release the connection
-        connection.release();
-        //Pass back results
-        resultCallback(result);
-      });
-    });
+    let connection = await databaseInstance.getConnection();
+    //Create SQL
+    let sql = "SELECT * FROM Sprites";
+    //Execute Query
+    let [result, fields] = await connection.query(sql, []);
+    //Release the connection
+    connection.release();
+    //Pass back results
+    return result;
   }
 
   /* Templates

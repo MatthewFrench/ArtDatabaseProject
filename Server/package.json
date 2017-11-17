@@ -24,6 +24,7 @@
   "dependencies": {
     "matter-js": "^0.13.0",
     "mysql": "^2.15.0",
+    "mysql2": "^1.5.0",
     "socket.io": "^2.0.4"
   }
 }
