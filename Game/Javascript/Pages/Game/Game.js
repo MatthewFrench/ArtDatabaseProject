@@ -3,7 +3,7 @@ import {Interface} from "../../Utility/Interface";
 export class Game{
     constructor(switchToLoginPage){
         this.mainDiv = Interface.Create({type:'div', className: 'GamePage', elements:[
-            {type: 'div', elements: [
+            {type: 'div', className: 'GameContainer', elements: [
                 {type: 'div', className: 'worldWrapper', elements: [
                     {type: 'canvas', className: 'gameArea'},
                     {type: 'div', className: 'worldSelect'}
