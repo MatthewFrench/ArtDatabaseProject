@@ -77,22 +77,19 @@ class Query {
   }
 
   /* Templates
+     - Creating functions: 
 
-  static TITLE() {
+    static async TITLE() {
     //Get a connection
-    databaseInstance.getConnection((connection)=>{
-      //Create SQL
-      let sql = "";
-      //Execute Query
-      connection.query(sql, [], function (err, result) {
-        //Crash on error
-        if (err) console.log('Error: ' + err);
-        //Release the connection
-        connection.release();
-        //Pass back results
-        resultCallback(result);
-      });
-    });
+    let connection = await databaseInstance.getConnection();
+    //Create SQL
+    let sql = "";
+    //Execute Query
+    let [result, fields] = await connection.query(sql, []);
+    //Release the connection
+    connection.release();
+    //Pass back results
+    return result;
   }
 
   */
@@ -265,6 +262,19 @@ class Query {
 * (Params) - ????????
 * (Returns) - Array[SpriteInfo]
 */
+static async getAllSprites() {
+    //Get a connection
+    let connection = await databaseInstance.getConnection();
+    //Create SQL
+    let sql = "Select * from Sprites";
+    //Execute Query
+    let [result, fields] = await connection.query(sql, []);
+    //Release the connection
+    connection.release();
+    //Pass back results
+       return result;
+      }
+    
 
 			/****** ADMIN QUERIES ******/
 /**		MakeAdmin
@@ -272,12 +282,36 @@ class Query {
 * (Params) - playerID
 * (Returns) - boolean
 */
+static async TITLE() {
+  //Get a connection
+  let connection = await databaseInstance.getConnection();
+  //Create SQL
+  let sql = "";
+  //Execute Query
+  let [result, fields] = await connection.query(sql, []);
+  //Release the connection
+  connection.release();
+    //Pass back results
+    return result;
+  }
 
 /**		RemoveAdmin
 * Adds a player to the admin table.
 * (Params) - playerID
 * (Returns) - boolean
 */
+static async TITLE() {
+  //Get a connection
+  let connection = await databaseInstance.getConnection();
+  //Create SQL
+  let sql = "";
+  //Execute Query
+  let [result, fields] = await connection.query(sql, []);
+  //Release the connection
+  connection.release();
+  //Pass back results
+  return result;
+}
 
 			/****** HISTORY QUERIES ******/
 /**		SetHistory
@@ -285,6 +319,18 @@ class Query {
 * (Params) - historyID, date_time, tile_id, player_id, color
 * (Returns) - boolean
 */
+static async TITLE() {
+  //Get a connection
+  let connection = await databaseInstance.getConnection();
+  //Create SQL
+  let sql = "";
+  //Execute Query
+  let [result, fields] = await connection.query(sql, []);
+  //Release the connection
+  connection.release();
+  //Pass back results
+  return result;
+}
 
 }
 
