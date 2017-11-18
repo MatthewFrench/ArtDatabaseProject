@@ -4,8 +4,8 @@
   "description": "Server for pixel platformer.",
   "main": "Build/server.js",
   "scripts": {
-    "test": "test",
-    "run": "node Build/server.js"
+    "Build": "tsc",
+    "Build-Continuously": "tsc --watch"
   },
   "repository": {
     "type": "git",

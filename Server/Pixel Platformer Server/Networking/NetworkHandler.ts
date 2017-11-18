@@ -1,9 +1,9 @@
 const {MessageReader} = require("../Utility/MessageReader");
 const {Controllers} = require("./MessageDefinitions/ServerMessageDefinitions");
-const AccountMessageHandler = require("./Account/AccountMessageHandler");
-const GameMessageHandler = require("./Game/GameMessageHandler");
-const ChatMessageHandler = require("./Chat/ChatMessageHandler");
-const Player = require("../Player/Player");
+const {AccountMessageHandler} = require("./Account/AccountMessageHandler");
+const {GameMessageHandler} = require("./Game/GameMessageHandler");
+const {ChatMessageHandler} = require("./Chat/ChatMessageHandler");
+const {Player} = require("../Player/Player");
 
 let HandleConnectCallback = (player)=>{};
 let HandleDisconnectCallback = (player)=>{};
