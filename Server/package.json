@@ -2,10 +2,10 @@
   "name": "server",
   "version": "1.0.0",
   "description": "Server for pixel platformer.",
-  "main": "main.js",
+  "main": "Build/server.js",
   "scripts": {
     "test": "test",
-    "run": "node main.js"
+    "run": "node Build/server.js"
   },
   "repository": {
     "type": "git",
@@ -22,9 +22,25 @@
   },
   "homepage": "https://github.com/MatthewFrench/ArtDatabaseProject#readme",
   "dependencies": {
+    "@types/node": "^8.0.53",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-runtime": "^6.26.0",
     "matter-js": "^0.13.0",
     "mysql": "^2.15.0",
     "mysql2": "^1.5.0",
-    "socket.io": "^2.0.4"
+    "mz": "^2.7.0",
+    "socket.io": "^2.0.4",
+    "typescript": "^2.6.1",
+    "webpack": "^3.8.1"
+  },
+  "devDependencies": {
+    "source-map-support": "^0.5.0",
+    "webpack-node-externals": "^1.6.0"
   }
 }
