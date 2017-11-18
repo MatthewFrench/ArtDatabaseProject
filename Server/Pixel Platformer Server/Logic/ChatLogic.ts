@@ -4,4 +4,8 @@ export class ChatLogic {
     constructor(server) {
         this.server = server;
     }
+    playerConnected = (player) => {
+    };
+    playerDiconnected = (player) => {
+    };
 }
