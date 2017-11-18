@@ -1,8 +1,8 @@
-const {MessageWriter} = require("../../Utility/MessageWriter.js");
-const AccountID = require("./../MessageDefinitions/ClientMessageDefinitions.js").Controllers.Account.ID;
-const Messages = require("./../MessageDefinitions/ClientMessageDefinitions.js").Controllers.Account.Messages;
+const {MessageWriter} = require("../../Utility/MessageWriter");
+const AccountID = require("./../MessageDefinitions/ClientMessageDefinitions").Controllers.Account.ID;
+const Messages = require("./../MessageDefinitions/ClientMessageDefinitions").Controllers.Account.Messages;
 
-class AccountMessageCreator {
+export class AccountMessageCreator {
   static LoginSuccess(success) {
     let message = new MessageWriter();
     message.addUint8(AccountID);
@@ -18,5 +18,3 @@ class AccountMessageCreator {
     return message;
   }
 }
-
-exports.AccountMessageCreator = AccountMessageCreator;

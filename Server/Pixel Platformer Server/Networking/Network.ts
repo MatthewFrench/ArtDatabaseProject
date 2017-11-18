@@ -1,11 +1,11 @@
 //Socket.io code goes here, managed here
-const {NetworkHandler} = require("./NetworkHandler.js");
+const {NetworkHandler} = require("./NetworkHandler");
 
 let socketIO = require('socket.io');
 let port = 7777;
 let server = null;
 
-class Network {
+export class Network {
   static Initialize() {
     server = socketIO(port);
     console.log(`Websocket server is online at ${port}!`);
@@ -30,5 +30,3 @@ class Network {
     NetworkHandler.HandleDisconnect(socket);
   }
 }
-
-exports.Network = Network;

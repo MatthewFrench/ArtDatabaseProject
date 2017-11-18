@@ -4,7 +4,9 @@ let mysql = require("mysql2/promise");
 
 //Execute Query Function
 
-class Database {
+export class Database {
+  connectionPool: any;
+
   constructor(host, port, database, username, password) {
     this.connectionPool = mysql.createPool({
       host: host,
@@ -19,5 +21,3 @@ class Database {
     return await this.connectionPool.getConnection();
   }
 }
-
-exports.Database = Database;

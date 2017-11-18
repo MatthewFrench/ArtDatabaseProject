@@ -1,9 +1,9 @@
 const assert = require('assert');
-const {Query} = require("../Pixel Platformer Server/Database/Query.js");
-const {Configuration} = require("../Pixel Platformer Server/Configuration.js");
+const {Query} = require("../Pixel Platformer Server/Database/Query");
+const {Configuration} = require("../Pixel Platformer Server/Configuration");
 const NS_PER_SEC = 1e9;
 
-class DatabaseTest {
+export class DatabaseTest {
   constructor() {
     console.log('Running Database Tests');
     Configuration.Initialize(); //Load the config file
@@ -51,5 +51,3 @@ class DatabaseTest {
     console.log("Tiles: " + JSON.stringify(spriteResults));
   }
 }
-
-exports.DatabaseTest = DatabaseTest;

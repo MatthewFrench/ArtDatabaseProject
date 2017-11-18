@@ -1,5 +1,5 @@
-let {Database} = require("./Database.js");
-const {Configuration} = require("../Configuration.js");
+let {Database} = require("./Database");
+const {Configuration} = require("../Configuration");
 
 //This will hold every function for querying the database:
 //begin transaction
@@ -11,7 +11,7 @@ const {Configuration} = require("../Configuration.js");
 //This is a static database variable only accessible here.
 let databaseInstance = null;
 
-class Query {
+export class Query {
   /**
    * Initialize the database.
    * @constructor
@@ -403,5 +403,3 @@ static async makeAdmin(playerID, roleDescription) {
   }
 
 }
-
-exports.Query = Query;
