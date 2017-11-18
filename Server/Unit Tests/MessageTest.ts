@@ -1,9 +1,9 @@
 const assert = require('assert');
-const {MessageReader} = require("../Pixel Platformer Server/Utility/MessageReader.js");
-const {MessageWriter} = require("../Pixel Platformer Server/Utility/MessageWriter.js");
+const {MessageReader} = require("../Pixel Platformer Server/Utility/MessageReader");
+const {MessageWriter} = require("../Pixel Platformer Server/Utility/MessageWriter");
 const NS_PER_SEC = 1e9;
 
-class MessageTest {
+export class MessageTest {
     constructor() {
         console.log('Running Message Tests');
         this.testAllDataValues();
@@ -259,5 +259,3 @@ class MessageTest {
         console.log('\nMessage Validation Test Success');
     }
 }
-
-exports.MessageTest = MessageTest;

@@ -13,7 +13,7 @@ let DATABASE = 'Database';
 let DB_USERNAME = 'Database Username';
 let DB_PASSWORD = 'Database Password';
 
-class Configuration {
+export class Configuration {
   static Initialize() {
     if (!FileSystem.existsSync(ConfigurationPath)) {
       throw new Error('Please create configuration file.');
@@ -38,5 +38,3 @@ class Configuration {
     return LoadedConfigurationJSON[DB_PASSWORD];
   }
 }
-
-exports.Configuration = Configuration;

@@ -1,5 +1,5 @@
 //These are the definitions that the server receives.
-const Controllers = {
+export const Controllers = {
   Account: {
     ID: 1,
     Messages: {
@@ -21,5 +21,3 @@ const Controllers = {
     }
   }
 };
-
-exports.Controllers = Controllers;

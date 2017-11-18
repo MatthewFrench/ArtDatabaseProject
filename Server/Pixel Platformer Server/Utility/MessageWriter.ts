@@ -3,7 +3,7 @@ const {
     MessageDataInt16, MessageDataInt8, MessageDataFloat,
     MessageDataDouble, MessageDataBinary, MessageDataUint8,
     MessageDataUint32
-} = require("./MessageData.js");
+} = require("./MessageData");
 
 /**
  * Writes a message and produces a binary buffer.
@@ -13,10 +13,12 @@ const {
 
 /*
 This is currently very slow. Use ideas from:
-https://github.com/brianc/node-buffer-writer/blob/master/index.js
+https://github.com/brianc/node-buffer-writer/blob/master/index
  */
 
-class MessageWriter {
+export class MessageWriter {
+    dataArray: any;
+    innerByteLength: number;
     constructor() {
         this.dataArray = [];
         //Only the length of bytes being stored
@@ -103,5 +105,3 @@ class MessageWriter {
         return this.innerByteLength + 4;
     }
 }
-
-exports.MessageWriter = MessageWriter;

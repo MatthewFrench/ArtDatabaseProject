@@ -7,7 +7,8 @@
  *
  */
 
-class MessageDataUint8 {
+export class MessageDataUint8 {
+    value: any;
     constructor(value) {
         this.value = value;
     }
@@ -21,7 +22,8 @@ class MessageDataUint8 {
     }
 }
 
-class MessageDataInt8 {
+export class MessageDataInt8 {
+    value: any;
     constructor(value) {
         this.value = value;
     }
@@ -35,7 +37,8 @@ class MessageDataInt8 {
     }
 }
 
-class MessageDataUint16 {
+export class MessageDataUint16 {
+    value: any;
     constructor(value) {
         this.value = value;
     }
@@ -49,7 +52,8 @@ class MessageDataUint16 {
     }
 }
 
-class MessageDataInt16 {
+export class MessageDataInt16 {
+    value: any;
     constructor(value) {
         this.value = value;
     }
@@ -63,7 +67,8 @@ class MessageDataInt16 {
     }
 }
 
-class MessageDataUint32 {
+export class MessageDataUint32 {
+    value: any;
     constructor(value) {
         this.value = value;
     }
@@ -77,7 +82,8 @@ class MessageDataUint32 {
     }
 }
 
-class MessageDataInt32 {
+export class MessageDataInt32 {
+    value: any;
     constructor(value) {
         this.value = value;
     }
@@ -91,7 +97,8 @@ class MessageDataInt32 {
     }
 }
 
-class MessageDataFloat {
+export class MessageDataFloat {
+    value: any;
     constructor(value) {
         this.value = value;
     }
@@ -105,7 +112,8 @@ class MessageDataFloat {
     }
 }
 
-class MessageDataDouble {
+export class MessageDataDouble {
+    value: any;
     constructor(value) {
         this.value = value;
     }
@@ -119,7 +127,9 @@ class MessageDataDouble {
     }
 }
 
-class MessageDataString {
+export class MessageDataString {
+    value: any;
+    totalLength: number;
     constructor(value) {
         this.value = value;
         //Total length is buffer plus length of buffer
@@ -136,7 +146,9 @@ class MessageDataString {
     }
 }
 
-class MessageDataBinary {
+export class MessageDataBinary {
+    value: any;
+    totalLength: number;
     constructor(value) {
         this.value = value;
         //Total length is buffer plus length of buffer
@@ -152,14 +164,3 @@ class MessageDataBinary {
         return this.totalLength;
     }
 }
-
-exports.MessageDataBinary = MessageDataBinary;
-exports.MessageDataDouble = MessageDataDouble;
-exports.MessageDataFloat = MessageDataFloat;
-exports.MessageDataInt8 = MessageDataInt8;
-exports.MessageDataInt16 = MessageDataInt16;
-exports.MessageDataInt32 = MessageDataInt32;
-exports.MessageDataString = MessageDataString;
-exports.MessageDataUint8 = MessageDataUint8;
-exports.MessageDataUint16 = MessageDataUint16;
-exports.MessageDataUint32 = MessageDataUint32;

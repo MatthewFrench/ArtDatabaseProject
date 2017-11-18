@@ -1,7 +1,10 @@
-const {PlayerAccountData} = require("./PlayerAccountData.js");
-const {PlayerGameData} = require("./PlayerGameData.js");
+const {PlayerAccountData} = require("./PlayerAccountData");
+const {PlayerGameData} = require("./PlayerGameData");
 
-class Player {
+export class Player {
+    socket: any;
+    accountData: any;
+    gameData: any;
     constructor(socket) {
         this.socket = socket;
         this.accountData = new PlayerAccountData();
@@ -17,5 +20,3 @@ class Player {
         return this.gameData;
     }
 }
-
-exports = Player;

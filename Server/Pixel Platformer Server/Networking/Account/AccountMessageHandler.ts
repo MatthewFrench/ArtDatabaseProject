@@ -1,11 +1,11 @@
-const {MessageReader} = require("../../Utility/MessageReader.js");
+const {MessageReader} = require("../../Utility/MessageReader");
 const Messages =
-    require("./../MessageDefinitions/ServerMessageDefinitions.js").Controllers.Account.Messages;
+    require("./../MessageDefinitions/ServerMessageDefinitions").Controllers.Account.Messages;
 
 let TryLoginListeners = [];
 let TryCreateAccountListeners = [];
 
-class AccountMessageHandler {
+export class AccountMessageHandler {
     static RouterMessage(player, message) {
         let messageID = message.getUint8();
         switch(messageID) {
@@ -79,5 +79,3 @@ class AccountMessageHandler {
         TryCreateAccountListeners.push(callback);
     }
 }
-
-exports.AccountMessageHandler = AccountMessageHandler;

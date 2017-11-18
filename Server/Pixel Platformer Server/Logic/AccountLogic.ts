@@ -1,6 +1,8 @@
-const MsgHandler = require("./../Networking/Account/AccountMessageHandler.js").AccountMessageHandler;
+const MsgHandler = require("./../Networking/Account/AccountMessageHandler").AccountMessageHandler;
 
-class AccountLogic {
+export class AccountLogic {
+    server: any;
+
     constructor(server) {
         this.server = server;
         MsgHandler.AddTryLoginListener(this.handleTryLoginMessage);
@@ -15,5 +17,3 @@ class AccountLogic {
 
     };
 }
-
-exports.AccountLogic = AccountLogic;

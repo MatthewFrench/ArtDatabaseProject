@@ -1,4 +1,7 @@
-class MessageReader {
+export class MessageReader {
+    byteData: any;
+    currentLoc: number;
+    byteLength: number;
     constructor(messageData) {
         this.byteData = messageData;
         this.currentLoc = 0;
@@ -126,5 +129,3 @@ class MessageReader {
         return this.byteLength;
     }
 }
-
-exports.MessageReader = MessageReader;

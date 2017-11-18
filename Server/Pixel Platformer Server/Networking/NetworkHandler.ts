@@ -1,16 +1,17 @@
-const {MessageReader} = require("../Utility/MessageReader.js");
-const {Controllers} = require("./MessageDefinitions/ServerMessageDefinitions.js");
-const AccountMessageHandler = require("./Account/AccountMessageHandler.js");
-const GameMessageHandler = require("./Game/GameMessageHandler.js");
-const ChatMessageHandler = require("./Chat/ChatMessageHandler.js");
+const {MessageReader} = require("../Utility/MessageReader");
+const {Controllers} = require("./MessageDefinitions/ServerMessageDefinitions");
+const AccountMessageHandler = require("./Account/AccountMessageHandler");
+const GameMessageHandler = require("./Game/GameMessageHandler");
+const ChatMessageHandler = require("./Chat/ChatMessageHandler");
+const Player = require("../Player/Player");
 
-let HandleConnectCallback = ()=>{};
-let HandleDisconnectCallback = ()=>{};
+let HandleConnectCallback = (player)=>{};
+let HandleDisconnectCallback = (player)=>{};
 let Players = new Map();
 /**
  * Routes the messages to controllers.
  */
-class NetworkHandler {
+export class NetworkHandler {
     static HandleMessage(socket, binary) {
         let player = Players.get(socket);
         let message = new MessageReader(binary);
@@ -54,5 +55,3 @@ class NetworkHandler {
         HandleDisconnectCallback = callback;
     }
 }
-
-exports.NetworkHandler = NetworkHandler;
