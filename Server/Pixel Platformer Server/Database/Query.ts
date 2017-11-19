@@ -74,7 +74,7 @@ export class Query {
         await connection.beginTransaction();
         //Create SQL
         let sql = "Select * from Players where username = ?";
-        let results = await connection.query(sql, [username]);
+        let [results] = await connection.query(sql, [username]);
         if (results.length > 0) {
             await connection.rollback();
             connection.release();
@@ -98,7 +98,7 @@ export class Query {
         //Create SQL
         let sql = "Select * from Players where username = ? and encrypted_password = ?";
 
-        let results = await connection.query(sql, [username, password]);
+        let [results] = await connection.query(sql, [username, password]);
 
         if (results.length === 0) {
             return null;

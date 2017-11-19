@@ -28,7 +28,7 @@ export class AccountLogic {
     };
 
     handleTryCreateAccountMessage = async (player, username, password, email, displayName) => {
-        let success = Query.CreateAccount(displayName, username, password, email);
+        let success = await Query.CreateAccount(displayName, username, password, email);
         if (!success) {
             //Send register failed
             player.send(MsgCreator.RegisterStatus(false));

@@ -17,15 +17,16 @@ export class NetworkHandler {
         let message = new MessageReader(binary);
         //Get the controller
         let controllerID = message.getUint8();
+        let test = Controllers.Account.ID === controllerID;
         //Send it to the correct callbacks
         switch(controllerID) {
-            case Controllers.Account: {
+            case Controllers.Account.ID: {
                 AccountMessageHandler.RouteMessage(player, message);
             } break;
-            case Controllers.Chat: {
+            case Controllers.Chat.ID: {
                 ChatMessageHandler.RouteMessage(player, message);
             } break;
-            case Controllers.Game: {
+            case Controllers.Game.ID: {
                 GameMessageHandler.RouteMessage(player, message);
             } break;
             default: {

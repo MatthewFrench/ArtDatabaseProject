@@ -3,6 +3,7 @@
 import {Interface} from "../Utility/Interface.js";
 import {AccountMessageCreator} from "../Networking/Account/AccountMessageCreator";
 import {AccountMessageHandler} from "../Networking/Account/AccountMessageHandler";
+import {Network} from "../Networking/Network";
 
 export class Registration {
     constructor(switchToLoginPage) {
