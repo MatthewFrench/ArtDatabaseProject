@@ -43,7 +43,7 @@ class MessageTest {
     console.log('Write Message Duration(ms): ' + difference);
 
 
-    assert.equal(buffer.length, calculatedMessageLength,
+    assert.equal(buffer.byteLength, calculatedMessageLength,
       "Calculated message length and buffer length should be equal.");
 
     //Test for speed
@@ -96,7 +96,7 @@ class MessageTest {
     assert.equal(true, binary.equals(new Buffer([8, 6, 7, 5, 3, 0, 9])),
       "Buffers should be the same");
 
-    console.log('Message Length(bytes): ' + buffer.length.toLocaleString());
+    console.log('Message Length(bytes): ' + buffer.byteLength.toLocaleString());
     console.log('\nMessage Writer and Reader Test Success');
   }
 }

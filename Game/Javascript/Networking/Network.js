@@ -1,5 +1,6 @@
 const {MessageReader} = require("../Utility/Message/MessageReader.js");
 const {MessageWriter} = require("../Utility/Message/MessageWriter.js");
+const {NetworkHandler} = require("./NetworkHandler.js");
 let Buffer = require('buffer/').Buffer;
 
 let socketIO = require('socket.io-client');
@@ -10,49 +11,40 @@ let connection = null;
 let connected = false;
 
 export class Network {
-  static Initialize() {
-    connection = socketIO.connect(server);
-    connection.on('connect_failed', Network.ConnectFailed);
-    connection.on('connect', Network.Connected);
-    connection.on('message', Network.GotMessage);
-    connection.on('disconnect', Network.Disconnected);
-  }
+    static Initialize() {
+        connection = socketIO.connect(server);
+        connection.on('connect_failed', Network.ConnectFailed);
+        connection.on('connect', Network.Connected);
+        connection.on('message', Network.GotMessage);
+        connection.on('disconnect', Network.Disconnected);
+    }
 
-  static ConnectFailed() {
-    console.log('Connection to server failed.');
-  }
+    static ConnectFailed() {
+        NetworkHandler.HandleConnectFailed();
+        console.log('Failed to connect to server.');
+    }
 
-  static Connected() {
-    console.log('Client has connected to the server!');
-    connected = true;
-  }
+    static Connected() {
+        connected = true;
+        NetworkHandler.HandleConnect();
+        console.log('Client has connected to the server!');
+    }
 
-  static Disconnected() {
-    console.log('The client has disconnected!');
-    connected = false;
-  }
+    static Disconnected() {
+        connected = false;
+        NetworkHandler.HandleDisconnect();
+        console.log('The client has disconnected!');
+    }
 
-  static IsConnected() {
-    return connected;
-  }
+    static IsConnected() {
+        return connected;
+    }
 
-  static GotMessage(message) {
-    console.log('Received a message from the server!', message);
-    console.dir(message);
-    let testMessage = new MessageReader(Buffer.from(message));
-    console.log('Number: ' + testMessage.getInt32());
-    console.log('String: ' + testMessage.getString());
+    static GotMessage(message) {
+        NetworkHandler.HandleMessage(message);
+    }
 
-    let backMessage = new MessageWriter();
-    backMessage.addInt32(1);
-    backMessage.addString('Hi');
-    let buffer = backMessage.toBuffer();
-    connection.send(buffer.buffer.slice(
-      buffer.byteOffset, buffer.byteOffset + buffer.byteLength
-    ));
-  }
-
-  static SendMessage(message) {
-    connection.send(message);
-  }
+    static Send(message) {
+        connection.send(message);
+    }
 }

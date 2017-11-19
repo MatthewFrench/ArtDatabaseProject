@@ -1,6 +1,6 @@
-const {MessageReader} = require("../../Utility/MessageReader");
+const {MessageReader} = require("../../Utility/Message/MessageReader.js");
 const Messages =
-    require("./../MessageDefinitions/ServerMessageDefinitions").Controllers.Game.Messages;
+    require("./../MessageDefinitions/ClientMessageDefinitions.js").Controllers.Game.Messages;
 
 export class GameMessageHandler {
     static RouteMessage(player, message) {

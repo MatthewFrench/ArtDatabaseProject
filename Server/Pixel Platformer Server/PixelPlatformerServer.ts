@@ -21,14 +21,14 @@ export class PixelPlatformerServer {
     this.chatLogic = new ChatLogic(this);
     this.accountLogic = new AccountLogic(this);
   }
-  playerConnected = (player) => {
-    this.gameLogic.playerConnected(player);
-    this.chatLogic.playerConnected(player);
-    this.accountLogic.playerConnected(player);
+  playerConnected = async (player) => {
+    this.gameLogic.playerConnected(player).then();
+    this.chatLogic.playerConnected(player).then();
+    this.accountLogic.playerConnected(player).then();
   };
-  playerDiconnected = (player) => {
-    this.gameLogic.playerDisconnected(player);
-    this.chatLogic.playerDisconnected(player);
-    this.accountLogic.playerDisconnected(player);
+  playerDiconnected = async (player) => {
+    this.gameLogic.playerDisconnected(player).then();
+    this.chatLogic.playerDisconnected(player).then();
+    this.accountLogic.playerDisconnected(player).then();
   };
 }
