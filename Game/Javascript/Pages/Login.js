@@ -8,6 +8,7 @@ import {Network} from "../Networking/Network";
 
 export class Login {
     constructor(switchToRegisterPage, switchToGamePage) {
+        this.switchToGamePage = switchToGamePage;
         this.mainDiv = Interface.Create({type: 'div', className: 'LoginPage', elements: [
           {type: 'div', elements: [
             {type: 'h2', text: 'Login to Pixel Platformer', className: 'loginText'},
@@ -29,16 +30,16 @@ export class Login {
     }
 
     loginButtonClicked = () => {
-        this.loginButton.disabled = true;
+        this.loginButton.classList.add('Disabled');
         Network.Send(AccountMessageCreator.Login(this.usernameTxt.value, this.passwordTxt.value));
     };
 
     gotLoginStatusMessage = async (success) => {
         console.log('Login status from server: ' + success);
         if (success) {
-            switchToGamePage();
+            this.switchToGamePage();
         }
-        this.loginButton.disabled = false;
+        this.loginButton.classList.remove('Disabled');
     };
 
     getDiv = () => {

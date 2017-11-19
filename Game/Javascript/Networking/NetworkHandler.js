@@ -17,13 +17,13 @@ export class NetworkHandler {
         let controllerID = message.getUint8();
         //Send it to the correct callbacks
         switch(controllerID) {
-            case Controllers.Account: {
+            case Controllers.Account.ID: {
                 AccountMessageHandler.RouteMessage(message);
             } break;
-            case Controllers.Chat: {
+            case Controllers.Chat.ID: {
                 ChatMessageHandler.RouteMessage(message);
             } break;
-            case Controllers.Game: {
+            case Controllers.Game.ID: {
                 GameMessageHandler.RouteMessage(message);
             } break;
             default: {

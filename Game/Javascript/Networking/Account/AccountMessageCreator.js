@@ -9,7 +9,7 @@ export class AccountMessageCreator {
     message.addUint8(Messages.TryLogin);
     message.addString(username);
     message.addString(password);
-    return message;
+    return message.toBuffer();
   }
   static Register(username, password, email, displayName) {
     let message = new MessageWriter();
@@ -19,6 +19,6 @@ export class AccountMessageCreator {
     message.addString(password);
     message.addString(email);
     message.addString(displayName);
-    return message;
+    return message.toBuffer();
   }
 }
