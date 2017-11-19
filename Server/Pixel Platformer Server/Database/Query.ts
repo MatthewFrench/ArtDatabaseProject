@@ -1,3 +1,5 @@
+import {Utility} from "../Utility/Utility";
+
 let {Database} = require("./Database");
 const {Configuration} = require("../Configuration");
 
@@ -69,7 +71,7 @@ export class Query {
      * Get user information.
      */
     static async CreateAccount(displayName, username, password, email) {
-
+        let encryptedPassword = await Utility.encryptString(password);
         let connection = await databaseInstance.getConnection();
         await connection.beginTransaction();
         //Create SQL
@@ -82,12 +84,11 @@ export class Query {
         }
 
         sql = "INSERT INTO Players (display_name, username, encrypted_password, email, sprite_id) VALUES (?, ?, ?, ?, ?)";
-        await connection.query(sql, [displayName, username, password, email, 1]);
+        await connection.query(sql, [displayName, username, encryptedPassword, email, 1]);
         await connection.commit();
         //Release the connection
         connection.release();
         return true;
-
     }
 
     /**
@@ -96,16 +97,21 @@ export class Query {
     static async UserLogin(username, password) : Promise<{}> {
         let connection = await databaseInstance.getConnection();
         //Create SQL
-        let sql = "Select * from Players where username = ? and encrypted_password = ?";
+        let sql = "Select * from Players where username = ?";
 
         let [results] = await connection.query(sql, [username, password]);
+        connection.release();
 
         if (results.length === 0) {
             return null;
         }
+        let result = results[0];
+        //Check password
+        if (!await Utility.compareStringToEncryptedString(password, result['encrypted_password'])) {
+            return null;
+        }
         //Release the connection
-        connection.release();
-        return results[0];
+        return result;
     }
 
     /**  SetPlayerLocation

@@ -12,11 +12,16 @@ export class AccountLogic {
     }
 
     playerConnected = async (player) => {
-    };
-    playerDisconnected = async (player) => {
+
     };
 
+    playerDisconnected = async (player) => {
+
+    };
+    
+
     handleTryLoginMessage = async (player, username, password) => {
+
         let userInfo = await Query.UserLogin(username, password).then();
         if (userInfo === null) {
             //Send login failed
