@@ -1,5 +1,5 @@
 import 'source-map-support/register'
-import {UtilityTest} from "./UtilityTest";
+import {HashTest} from "./HashTest";
 const {MessageTest} = require("./MessageTest");
 const {DatabaseTest} = require("./DatabaseTest");
 
@@ -13,4 +13,4 @@ new MessageTest();
 
 new DatabaseTest();
 
-new UtilityTest();
+new HashTest();
