@@ -10,6 +10,9 @@ export class Player {
         this.accountData = new PlayerAccountData();
         this.gameData = new PlayerGameData();
     }
+    send(binary) {
+        this.socket.send(binary);
+    }
     getSocket() {
         return this.socket;
     }

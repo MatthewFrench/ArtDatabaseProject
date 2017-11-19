@@ -5,8 +5,8 @@ const {GameMessageHandler} = require("./Game/GameMessageHandler");
 const {ChatMessageHandler} = require("./Chat/ChatMessageHandler");
 const {Player} = require("../Player/Player");
 
-let HandleConnectCallback = (player)=>{};
-let HandleDisconnectCallback = (player)=>{};
+let HandleConnectCallback : (player)=>Promise<void>;
+let HandleDisconnectCallback : (player)=>Promise<void>;
 let Players = new Map();
 /**
  * Routes the messages to controllers.
@@ -20,13 +20,13 @@ export class NetworkHandler {
         //Send it to the correct callbacks
         switch(controllerID) {
             case Controllers.Account: {
-                AccountMessageHandler.RouterMessage(player, message);
+                AccountMessageHandler.RouteMessage(player, message);
             } break;
             case Controllers.Chat: {
-                ChatMessageHandler(player, message);
+                ChatMessageHandler.RouteMessage(player, message);
             } break;
             case Controllers.Game: {
-                GameMessageHandler(player, message);
+                GameMessageHandler.RouteMessage(player, message);
             } break;
             default: {
                 console.log('Unknown Message');
@@ -37,21 +37,21 @@ export class NetworkHandler {
     static HandleConnect(socket) {
         let player = new Player(socket);
         Players.set(socket, player);
-        HandleConnectCallback(player);
+        HandleConnectCallback(player).then();
         console.log('Player Connected: ' + Players.size);
     }
 
     static HandleDisconnect(socket) {
         let player = Players.get(socket);
         Players.delete(socket);
-        HandleDisconnectCallback(player);
+        HandleDisconnectCallback(player).then();
         console.log('Player Disconnected: ' + Players.size);
     }
 
-    static SetHandleConnectCallback(callback) {
+    static SetHandleConnectCallback(callback : (player)=>Promise<void>) {
         HandleConnectCallback = callback;
     }
-    static SetHandleDisconnectCallback(callback) {
+    static SetHandleDisconnectCallback(callback : (player)=>Promise<void>) {
         HandleDisconnectCallback = callback;
     }
 }

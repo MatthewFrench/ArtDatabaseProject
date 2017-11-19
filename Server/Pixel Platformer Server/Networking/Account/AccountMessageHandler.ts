@@ -1,12 +1,18 @@
 const {MessageReader} = require("../../Utility/MessageReader");
 const Messages =
     require("./../MessageDefinitions/ServerMessageDefinitions").Controllers.Account.Messages;
+import {Player} from "../../Player/Player";
 
-let TryLoginListeners = [];
-let TryCreateAccountListeners = [];
+//All listeners must be promises(async)
+let TryLoginListeners :
+    ((player: Player, username: string, password: string)
+        =>Promise<void>)[] = [];
+let TryCreateAccountListeners :
+    ((player: Player, username, password, email, displayName)
+        =>Promise<void>)[] = [];
 
 export class AccountMessageHandler {
-    static RouterMessage(player, message) {
+    static RouteMessage(player, message) {
         let messageID = message.getUint8();
         switch(messageID) {
             case Messages.TryCreateAccount: {
@@ -36,7 +42,7 @@ export class AccountMessageHandler {
         }
         //Send to all listeners
         for (let callback of TryLoginListeners) {
-            callback(player, username, password);
+            callback(player, username, password).then();
         }
     }
 
@@ -68,7 +74,7 @@ export class AccountMessageHandler {
         }
         //Send to all listeners
         for (let callback of TryCreateAccountListeners) {
-            callback(player, username, password, email, displayName);
+            callback(player, username, password, email, displayName).then();
         }
     }
 

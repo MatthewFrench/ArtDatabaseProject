@@ -2,7 +2,7 @@ let Buffer = require('buffer/').Buffer;
 
 class MessageReader {
     constructor(messageData) {
-        this.byteData = messageData;
+        this.byteData = Buffer.from(messageData);
         this.currentLoc = 0;
         this.byteLength = this.getUint32();
         //Throw an error if the message is an incorrect length

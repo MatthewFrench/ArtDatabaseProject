@@ -11,32 +11,30 @@ export class AccountLogic {
         MsgHandler.AddTryCreateAccountListener(this.handleTryCreateAccountMessage);
     }
 
-    playerConnected = (player) => {
+    playerConnected = async (player) => {
     };
-    playerDiconnected = (player) => {
-    };
-
-    handleTryLoginMessage = (player, username, password) => {
-        Query.UserLogin(username, password).then((userInfo)=>{
-            if (userInfo === null) {
-                //Send login failed
-                MsgCreator.LoginSuccess(false);
-            } else {
-                //Send login success
-                MsgCreator.LoginSuccess(true);
-            }
-        });
+    playerDisconnected = async (player) => {
     };
 
-    handleTryCreateAccountMessage = (player, username, password, email, displayName) => {
-        Query.CreateAccount(displayName, username, password, email).then((success) => {
-            if (!success) {
-                //Send register failed
-                MsgCreator.RegisterSuccess(false);
-            } else {
-                //Send register failed
-                MsgCreator.RegisterSuccess(true);
-            }
-        });
+    handleTryLoginMessage = async (player, username, password) => {
+        let userInfo = await Query.UserLogin(username, password).then();
+        if (userInfo === null) {
+            //Send login failed
+            player.send(MsgCreator.LoginStatus(false));
+        } else {
+            //Send login success
+            player.send(MsgCreator.LoginStatus(true));
+        }
+    };
+
+    handleTryCreateAccountMessage = async (player, username, password, email, displayName) => {
+        let success = Query.CreateAccount(displayName, username, password, email);
+        if (!success) {
+            //Send register failed
+            player.send(MsgCreator.RegisterStatus(false));
+        } else {
+            //Send register failed
+            player.send(MsgCreator.RegisterStatus(true));
+        }
     };
 }

@@ -4,8 +4,8 @@ export class GameLogic {
     constructor(server) {
         this.server = server;
     }
-    playerConnected = (player) => {
+    playerConnected = async (player) => {
     };
-    playerDiconnected = (player) => {
+    playerDisconnected = async (player) => {
     };
-};
+}

@@ -3,18 +3,18 @@ const AccountID = require("./../MessageDefinitions/ClientMessageDefinitions").Co
 const Messages = require("./../MessageDefinitions/ClientMessageDefinitions").Controllers.Account.Messages;
 
 export class AccountMessageCreator {
-  static LoginSuccess(success) {
+  static LoginStatus(success) {
     let message = new MessageWriter();
     message.addUint8(AccountID);
-    message.addUint8(Messages.LoginSuccess);
+    message.addUint8(Messages.LoginStatus);
     message.addInt8(success?1:0);
-    return message;
+    return message.toBuffer();
   }
-  static RegisterSuccess(success) {
+  static RegisterStatus(success) {
     let message = new MessageWriter();
     message.addUint8(AccountID);
-    message.addUint8(Messages.RegisterSuccess);
+    message.addUint8(Messages.RegisterStatus);
     message.addInt8(success?1:0);
-    return message;
+    return message.toBuffer();
   }
 }

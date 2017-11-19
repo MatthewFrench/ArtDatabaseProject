@@ -22,7 +22,7 @@ class MessageWriter {
     //Only the length of bytes being stored
     this.innerByteLength = 0;
   }
-  toBuffer() {
+  toBuffer(forWeb = true) {
     //Take length of all data and add the message length holder
     let totalLength = this.innerByteLength + 4;
     let byteData = new Buffer(totalLength);
@@ -35,7 +35,11 @@ class MessageWriter {
       data.addToByteData(byteData, loc);
       loc += data.getLength();
     }
-    return byteData;
+    if (forWeb) {
+        return byteData.buffer.slice(byteData.byteOffset, byteData.byteOffset + byteData.byteLength);
+    } else {
+        return byteData;
+    }
   }
   addUint8(value) {
     let data = new MessageDataUint8(value);
