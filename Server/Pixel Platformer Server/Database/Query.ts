@@ -1,4 +1,4 @@
-import {Utility} from "../Utility/Utility";
+import {Hashing} from "../Utility/Hashing";
 
 let {Database} = require("./Database");
 const {Configuration} = require("../Configuration");
@@ -71,7 +71,7 @@ export class Query {
      * Get user information.
      */
     static async CreateAccount(displayName, username, password, email) {
-        let encryptedPassword = await Utility.encryptString(password);
+        let encryptedPassword = await Hashing.hashString(password);
         let connection = await databaseInstance.getConnection();
         await connection.beginTransaction();
         //Create SQL
@@ -107,7 +107,7 @@ export class Query {
         }
         let result = results[0];
         //Check password
-        if (!await Utility.compareStringToEncryptedString(password, result['encrypted_password'])) {
+        if (!await Hashing.compareStringToHashedString(password, result['encrypted_password'])) {
             return null;
         }
         //Release the connection

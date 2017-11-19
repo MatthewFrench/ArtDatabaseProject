@@ -1,10 +1,10 @@
 const assert = require('assert');
-import {Utility} from "../Pixel Platformer Server/Utility/Utility";
+import {Hashing} from "../Pixel Platformer Server/Utility/Hashing";
 const NS_PER_SEC = 1e9;
 
-export class UtilityTest {
+export class HashTest {
     constructor() {
-        console.log('Running Utility Tests');
+        console.log('Running Hashing Tests');
         this.testHashing().then();
     }
 
@@ -12,14 +12,15 @@ export class UtilityTest {
         let password = 'Test Password';
         let timeStamp = process.hrtime();
 
-        let encryptedPassword = await Utility.encryptString(password);
+        let encryptedPassword = await Hashing.hashString(password);
 
-        assert.equal(await Utility.compareStringToEncryptedString(password, encryptedPassword), true, 'Compare incorrect');
+        let success = await Hashing.compareStringToHashedString(password, encryptedPassword);
+        assert.equal(success, true, 'Compare incorrect');
 
         let difference = process.hrtime(timeStamp);
         let milliseconds = (difference[0] + difference[1] / NS_PER_SEC) * 1000;
         console.log('Hashing from: ' + password + ' to ' + encryptedPassword);
         console.log('Hashing Duration(ms): ' + milliseconds);
-        console.log('\nUtility Test Success');
+        console.log('\nHashing Test Success');
     }
 }
