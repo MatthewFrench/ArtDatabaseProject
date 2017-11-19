@@ -23,11 +23,13 @@ export class AccountMessageHandler {
         //Parse message with validation
         if (!message.hasUint8()) {
             console.error('Invalid Message');
+            console.trace();
             return;
         }
         let success = message.getUint8() === 1;
         if (!message.isAtEndOfData()) {
             console.error('Invalid Message');
+            console.trace();
             return;
         }
         //Send to all listeners
@@ -40,11 +42,13 @@ export class AccountMessageHandler {
         //Parse message
         if (!message.hasUint8()) {
             console.error('Invalid Message');
+            console.trace();
             return;
         }
         let success = message.getUint8() === 1;
         if (!message.isAtEndOfData()) {
             console.error('Invalid Message');
+            console.trace();
             return;
         }
         //Send to all listeners
