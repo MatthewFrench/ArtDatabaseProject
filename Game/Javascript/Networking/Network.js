@@ -41,6 +41,11 @@ export class Network {
     }
 
     static GotMessage(message) {
+        if (message instanceof ArrayBuffer === false) {
+            console.error('Invalid Message Type Not Binary');
+            console.trace();
+            return;
+        }
         NetworkHandler.HandleMessage(message);
     }
 

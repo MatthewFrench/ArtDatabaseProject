@@ -28,6 +28,7 @@ export class NetworkHandler {
             } break;
             default: {
                 console.error('Unknown Message');
+                console.trace();
             }
         }
     }
