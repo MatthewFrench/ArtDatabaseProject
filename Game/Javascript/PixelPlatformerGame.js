@@ -23,6 +23,7 @@ export class PixelPlatformerGame {
         });
         this.gamePage = new Game(() => {
             this.switchToPage(this.loginPage);
+            localStorage.removeItem('Credentials');
         });
 
         this.switchToPage(this.loginPage);
@@ -40,7 +41,7 @@ export class PixelPlatformerGame {
     };
 
     playerConnected = async () => {
-
+        this.loginPage.tryAutoLogin();
     };
 
     playerDisconnected = async () => {
