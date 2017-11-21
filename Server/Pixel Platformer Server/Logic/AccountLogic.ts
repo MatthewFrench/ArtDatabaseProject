@@ -1,6 +1,7 @@
 import {AccountMessageCreator as MsgCreator} from "../Networking/Account/AccountMessageCreator";
 const MsgHandler = require("./../Networking/Account/AccountMessageHandler").AccountMessageHandler;
 import {Query} from "../Database/Query";
+import {Player} from "../Player/Player";
 
 export class AccountLogic {
     server: any;
@@ -20,13 +21,27 @@ export class AccountLogic {
     };
     
 
-    handleTryLoginMessage = async (player, username, password) => {
+    handleTryLoginMessage = async (player : Player, username, password) => {
 
         let userInfo = await Query.UserLogin(username, password).then();
         if (userInfo === null) {
             //Send login failed
             player.send(MsgCreator.LoginStatus(false));
         } else {
+            //Store player information in player
+            let playerID = userInfo['player_id'];
+            let spriteID = userInfo['sprite_id'];
+            let username = userInfo['username'];
+            let email = userInfo['email'];
+            let display_name = userInfo['display_name'];
+            let playerAccountData = player.getAccountData();
+            playerAccountData.setDisplayName(display_name);
+            playerAccountData.setIsLoggedIn(true);
+            playerAccountData.setUsername(username);
+            playerAccountData.setEmail(email);
+            playerAccountData.setSpriteID(spriteID);
+            playerAccountData.setPlayerID(playerID);
+
             //Send login success
             player.send(MsgCreator.LoginStatus(true));
         }

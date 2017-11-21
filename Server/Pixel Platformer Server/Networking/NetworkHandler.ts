@@ -3,11 +3,11 @@ const {Controllers} = require("./MessageDefinitions/ServerMessageDefinitions");
 const {AccountMessageHandler} = require("./Account/AccountMessageHandler");
 const {GameMessageHandler} = require("./Game/GameMessageHandler");
 const {ChatMessageHandler} = require("./Chat/ChatMessageHandler");
-const {Player} = require("../Player/Player");
+import {Player} from "../Player/Player";
 
 let HandleConnectCallback : (player)=>Promise<void>;
 let HandleDisconnectCallback : (player)=>Promise<void>;
-let Players = new Map();
+let Players = new Map<Player, any>();
 /**
  * Routes the messages to controllers.
  */
@@ -33,6 +33,12 @@ export class NetworkHandler {
                 console.log('Unknown Message');
             }
         }
+    }
+
+    static SendToAll(message: Buffer) {
+        Players.forEach((player: Player)=>{
+            player.send(message);
+        });
     }
 
     static HandleConnect(socket) {
