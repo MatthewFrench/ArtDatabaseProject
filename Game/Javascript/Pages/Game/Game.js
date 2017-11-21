@@ -1,5 +1,6 @@
 import {Interface} from "../../Utility/Interface";
 import {ScorePopover} from "./ScorePopover";
+import {NewWorldPopover} from "./NewWorldPopover";
 
 export class Game{
     constructor(switchToLoginPage){
@@ -8,7 +9,7 @@ export class Game{
                 {type: 'div', className: 'worldWrapper', elements: [
                     {type: 'canvas', className: 'gameArea'},
                     this.gameWorld = Interface.Create({type: 'div', className: 'worldSelect', elements: [
-                        {type: 'div', text: 'Create World', className: 'createWorld', onClick: this.createNewWorld}
+                        {type: 'div', text: 'Create World', className: 'createWorld', onClick: this.createWorldClicked}
                     ]})
                 ]},
                 {type: 'div', className: 'chatArea', elements: [
@@ -22,13 +23,8 @@ export class Game{
             ]}
         ]});
         this.scorePopover = new ScorePopover();
+        this.newWorldPopover = new NewWorldPopover();
     }
-
-    createNewWorld = () => {
-        this.gameWorld.appendChild(Interface.Create({type: 'div', className: 'world', elements: [
-            {type: 'p'}
-        ]}));
-    };
 
     addMessageToChatArea = (message) => {
         this.chatArea.insertBefore(Interface.Create({type: 'div', className: 'chatAreaMessage', html: message}), this.chatArea.firstChild);
@@ -41,6 +37,19 @@ export class Game{
         }
     };
 
+    createNewWorld = (worldName, playerCount, worldOwner) => {
+        this.gameWorld.appendChild(Interface.Create({type: 'div', className: 'world', elements: [
+            {type: 'ul', elements: [
+                {type: 'li', text: worldName},
+                {type: 'li', text: playerCount},
+                {type: 'li', text: worldOwner}
+            ]}
+        ]}));
+    };
+
+    createWorldClicked = () => {
+        this.mainDiv.appendChild(this.newWorldPopover.getDiv());
+    };
 
     scoreButtonClicked = () => {
         this.mainDiv.appendChild(this.scorePopover.getDiv());
