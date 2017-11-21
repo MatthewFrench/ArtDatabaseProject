@@ -10,7 +10,7 @@ export class Login {
     constructor(switchToRegisterPage, switchToGamePage) {
         this.switchToGamePage = switchToGamePage;
         this.mainDiv = Interface.Create({type: 'div', className: 'LoginPage', elements: [
-          {type: 'div', elements: [
+          {type: 'div', onKeyDown: this.onLoginEnter, elements: [
             {type: 'h2', text: 'Login to Pixel Platformer', className: 'loginText'},
             this.usernameTxt = Interface.Create({type: 'input', inputType: 'text', className: 'username', placeholder: 'Username'}),
             {type: 'p'},
@@ -28,6 +28,12 @@ export class Login {
         ]});
         AccountMessageHandler.AddLoginStatusListener(this.gotLoginStatusMessage);
     }
+
+    onLoginEnter = (event) => {
+        if (event.keyCode === 13){
+            this.loginButtonClicked();
+        }
+    };
 
     loginButtonClicked = () => {
         this.loginButton.classList.add('Disabled');
