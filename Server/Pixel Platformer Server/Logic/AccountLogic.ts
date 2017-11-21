@@ -29,6 +29,9 @@ export class AccountLogic {
         } else {
             //Send login success
             player.send(MsgCreator.LoginStatus(true));
+
+            //Store player information in player
+            console.dir(userInfo);
         }
     };
 
