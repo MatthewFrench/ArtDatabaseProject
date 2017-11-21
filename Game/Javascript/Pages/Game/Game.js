@@ -7,7 +7,9 @@ export class Game{
             {type: 'div', className: 'GameContainer', elements: [
                 {type: 'div', className: 'worldWrapper', elements: [
                     {type: 'canvas', className: 'gameArea'},
-                    {type: 'div', className: 'worldSelect'}
+                    this.gameWorld = Interface.Create({type: 'div', className: 'worldSelect', elements: [
+                        {type: 'div', text: 'Create World', className: 'createWorld', onClick: this.createNewWorld}
+                    ]})
                 ]},
                 {type: 'div', className: 'chatArea', elements: [
                     this.chatArea = Interface.Create({type: 'div', className: 'messageLog'}),
@@ -22,8 +24,14 @@ export class Game{
         this.scorePopover = new ScorePopover();
     }
 
+    createNewWorld = () => {
+        this.gameWorld.appendChild(Interface.Create({type: 'div', className: 'world', elements: [
+            {type: 'p'}
+        ]}));
+    };
+
     addMessageToChatArea = (message) => {
-        this.chatArea.insertBefore(Interface.Create({type: 'div', className: 'chatAreaMessage', text: message}), this.chatArea.firstChild);
+        this.chatArea.insertBefore(Interface.Create({type: 'div', className: 'chatAreaMessage', html: message}), this.chatArea.firstChild);
     };
 
     onChatboxEnter = (event) => {
@@ -32,6 +40,7 @@ export class Game{
             this.messageInputbox.value = '';
         }
     };
+
 
     scoreButtonClicked = () => {
         this.mainDiv.appendChild(this.scorePopover.getDiv());
