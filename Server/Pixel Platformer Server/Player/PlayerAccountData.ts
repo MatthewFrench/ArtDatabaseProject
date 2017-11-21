@@ -1,10 +1,13 @@
 
 
 export class PlayerAccountData {
-    loggedIn = false;
-    playerID = -1;
-    username = '';
-    displayName = '';
+    private loggedIn = false;
+    private playerID = -1;
+    private username = '';
+    private displayName = '';
+    private email = '';
+    private spriteID = -1;
+
     constructor() {
 
     }
@@ -25,5 +28,23 @@ export class PlayerAccountData {
     };
     setDisplayName = (displayName) => {
         this.displayName = displayName;
+    };
+    getEmail = () => {
+        return this.email;
+    };
+    setEmail = (email) => {
+        this.email = email;
+    };
+    getSpriteID = () => {
+        return this.spriteID;
+    };
+    setSpriteID = (spriteID) => {
+        this.spriteID = spriteID;
+    };
+    getPlayerID = () => {
+        return this.playerID;
+    };
+    setPlayerID = (playerID) => {
+        this.playerID = playerID;
     };
 }

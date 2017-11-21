@@ -1,9 +1,9 @@
 
 
 export class PlayerGameData {
-    currentBoardID = -1;
-    locationX = 0;
-    locationY = 0;
+    private currentBoardID = -1;
+    private locationX = 0;
+    private locationY = 0;
     constructor() {
 
     }
