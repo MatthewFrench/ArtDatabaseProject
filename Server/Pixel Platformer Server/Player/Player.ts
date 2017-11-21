@@ -1,10 +1,10 @@
-const {PlayerAccountData} = require("./PlayerAccountData");
-const {PlayerGameData} = require("./PlayerGameData");
+import {PlayerAccountData} from "./PlayerAccountData";
+import {PlayerGameData} from "./PlayerGameData";
 
 export class Player {
-    socket: any;
-    accountData: any;
-    gameData: any;
+    private socket: any;
+    private accountData: any;
+    private gameData: any;
     constructor(socket) {
         this.socket = socket;
         this.accountData = new PlayerAccountData();
@@ -16,10 +16,10 @@ export class Player {
     getSocket() {
         return this.socket;
     }
-    getAccountData() {
+    getAccountData() : PlayerAccountData {
         return this.accountData;
     }
-    getGameData() {
+    getGameData() : PlayerGameData {
         return this.gameData;
     }
 }

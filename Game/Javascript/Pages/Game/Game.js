@@ -1,6 +1,12 @@
 import {Interface} from "../../Utility/Interface";
 import {ScorePopover} from "./ScorePopover";
+<<<<<<< HEAD
 import {NewWorldPopover} from "./NewWorldPopover";
+=======
+import {ChatMessageCreator} from "../../Networking/Chat/ChatMessageCreator";
+import {Network} from "../../Networking/Network";
+import {ChatMessageHandler} from "../../Networking/Chat/ChatMessageHandler";
+>>>>>>> 1bafaf0c41a728be554ce52c1a4a7b00ba487d1c
 
 export class Game{
     constructor(switchToLoginPage){
@@ -24,7 +30,19 @@ export class Game{
         ]});
         this.scorePopover = new ScorePopover();
         this.newWorldPopover = new NewWorldPopover();
+
+        ChatMessageHandler.AddChatMessageListener(this.gotChatMessage);
     }
+
+    createNewWorld = () => {
+        this.gameWorld.appendChild(Interface.Create({type: 'div', className: 'world', elements: [
+            {type: 'p'}
+        ]}));
+    };
+
+    gotChatMessage = async (boardID, playerID, chatPrefix, chatMessage, time) => {
+        this.addMessageToChatArea(chatPrefix + ' : ' + chatMessage);
+    };
 
     addMessageToChatArea = (message) => {
         this.chatArea.insertBefore(Interface.Create({type: 'div', className: 'chatAreaMessage', html: message}), this.chatArea.firstChild);
@@ -32,7 +50,8 @@ export class Game{
 
     onChatboxEnter = (event) => {
         if (event.keyCode === 13){
-            this.addMessageToChatArea(this.messageInputbox.value);
+            Network.Send(ChatMessageCreator.NewChatMessage(this.messageInputbox.value));
+            //this.addMessageToChatArea(this.messageInputbox.value);
             this.messageInputbox.value = '';
         }
     };
