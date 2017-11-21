@@ -8,7 +8,7 @@ import {Network} from "../Networking/Network";
 export class Registration {
     constructor(switchToLoginPage) {
         this.mainDiv = Interface.Create({type: 'div', className: 'RegisterPage', elements: [
-          {type: 'div', elements: [
+          {type: 'div', onKeyDown: this.onRegisterEnter, elements: [
             {type: 'h2', text: "Register a new account", className: 'registerText'},
             this.usernameTxt = Interface.Create({type: 'input', inputType: 'text', className: 'username', placeholder: 'Username'}),
             {type: 'p'},
@@ -26,6 +26,12 @@ export class Registration {
         ]});
         AccountMessageHandler.AddRegisterStatusListener(this.gotRegisterStatusMessage);
     }
+
+    onRegisterEnter = (event) => {
+        if (event.keyCode === 13){
+            this.registerButtonClicked();
+        }
+    };
 
     registerButtonClicked = () => {
         this.registerButton.disabled = true;
