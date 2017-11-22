@@ -293,6 +293,24 @@ export class Query {
         return results[0];
     }
 
+    /**
+     * Returns all board information.
+     * @returns {Promise<any>}
+     * @constructor
+     */
+    static async GetAllBoards() {
+        //Get a connection
+        let connection = await databaseInstance.getConnection();
+        //Create SQL
+        let sql = "Select * from Board";
+        //Execute Query
+        let [results] = await connection.query(sql, []);
+        //Release the connection
+        connection.release();
+        //Pass back results
+        return results;
+    }
+
     /****** SPRITE QUERIES ******/
     /**        GetAllSprites
      * Pull all sprite information to local memory for later loading.
