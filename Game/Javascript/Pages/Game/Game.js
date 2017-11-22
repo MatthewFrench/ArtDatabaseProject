@@ -34,12 +34,6 @@ export class Game{
         ChatMessageHandler.AddChatMessageListener(this.gotChatMessage);
     }
 
-    createNewWorld = () => {
-        this.gameWorld.appendChild(Interface.Create({type: 'div', className: 'world', elements: [
-            {type: 'p'}
-        ]}));
-    };
-
     gotChatMessage = async (boardID, playerID, chatPrefix, chatMessage, time) => {
         this.addMessageToChatArea(chatPrefix + ' : ' + chatMessage);
     };
