@@ -19,7 +19,7 @@ export class GameLogic {
     handleNewCreateWorldMessage = async(player: Player, worldName: string) => {
         let boardID = await Query.CreateBoard(worldName, player.getAccountData().getPlayerID());
         let boardInfo = await Query.GetBoardByID(boardID);
-        let boardName = boardInfo['board_name'];
+        let boardName = boardInfo['name'];
         NetworkHandler.SendToAllLoggedIn(
             GameMessageCreator.UpdateSelectorBoard(boardID,
                 boardName, 0, new Date(),

@@ -34,7 +34,7 @@ export class Game{
     }
 
     updateSelectorBoard = async(boardID, boardName, numberInBoard, lastModified, tileCount) => {
-        
+        this.boardSelector.updateBoard(boardName, boardID, numberInBoard, lastModified, tileCount);
     };
 
     gotChatMessage = async (boardID, playerID, chatPrefix, chatMessage, time) => {
