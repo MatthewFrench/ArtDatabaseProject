@@ -4,13 +4,15 @@ import {NewWorldPopover} from "./NewWorldPopover";
 import {ChatMessageCreator} from "../../Networking/Chat/ChatMessageCreator";
 import {Network} from "../../Networking/Network";
 import {ChatMessageHandler} from "../../Networking/Chat/ChatMessageHandler";
+import {GameRender} from "./GameRender";
 
 export class Game{
     constructor(switchToLoginPage){
+        this.gameRender = new GameRender();
         this.mainDiv = Interface.Create({type:'div', className: 'GamePage', elements:[
             {type: 'div', className: 'GameContainer', elements: [
                 {type: 'div', className: 'worldWrapper', elements: [
-                    {type: 'canvas', className: 'gameArea'},
+                    this.gameRender.getCanvas(),
                     this.gameWorld = Interface.Create({type: 'div', className: 'worldSelect', elements: [
                         {type: 'div', text: 'Create World', className: 'createWorld', onClick: this.createWorldClicked}
                     ]})
@@ -47,15 +49,6 @@ export class Game{
         }
     };
 
-    createNewWorld = (worldName, playerCount, worldOwner) => {
-        this.gameWorld.appendChild(Interface.Create({type: 'div', className: 'world', elements: [
-            {type: 'ul', elements: [
-                {type: 'li', text: worldName},
-                {type: 'li', text: playerCount},
-                {type: 'li', text: worldOwner}
-            ]}
-        ]}));
-    };
 
     createWorldClicked = () => {
         this.mainDiv.appendChild(this.newWorldPopover.getDiv());
