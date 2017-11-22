@@ -19,6 +19,8 @@ export const Controllers = {
   Game: {
     ID: 3,
     Messages: {
+        //Sends a create world request
+        CreateNewWorld: 1
     }
   }
 };

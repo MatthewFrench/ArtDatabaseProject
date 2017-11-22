@@ -4,6 +4,7 @@ import {NewWorldPopover} from "./NewWorldPopover";
 import {ChatMessageCreator} from "../../Networking/Chat/ChatMessageCreator";
 import {Network} from "../../Networking/Network";
 import {ChatMessageHandler} from "../../Networking/Chat/ChatMessageHandler";
+import {GameMessageHandler} from "../../Networking/Game/GameMessageHandler";
 
 export class Game{
     constructor(switchToLoginPage){
@@ -29,7 +30,12 @@ export class Game{
         this.newWorldPopover = new NewWorldPopover();
 
         ChatMessageHandler.AddChatMessageListener(this.gotChatMessage);
+        GameMessageHandler.AddUpdateSelectorBoardListener(this.updateSelectorBoard);
     }
+
+    updateSelectorBoard = async(boardID, boardName, numberInBoard, lastModified, tileCount) => {
+        
+    };
 
     gotChatMessage = async (boardID, playerID, chatPrefix, chatMessage, time) => {
         this.addMessageToChatArea(chatPrefix + ' : ' + chatMessage);

@@ -41,6 +41,14 @@ export class NetworkHandler {
         });
     }
 
+    static SendToAllLoggedIn(message: Buffer) {
+        Players.forEach((player: Player)=>{
+            if (player.getAccountData().isLoggedIn()) {
+                player.send(message);
+            }
+        });
+    }
+
     static HandleConnect(socket) {
         let player = new Player(socket);
         Players.set(socket, player);
