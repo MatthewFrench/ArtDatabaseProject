@@ -1,12 +1,9 @@
 import {Interface} from "../../Utility/Interface";
 import {ScorePopover} from "./ScorePopover";
-<<<<<<< HEAD
 import {NewWorldPopover} from "./NewWorldPopover";
-=======
 import {ChatMessageCreator} from "../../Networking/Chat/ChatMessageCreator";
 import {Network} from "../../Networking/Network";
 import {ChatMessageHandler} from "../../Networking/Chat/ChatMessageHandler";
->>>>>>> 1bafaf0c41a728be554ce52c1a4a7b00ba487d1c
 
 export class Game{
     constructor(switchToLoginPage){
