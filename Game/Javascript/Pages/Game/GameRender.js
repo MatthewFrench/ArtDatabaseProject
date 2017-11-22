@@ -61,7 +61,6 @@ export class GameRender {
         for(let color of this.colorOptions){
             if(color.isPositionInSquare(this.posX, this.posY)){
                 this.ctx.fillStyle = color.fill;
-                console.log(color.fill);
             }
         }
 

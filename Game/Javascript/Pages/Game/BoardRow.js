@@ -10,10 +10,20 @@ export class BoardRow{
         this.mainDiv = Interface.Create({type: 'div', className: 'BoardRow', elements: [
             {type: 'div', elements: [
                 this.boardNameDiv = Interface.Create({type: 'div', text: boardName, className: 'boardName'}),
-                this.boardIDDiv = Interface.Create({type: 'div', text: boardID, className: 'boardID'}),
-                this.numberInBoardDiv = Interface.Create({type: 'div', text: numberInBoard, className: 'numberInBoard'}),
-                this.lastModifiedDiv = Interface.Create({type: 'div', text: lastModified, className: 'lastModified'}),
-                this.tileCountDiv = Interface.Create({type: 'div', text: tileCount, className: 'tileCount'})
+                {type: 'div', elements: [
+                    {type: 'div', elements: [
+                    this.numberInBoardDiv = Interface.Create({type: 'div', text: "Players in board: ", className: 'numberInBoardTag'}),
+                    this.numberInBoardDiv = Interface.Create({type: 'div', text: numberInBoard, className: 'numberInBoard'}),
+                        ]},
+                    {type: 'div', elements: [
+                    this.lastModifiedDiv = Interface.Create({type: 'div', text: "Last Modified: ", className: 'lastModifiedTag'}),
+                    this.lastModifiedDiv = Interface.Create({type: 'div', text: lastModified, className: 'lastModified'}),
+                        ]},
+                    {type: 'div', elements: [
+                    this.tileCountDiv = Interface.Create({type: 'div', text: "Number of tiles: ", className: 'tileCountTag'}),
+                    this.tileCountDiv = Interface.Create({type: 'div', text: tileCount, className: 'tileCount'})
+                        ]},
+                ]},
             ]}
         ]})
     }
@@ -30,7 +40,6 @@ export class BoardRow{
         this.tileCount = tileCount;
 
         this.boardNameDiv.innerText = boardName;
-        this.boardIDDiv.innerText = boardID;
         this.numberInBoardDiv.innerText = numberInBoard;
         this.lastModifiedDiv.innerText = lastModified;
         this.tileCountDiv.innerText = tileCount;

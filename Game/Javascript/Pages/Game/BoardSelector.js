@@ -7,7 +7,8 @@ export class BoardSelector {
         this.rows = [];
         this.mainDiv = Interface.Create({
             type: 'div', className: 'BoardSelector', elements: [
-                {type: 'div', text: 'Create World', className: 'createWorld', onClick: this.createWorldClicked}
+                {type: 'div', text: 'Create World', className: 'createWorld', onClick: this.createWorldClicked},
+                this.rowContainer = Interface.Create({type: 'div', className: 'rowContainer'})
             ]
         })
     }
@@ -18,7 +19,7 @@ export class BoardSelector {
         if(foundRow === null){
             let newRow = new BoardRow(boardName, boardID, numberInBoard, lastModified, tileCount);
             this.rows.push(newRow);
-            this.mainDiv.appendChild(newRow.getDiv());
+            this.rowContainer.appendChild(newRow.getDiv());
         }
         else{
             foundRow.update(boardName, boardID, numberInBoard, lastModified, tileCount);
