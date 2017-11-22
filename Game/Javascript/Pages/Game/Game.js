@@ -5,6 +5,8 @@ import {ChatMessageCreator} from "../../Networking/Chat/ChatMessageCreator";
 import {Network} from "../../Networking/Network";
 import {ChatMessageHandler} from "../../Networking/Chat/ChatMessageHandler";
 import {GameRender} from "./GameRender";
+import {GameMessageHandler} from "../../Networking/Game/GameMessageHandler";
+import {BoardSelector} from "./BoardSelector";
 
 export class Game{
     constructor(switchToLoginPage){
@@ -13,9 +15,7 @@ export class Game{
             {type: 'div', className: 'GameContainer', elements: [
                 {type: 'div', className: 'worldWrapper', elements: [
                     this.gameRender.getCanvas(),
-                    this.gameWorld = Interface.Create({type: 'div', className: 'worldSelect', elements: [
-                        {type: 'div', text: 'Create World', className: 'createWorld', onClick: this.createWorldClicked}
-                    ]})
+                    (this.boardSelector = new BoardSelector(this)).getDiv()
                 ]},
                 {type: 'div', className: 'chatArea', elements: [
                     this.chatArea = Interface.Create({type: 'div', className: 'messageLog'}),
@@ -30,8 +30,14 @@ export class Game{
         this.scorePopover = new ScorePopover();
         this.newWorldPopover = new NewWorldPopover();
 
+
         ChatMessageHandler.AddChatMessageListener(this.gotChatMessage);
+        GameMessageHandler.AddUpdateSelectorBoardListener(this.updateSelectorBoard);
     }
+
+    updateSelectorBoard = async(boardID, boardName, numberInBoard, lastModified, tileCount) => {
+        this.boardSelector.updateBoard(boardName, boardID, numberInBoard, lastModified, tileCount);
+    };
 
     gotChatMessage = async (boardID, playerID, chatPrefix, chatMessage, time) => {
         this.addMessageToChatArea(chatPrefix + ' : ' + chatMessage);
@@ -50,7 +56,8 @@ export class Game{
     };
 
 
-    createWorldClicked = () => {
+
+    openCreateWorldPopover = () => {
         this.mainDiv.appendChild(this.newWorldPopover.getDiv());
     };
 
@@ -60,5 +67,5 @@ export class Game{
 
     getDiv = () => {
         return this.mainDiv;
-    }
+    };
 }

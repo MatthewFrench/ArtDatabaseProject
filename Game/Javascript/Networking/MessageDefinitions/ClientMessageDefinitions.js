@@ -18,6 +18,9 @@ export const Controllers = {
     },
     Game: {
         ID: 3,
-        Messages: {}
+        Messages: {
+            //Adds or updates a board in the selector
+            UpdateSelectorBoard: 1
+        }
     }
 };

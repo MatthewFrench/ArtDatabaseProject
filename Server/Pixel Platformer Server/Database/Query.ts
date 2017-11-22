@@ -233,15 +233,16 @@ export class Query {
      * (Params) - boardID, boardName, playerID
      * (Returns) - boolean
      */
-    static async CreateBoard(boardID, boardName, playerID) {
+    static async CreateBoard(boardName, playerID) : Promise<number> {
         //Get a connection
         let connection = await databaseInstance.getConnection();
         //Create SQL
-        let sql = "insert into Board(board_id, name, creator_id) values (?,?,?)";
+        let sql = "insert into Board(name, creator_id) values (?,?)";
         //Execute Query
-        await connection.query(sql, [boardID, boardName, playerID]);
+        let [results, fields] = await connection.query(sql, [boardName, playerID]);
         //Release the connection
         connection.release();
+        return results.insertId;
     }
 
     /**    ChangeBoardName
@@ -274,6 +275,22 @@ export class Query {
         await connection.query(sql, [boardId]);
         //Release the connection
         connection.release();
+    }
+
+    static async GetBoardByID(boardID) {
+        //Get a connection
+        let connection = await databaseInstance.getConnection();
+        //Create SQL
+        let sql = "Select * from Board where board_id = ?";
+        //Execute Query
+        let [results] = await connection.query(sql, [boardID]);
+        //Release the connection
+        connection.release();
+        //Pass back results
+        if (results.length == 0) {
+            return null;
+        }
+        return results[0];
     }
 
     /****** SPRITE QUERIES ******/
