@@ -53,7 +53,7 @@ export class GameMessageHandler {
         }
 
         //Send to all listeners
-        for (let callback of AddChatMessageListeners) {
+        for (let callback of AddUpdateSelectorBoardListeners) {
             callback(boardID, boardName, numberInBoard, lastModified, tileCount).then();
         }
     }
