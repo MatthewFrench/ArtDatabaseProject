@@ -2,86 +2,111 @@ import {Interface} from "../../Utility/Interface";
 
 export class GameRender {
     constructor() {
-        this.canvas = Interface.Create({type: 'canvas', className: 'gameArea', onMouseDown: this.onMouseDown});
+        this.canvas = Interface.Create({type: 'canvas', className: 'GameArea', onMouseDown: this.onMouseDown});
         this.ctx = this.canvas.getContext('2d');
         window.addEventListener("resize", this.resize);
-        this.drawLoop();
-    }
 
-    getCanvas = () => {
-        return this.canvas;
+        this.colorSquareOptions = [];
+        this.colorSquareOptions.push(new SquareShape(6, 5, 15, 15, "#0000ff"));
+        this.colorSquareOptions.push(new SquareShape(23, 5, 15, 15, "#b500ff"));
+        this.colorSquareOptions.push(new SquareShape(40, 5, 15, 15, "#ff00ef"));
+        this.colorSquareOptions.push(new SquareShape(57, 5, 15, 15, "#ff0000"));
+        this.colorSquareOptions.push(new SquareShape(74, 5, 15, 15, "#ff7700"));
+        this.colorSquareOptions.push(new SquareShape(91, 5, 15, 15, "#f8ff00"));
+        this.colorSquareOptions.push(new SquareShape(108, 5, 15, 15, "#3fff00"));
+        this.colorSquareOptions.push(new SquareShape(125, 5, 15, 15, "#00ff8f"));
+        this.colorSquareOptions.push(new SquareShape(142, 5, 15, 15, "#00b8ff"));
+        this.colorSquareOptions.push(new SquareShape(159, 5, 15, 15, "#000000"));
+        this.colorSquareOptions.push(new SquareShape(176, 5, 15, 15, "#ffffff"));
+
+        this.chosenColor = this.colorSquareOptions[0].getColor();
+
+        this.drawLoop();
     }
 
     drawLoop = () => {
         window.requestAnimationFrame(this.drawLoop);
         this.draw();
-    }
+    };
 
     resize = () => {
-        this.canvas.width = this.canvas.clientWidth;
-        this.canvas.height = this.canvas.clientHeight;
-    }
+        let canvasWidth = this.canvas.width;
+        let canvasHeight = this.canvas.height;
+        let cssWidth = this.canvas.clientWidth;
+        let cssHeight = this.canvas.clientHeight;
+        if (canvasWidth !== cssWidth || canvasHeight !== cssHeight) {
+            this.canvas.width = cssWidth;
+            this.canvas.height = cssHeight;
+        }
+    };
 
     draw = () => {
         this.resize();
-        this.colorOptions = [];
-        this.colorOptions.push(new SquareShape(6, 5, 15, 15, "#0000ff"));
-        this.colorOptions.push(new SquareShape(23, 5, 15, 15, "#b500ff"));
-        this.colorOptions.push(new SquareShape(40, 5, 15, 15, "#ff00ef"));
-        this.colorOptions.push(new SquareShape(57, 5, 15, 15, "#ff0000"));
-        this.colorOptions.push(new SquareShape(74, 5, 15, 15, "#ff7700"));
-        this.colorOptions.push(new SquareShape(91, 5, 15, 15, "#f8ff00"));
-        this.colorOptions.push(new SquareShape(108, 5, 15, 15, "#3fff00"));
-        this.colorOptions.push(new SquareShape(125, 5, 15, 15, "#00ff8f"));
-        this.colorOptions.push(new SquareShape(142, 5, 15, 15, "#00b8ff"));
-        this.colorOptions.push(new SquareShape(159, 5, 15, 15, "#000000"));
-        this.colorOptions.push(new SquareShape(176, 5, 15, 15, "#ffffff"));
-        for (var i in this.colorOptions) {
-            var colors = this.colorOptions[i];
-            this.ctx.fillStyle = colors.fill;
-            this.ctx.strokeStyle = 'black';
-            this.ctx.strokeRect(colors.x, colors.y, colors.w, colors.h);
-            this.ctx.fillRect(colors.x, colors.y, colors.w, colors.h);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.fillStyle = this.chosenColor;
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.strokeStyle = 'black';
+        for (let square of this.colorSquareOptions) {
+            this.ctx.fillStyle = square.getColor();
+            this.ctx.strokeRect(square.getX(), square.getY(), square.getWidth(), square.getHeight());
+            this.ctx.fillRect(square.getX(), square.getY(), square.getWidth(), square.getHeight());
             this.ctx.stroke();
         }
-    }
+    };
 
     getMousePosition = (event) =>{
-        this.rect = this.canvas.getBoundingClientRect();
+        let rect = this.canvas.getBoundingClientRect();
         return{
-            x: (window.event.clientX - this.rect.left) / (this.rect.right - this.rect.left) * this.canvas.width,
-            y: (window.event.clientY - this.rect.top) / (this.rect.bottom - this.rect.top) * this.canvas.height
+            x: (event.clientX - rect.left) / (rect.right - rect.left) * this.canvas.width,
+            y: (event.clientY - rect.top) / (rect.bottom - rect.top) * this.canvas.height
         }
-    }
+    };
 
     onMouseDown = (event) => {
-        this.position = this.getMousePosition(this.canvas, event);
-        this.posX = this.position.x;
-        this.posY = this.position.y;
-        for(let color of this.colorOptions){
-            if(color.isPositionInSquare(this.posX, this.posY)){
-                this.ctx.fillStyle = color.fill;
+        let mousePosition = this.getMousePosition(event);
+        for(let colorSquare of this.colorSquareOptions){
+            if(colorSquare.isPositionInSquare(mousePosition.x, mousePosition.y)){
+                this.chosenColor = colorSquare.getColor();
             }
         }
+    };
 
-
-    }
+    getCanvas = () => {
+        return this.canvas;
+    };
 }
 
 
 class SquareShape {
-    constructor(x, y, w, h, fill) {
+    constructor(x, y, w, h, color) {
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
-        this.fill = fill;
+        this.color = color;
     }
 
+    getX = () => {
+        return this.x;
+    };
+
+    getY = () => {
+        return this.y;
+    };
+
+    getWidth = () => {
+        return this.w;
+    };
+
+    getHeight = () => {
+        return this.h;
+    };
+
+    getColor = () => {
+        return this.color;
+    };
+
     isPositionInSquare = (x, y) =>{
-        if(x >= this.x && x <= this.x + this.w && y >= this.y && y <= this.y + this.h){
-            return true;
-        }
-        return false;
+        return (x >= this.x && x <= this.x + this.w && y >= this.y && y <= this.y + this.h);
     }
 }

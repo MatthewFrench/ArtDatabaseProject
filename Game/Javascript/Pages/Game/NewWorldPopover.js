@@ -6,12 +6,12 @@ export class NewWorldPopover {
     constructor() {
         this.mainDiv = Interface.Create({type: 'div', className: 'NewWorldPopover', elements: [
             {type: 'div', elements: [
-                {type: 'h2', text: 'Create New World', className: 'newWorldHeader'},
-                {type: 'label', text: 'World Name: ', className: 'nameLabel'},
-                this.name = Interface.Create({type: 'input', inputType: 'text', className: 'newWorldName'}),
+                {type: 'h2', text: 'Create New World', className: 'NewWorldHeader'},
+                {type: 'label', text: 'World Name: ', className: 'NameLabel'},
+                this.name = Interface.Create({type: 'input', inputType: 'text', className: 'NewWorldName'}),
                 {type: 'p'},
-                {type: 'div', text: 'Save World', className: 'createWorld', onClick: this.saveWorld},
-                {type: 'div', text: 'Close', className: 'closeButton', onClick: this.closeSelf}
+                {type: 'div', text: 'Save World', className: 'CreateWorld', onClick: this.saveWorld},
+                {type: 'div', text: 'Close', className: 'CloseButton', onClick: this.closeSelf}
             ]}
         ]});
     }

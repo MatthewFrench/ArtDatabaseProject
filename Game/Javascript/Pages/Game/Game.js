@@ -13,17 +13,17 @@ export class Game{
         this.gameRender = new GameRender();
         this.mainDiv = Interface.Create({type:'div', className: 'GamePage', elements:[
             {type: 'div', className: 'GameContainer', elements: [
-                {type: 'div', className: 'worldWrapper', elements: [
+                {type: 'div', className: 'WorldWrapper', elements: [
                     this.gameRender.getCanvas(),
                     (this.boardSelector = new BoardSelector(this)).getDiv()
                 ]},
-                {type: 'div', className: 'chatArea', elements: [
-                    this.chatArea = Interface.Create({type: 'div', className: 'messageLog'}),
-                    this.messageInputbox = Interface.Create({type: 'input', inputType: 'text', className: 'textInput', placeholder: 'Enter your message...', onKeyDown: this.onChatboxEnter}),
+                {type: 'div', className: 'ChatArea', elements: [
+                    this.chatArea = Interface.Create({type: 'div', className: 'MessageLog'}),
+                    this.messageInputbox = Interface.Create({type: 'input', inputType: 'text', className: 'TextInput', placeholder: 'Enter your message...', onKeyDown: this.onChatboxEnter}),
                 ]},
                 {type: 'div', elements: [
-                    {type: 'div', text: 'Logout', className: 'logoutBtn', onClick: () => {switchToLoginPage();}},
-                    {type: 'div', text: 'Score', className: 'scoreButton', onClick: this.scoreButtonClicked}
+                    {type: 'div', text: 'Logout', className: 'LogoutBtn', onClick: () => {switchToLoginPage();}},
+                    {type: 'div', text: 'Score', className: 'ScoreButton', onClick: this.scoreButtonClicked}
                 ]}
             ]}
         ]});
@@ -37,6 +37,7 @@ export class Game{
 
     updateSelectorBoard = async(boardID, boardName, numberInBoard, lastModified, tileCount) => {
         this.boardSelector.updateBoard(boardName, boardID, numberInBoard, lastModified, tileCount);
+        this.boardSelector.sortBoards();
     };
 
     gotChatMessage = async (boardID, playerID, chatPrefix, chatMessage, time) => {
@@ -44,7 +45,7 @@ export class Game{
     };
 
     addMessageToChatArea = (message) => {
-        this.chatArea.insertBefore(Interface.Create({type: 'div', className: 'chatAreaMessage', html: message}), this.chatArea.firstChild);
+        this.chatArea.insertBefore(Interface.Create({type: 'div', className: 'ChatAreaMessage', html: message}), this.chatArea.firstChild);
     };
 
     onChatboxEnter = (event) => {

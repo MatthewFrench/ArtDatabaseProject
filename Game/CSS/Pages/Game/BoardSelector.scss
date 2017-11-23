@@ -6,13 +6,13 @@
   display: flex;
   flex-direction: column;
 
-  .rowContainer{
+  .RowContainer{
     overflow-y: scroll;
     border-top: solid 1px black;
     flex: 1;
   }
 
-  .createWorld {
+  .CreateWorld {
     background-color: white;
     font-size: 15px;
     padding: 5px;
@@ -33,33 +33,33 @@
     border-top: solid 1px black;
     text-align: left;
     padding: 5px;
-    .boardName{
+    .BoardName{
       font-size: 20px;
       font-weight: bold;
       text-align: left;
       text-decoration: underline;
     }
-    .numberInBoardTag{
+    .NumberInBoardTag{
       display: inline-block;
       font-weight: bold;
     }
-    .numberInBoard{
+    .NumberInBoard{
       text-align: left;
       display:inline-block;
     }
-    .lastModifiedTag{
+    .LastModifiedTag{
       display:inline-block;
       font-weight: bold;
     }
-    .lastModified{
+    .LastModified{
       text-align: left;
       display:inline-block;
     }
-    .tileCountTag{
+    .TileCountTag{
       display:inline-block;
       font-weight: bold;
     }
-    .tileCount{
+    .TileCount{
       text-align: left;
       display:inline-block;
     }

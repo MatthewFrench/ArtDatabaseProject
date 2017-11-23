@@ -11,25 +11,25 @@
     display: flex;
     flex-direction: column;
 
-    .worldWrapper {
+    .WorldWrapper {
       position: relative;
       text-align: center;
       flex: 1;
       display: flex;
 
-      .gameArea {
+      .GameArea {
         border: solid 1px black;
         flex: 1;
         min-width: 0;
       }
     }
-    .chatArea {
+    .ChatArea {
       position: relative;
       height: 188px;
       display: flex;
       flex-direction: column;
 
-      .messageLog {
+      .MessageLog {
         position: relative;
         resize: none;
         padding: 4px;
@@ -39,21 +39,21 @@
         overflow-y: scroll;
         flex: 1;
 
-        .chatAreaMessage{
+        .ChatAreaMessage{
           white-space: pre;
           padding-bottom: 5px;
           color: black;
         }
       }
 
-      .textInput {
+      .TextInput {
         padding: 5px;
         font-size: 15px;
         border-radius: 5px;
       }
     }
 
-    .logoutBtn {
+    .LogoutBtn {
       background-color: white;
       font-size: 15px;
       padding: 5px;
@@ -72,7 +72,7 @@
         box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
       }
     }
-    .scoreButton {
+    .ScoreButton {
       background-color: white;
       font-size: 15px;
       padding: 5px;
