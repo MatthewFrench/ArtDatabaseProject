@@ -25,7 +25,7 @@ export class TileLayer {
         this.canvas.width = this.layerWidth;
         this.canvas.height = this.layerHeight;
 
-        this.gl = this.canvas.getContext('webgl2');
+        this.gl = this.canvas.getContext('webgl');
 
 //Create program
         let program = this.gl.createProgram();
@@ -58,6 +58,8 @@ export class TileLayer {
         this.colors = new Float32Array(this.totalTiles * Verts_Per_Tile * Num_Per_Color);
         this.fillWithColors();
         this.setColor(this.getTileNumber(0, 0), 0.0, 1.0, 0.0, 1.0);
+        // Bind the color buffer.
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorBuffer);
         this.updateColorsBuffer();
 
         // Tell WebGL how to convert from clip space to pixels
@@ -98,6 +100,8 @@ export class TileLayer {
         // set the resolution
         this.gl.uniform2f(resolutionUniformLocation, this.gl.canvas.width, this.gl.canvas.height);
 
+        // Bind the color buffer.
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorBuffer);
     }
 
     getTileNumber = (tileX, tileY) => {
@@ -153,21 +157,22 @@ export class TileLayer {
 
 
     fillWithColors = () => {
-        for (let x = 0; x < this.tilesHorizontal; x++) {
-            for (let y = 0; y < this.tilesVertical; y++) {
+        for (let y = 0; y < this.tilesVertical; y++) {
+            for (let x = 0; x < this.tilesHorizontal; x++) {
                 this.setColor(this.getTileNumber(x, y), Math.random(), Math.random(), Math.random(), 1.0);
             }
         }
     };
 
     updateColorsBuffer = () => {
-        // Bind the position buffer.
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorBuffer);
         this.gl.bufferData(this.gl.ARRAY_BUFFER, this.colors, this.gl.DYNAMIC_DRAW);
     };
 
 
     draw = () => {
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+        this.fillWithColors();
+        this.updateColorsBuffer();
         // draw
         let primitiveType = this.gl.TRIANGLES;
         let offset = 0;
