@@ -31,6 +31,7 @@ export class PixelPlatformerGame {
 
     removePreviousPage = () => {
         if (this.currentPage !== null) {
+            this.currentPage.setVisibility(false);
             this.currentPage.getDiv().remove();
         }
     };
@@ -38,6 +39,7 @@ export class PixelPlatformerGame {
         this.removePreviousPage();
         this.currentPage = page;
         this.mainDiv.appendChild(this.currentPage.getDiv());
+        this.currentPage.setVisibility(true);
     };
 
     playerConnected = async () => {

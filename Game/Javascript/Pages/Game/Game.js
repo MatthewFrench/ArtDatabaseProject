@@ -29,11 +29,16 @@ export class Game{
         ]});
         this.scorePopover = new ScorePopover();
         this.newWorldPopover = new NewWorldPopover();
-
+        this.visible = false;
 
         ChatMessageHandler.AddChatMessageListener(this.gotChatMessage);
         GameMessageHandler.AddUpdateSelectorBoardListener(this.updateSelectorBoard);
     }
+
+    setVisibility = (visible) => {
+        this.visible = visible;
+        this.gameRender.setVisibility(visible);
+    };
 
     updateSelectorBoard = async(boardID, boardName, numberInBoard, lastModified, tileCount) => {
         this.boardSelector.updateBoard(boardName, boardID, numberInBoard, lastModified, tileCount);
@@ -51,12 +56,9 @@ export class Game{
     onChatboxEnter = (event) => {
         if (event.keyCode === 13){
             Network.Send(ChatMessageCreator.NewChatMessage(this.messageInputbox.value));
-            //this.addMessageToChatArea(this.messageInputbox.value);
             this.messageInputbox.value = '';
         }
     };
-
-
 
     openCreateWorldPopover = () => {
         this.mainDiv.appendChild(this.newWorldPopover.getDiv());

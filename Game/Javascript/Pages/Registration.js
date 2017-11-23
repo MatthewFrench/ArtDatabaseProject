@@ -23,7 +23,12 @@ export class Registration {
           ]}
         ]});
         AccountMessageHandler.AddRegisterStatusListener(this.gotRegisterStatusMessage);
+        this.visible = false;
     }
+
+    setVisibility = (visible) => {
+        this.visible = visible;
+    };
 
     onRegisterEnter = (event) => {
         if (event.keyCode === 13){
