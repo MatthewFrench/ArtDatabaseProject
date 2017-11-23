@@ -165,9 +165,20 @@ export class TileLayer {
     };
 
     updateColorsBuffer = () => {
+        // Bind the color buffer.
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorBuffer);
         this.gl.bufferData(this.gl.ARRAY_BUFFER, this.colors, this.gl.DYNAMIC_DRAW);
     };
 
+    /*
+    Try updating sub data to increase performance
+    function emitParticle(x,y,velocityX, velocityY){
+        gl.bindBuffer(gl.ARRAY_BUFFER, particleBuffer);
+        // ...
+        gl.bufferSubData(gl.ARRAY_BUFFER, particleId*particleSize*sizeOfFloat, data);
+        particleId = (particleId +1 )%vertexBufferSize;
+    }
+     */
 
     draw = () => {
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);

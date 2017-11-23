@@ -6,6 +6,7 @@ export class GameRender {
         this.canvas = Interface.Create({type: 'canvas', className: 'GameArea', onMouseDown: this.onMouseDown});
         this.ctx = this.canvas.getContext('2d');
         window.addEventListener("resize", this.resize);
+        this.visible = false;
 
         this.colorSquareOptions = [];
         this.colorSquareOptions.push(new SquareShape(6, 5, 15, 15, "#0000ff"));
@@ -29,7 +30,9 @@ export class GameRender {
 
     drawLoop = () => {
         window.requestAnimationFrame(this.drawLoop);
-        this.draw();
+        if (this.visible) {
+            this.draw();
+        }
     };
 
     resize = () => {
@@ -41,6 +44,10 @@ export class GameRender {
             this.canvas.width = cssWidth;
             this.canvas.height = cssHeight;
         }
+    };
+
+    setVisibility = (visible) => {
+        this.visible = visible;
     };
 
     draw = () => {
@@ -60,7 +67,6 @@ export class GameRender {
             this.ctx.fillRect(square.getX(), square.getY(), square.getWidth(), square.getHeight());
             this.ctx.stroke();
         }
-
 
         this.ctx.drawImage(this.tileLayer.getCanvas(), 100, 100);
         this.ctx.strokeStyle = 'black';

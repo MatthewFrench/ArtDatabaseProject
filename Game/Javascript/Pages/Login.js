@@ -29,7 +29,12 @@ export class Login {
           ]}
         ]});
         AccountMessageHandler.AddLoginStatusListener(this.gotLoginStatusMessage);
+        this.visible = false;
     }
+
+    setVisibility = (visible) => {
+        this.visible = visible;
+    };
 
     tryAutoLogin = () => {
         if(localStorage.getItem('Credentials')){
