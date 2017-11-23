@@ -22,7 +22,7 @@ export class GameRender {
 
         this.chosenColor = this.colorSquareOptions[0].getColor();
 
-        this.tileLayer = new TileLayer(640, 640);
+        this.tileLayer = new TileLayer(200, 200);
 
         this.drawLoop();
     }
@@ -53,8 +53,6 @@ export class GameRender {
         this.ctx.fillStyle = this.chosenColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.ctx.drawImage(this.tileLayer.getCanvas(), 0, 0);
-
         this.ctx.strokeStyle = 'black';
         for (let square of this.colorSquareOptions) {
             this.ctx.fillStyle = square.getColor();
@@ -62,6 +60,11 @@ export class GameRender {
             this.ctx.fillRect(square.getX(), square.getY(), square.getWidth(), square.getHeight());
             this.ctx.stroke();
         }
+
+
+        this.ctx.drawImage(this.tileLayer.getCanvas(), 100, 100);
+        this.ctx.strokeStyle = 'black';
+        this.ctx.strokeRect(100, 100, 200, 200);
     };
 
     getMousePosition = (event) =>{
