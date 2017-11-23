@@ -1,5 +1,3 @@
-
-
 import {Interface} from "../Utility/Interface.js";
 import {AccountMessageCreator} from "../Networking/Account/AccountMessageCreator";
 import {AccountMessageHandler} from "../Networking/Account/AccountMessageHandler";
@@ -9,19 +7,19 @@ export class Registration {
     constructor(switchToLoginPage) {
         this.mainDiv = Interface.Create({type: 'div', className: 'RegisterPage', elements: [
           {type: 'div', onKeyDown: this.onRegisterEnter, elements: [
-            {type: 'h2', text: "Register a new account", className: 'registerText'},
-            this.usernameTxt = Interface.Create({type: 'input', inputType: 'text', className: 'username', placeholder: 'Username'}),
+            {type: 'h2', text: "Register a new account", className: 'RegisterText'},
+            this.usernameTxt = Interface.Create({type: 'input', inputType: 'text', className: 'Username', placeholder: 'Username'}),
             {type: 'p'},
-            this.passwordTxt = Interface.Create({type: 'input', inputType: 'password', className: 'passw', placeholder: 'Password'}),
+            this.passwordTxt = Interface.Create({type: 'input', inputType: 'password', className: 'Password', placeholder: 'Password'}),
             {type: 'p'},
-            this.emailTxt = Interface.Create({type: 'input', inputType: 'email', className: 'email', placeholder: 'Email'}),
+            this.emailTxt = Interface.Create({type: 'input', inputType: 'Email', className: 'Email', placeholder: 'Email'}),
             {type: 'p'},
-            this.displayNameTxt = Interface.Create({type: 'input', inputType: 'text', className: 'displayName', placeholder: 'Display Name'}),
+            this.displayNameTxt = Interface.Create({type: 'input', inputType: 'text', className: 'DisplayName', placeholder: 'Display Name'}),
             {type: 'p'},
-            this.registerButton = Interface.Create({type: 'div', text: "Register", className: 'registerBtn', onClick: this.registerButtonClicked}),
+            this.registerButton = Interface.Create({type: 'div', text: "Register", className: 'RegisterBtn', onClick: this.registerButtonClicked}),
             {type: 'p'},
-            {type: 'div', text: "Already have an account? Login here:", className: 'loginText'},
-            {type: 'div', text:'Login', className: 'loginBtn', onClick: () => {switchToLoginPage();}}
+            {type: 'div', text: "Already have an account? Login here:", className: 'LoginText'},
+            {type: 'div', text:'Login', className: 'LoginBtn', onClick: () => {switchToLoginPage();}}
           ]}
         ]});
         AccountMessageHandler.AddRegisterStatusListener(this.gotRegisterStatusMessage);

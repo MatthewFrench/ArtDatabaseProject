@@ -7,20 +7,20 @@
   background-color: white;
   padding: 20px;
 
-  .loginText{
+  .LoginText{
     padding-bottom: 10px;
   }
-  .username{
+  .Username{
     padding-left: 5px;
     width: 300px;
     height: 30px;
   }
-  .passw{
+  .Password{
     padding-left: 5px;
     width: 300px;
     height: 30px;
   }
-  .registerBtn{
+  .RegisterBtn{
     font-size: 15px;
     padding: 5px;
     border-radius: 5px;
@@ -33,7 +33,7 @@
       box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
     }
   }
-  .loginBtn{
+  .LoginBtn{
     font-size: 20px;
     padding: 10px;
     border-radius: 5px;
@@ -57,7 +57,7 @@
     }
   }
 
-  .saveUserBox{
+  .SaveUserBox{
     display:inline-block;
   }
 }

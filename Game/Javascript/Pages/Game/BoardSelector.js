@@ -7,8 +7,8 @@ export class BoardSelector {
         this.rows = [];
         this.mainDiv = Interface.Create({
             type: 'div', className: 'BoardSelector', elements: [
-                {type: 'div', text: 'Create World', className: 'createWorld', onClick: this.createWorldClicked},
-                this.rowContainer = Interface.Create({type: 'div', className: 'rowContainer'})
+                {type: 'div', text: 'Create World', className: 'CreateWorld', onClick: this.createWorldClicked},
+                this.rowContainer = Interface.Create({type: 'div', className: 'RowContainer'})
             ]
         })
     }
@@ -32,6 +32,18 @@ export class BoardSelector {
                 return -1;
             }
             if (row1.numberInBoard > row2.numberInBoard) {
+                return 1;
+            }
+            if (row1.lastModified < row2.lastModified) {
+                return -1;
+            }
+            if (row1.lastModified > row2.lastModified) {
+                return 1;
+            }
+            if (row1.tileCount < row2.tileCount) {
+                return -1;
+            }
+            if (row1.tileCount > row2.tileCount) {
                 return 1;
             }
             // row1 and row2 are equal

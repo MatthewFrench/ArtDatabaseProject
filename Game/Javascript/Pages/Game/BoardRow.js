@@ -9,19 +9,19 @@ export class BoardRow{
         this.tileCount = tileCount;
         this.mainDiv = Interface.Create({type: 'div', className: 'BoardRow', elements: [
             {type: 'div', elements: [
-                this.boardNameDiv = Interface.Create({type: 'div', text: boardName, className: 'boardName'}),
+                this.boardNameDiv = Interface.Create({type: 'div', text: boardName, className: 'BoardName'}),
                 {type: 'div', elements: [
                     {type: 'div', elements: [
-                    this.numberInBoardDiv = Interface.Create({type: 'div', text: "Players in board: ", className: 'numberInBoardTag'}),
-                    this.numberInBoardDiv = Interface.Create({type: 'div', text: numberInBoard, className: 'numberInBoard'}),
+                    this.numberInBoardDiv = Interface.Create({type: 'div', text: "Players in board: ", className: 'NumberInBoardTag'}),
+                    this.numberInBoardDiv = Interface.Create({type: 'div', text: numberInBoard, className: 'NumberInBoard'}),
                         ]},
                     {type: 'div', elements: [
-                    this.lastModifiedDiv = Interface.Create({type: 'div', text: "Last Modified: ", className: 'lastModifiedTag'}),
-                    this.lastModifiedDiv = Interface.Create({type: 'div', text: lastModified, className: 'lastModified'}),
+                    this.lastModifiedDiv = Interface.Create({type: 'div', text: "Last Modified: ", className: 'LastModifiedTag'}),
+                    this.lastModifiedDiv = Interface.Create({type: 'div', text: lastModified, className: 'LastModified'}),
                         ]},
                     {type: 'div', elements: [
-                    this.tileCountDiv = Interface.Create({type: 'div', text: "Number of tiles: ", className: 'tileCountTag'}),
-                    this.tileCountDiv = Interface.Create({type: 'div', text: tileCount, className: 'tileCount'})
+                    this.tileCountDiv = Interface.Create({type: 'div', text: "Number of tiles: ", className: 'TileCountTag'}),
+                    this.tileCountDiv = Interface.Create({type: 'div', text: tileCount, className: 'TileCount'})
                         ]},
                 ]},
             ]}

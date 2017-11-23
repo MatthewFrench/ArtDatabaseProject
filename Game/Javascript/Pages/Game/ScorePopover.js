@@ -5,7 +5,7 @@ export class ScorePopover {
         this.mainDiv = Interface.Create({type: 'div', className: 'ScorePopover', elements: [
             {type: 'div', elements: [
                 {type: 'h2', text: 'SCORE', className: 'ScoreTitle'},
-                {type: 'div', text: 'Close', className: 'closeButton', onClick: this.closeSelf}
+                {type: 'div', text: 'Close', className: 'CloseButton', onClick: this.closeSelf}
             ]}
         ]});
     }
