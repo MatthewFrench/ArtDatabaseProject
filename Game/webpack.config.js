@@ -28,7 +28,10 @@ module.exports = {
             plugins: ['transform-class-properties']
           }
         }
-      }]
+      }, {
+            test: /\.glsl$/,
+            loader: 'webpack-glsl-loader'
+        }]
   },
   plugins: [
     new HtmlWebpackPlugin(),

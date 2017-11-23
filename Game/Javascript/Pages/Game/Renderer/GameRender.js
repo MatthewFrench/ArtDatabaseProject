@@ -1,4 +1,5 @@
-import {Interface} from "../../Utility/Interface";
+import {Interface} from "../../../Utility/Interface";
+import {TileLayer} from "./TileLayer/TileLayer";
 
 export class GameRender {
     constructor() {
@@ -21,6 +22,8 @@ export class GameRender {
 
         this.chosenColor = this.colorSquareOptions[0].getColor();
 
+        this.tileLayer = new TileLayer(640, 640);
+
         this.drawLoop();
     }
 
@@ -41,10 +44,17 @@ export class GameRender {
     };
 
     draw = () => {
+        this.tileLayer.draw();
+
         this.resize();
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        //Draw background
         this.ctx.fillStyle = this.chosenColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        this.ctx.drawImage(this.tileLayer.getCanvas(), 0, 0);
+
         this.ctx.strokeStyle = 'black';
         for (let square of this.colorSquareOptions) {
             this.ctx.fillStyle = square.getColor();

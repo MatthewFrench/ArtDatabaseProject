@@ -4,7 +4,7 @@ import {NewWorldPopover} from "./NewWorldPopover";
 import {ChatMessageCreator} from "../../Networking/Chat/ChatMessageCreator";
 import {Network} from "../../Networking/Network";
 import {ChatMessageHandler} from "../../Networking/Chat/ChatMessageHandler";
-import {GameRender} from "./GameRender";
+import {GameRender} from "./Renderer/GameRender";
 import {GameMessageHandler} from "../../Networking/Game/GameMessageHandler";
 import {BoardSelector} from "./BoardSelector";
 
