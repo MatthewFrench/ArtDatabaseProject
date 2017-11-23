@@ -1,8 +1,10 @@
 
-//precision mediump float;
+precision mediump float;
 attribute vec4 a_position;
-
+attribute vec4 a_color;
 uniform vec2 u_resolution;
+
+varying vec4 fragment_Color;
 
 void main() {
     // convert the position from pixels to 0.0 to 1.0
