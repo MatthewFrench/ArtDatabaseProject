@@ -1,12 +1,20 @@
 import {Interface} from "../../../Utility/Interface";
-import {TileLayer} from "./TileLayer";
+import {Board} from "./Board";
+import {Point} from "./Point";
+import {TileLayerRenderer} from "./TileLayerRenderer/TileLayerRenderer";
 
 export class GameLogic {
     constructor() {
-        this.canvas = Interface.Create({type: 'canvas', className: 'GameArea', onMouseDown: this.onMouseDown});
+        this.canvas = Interface.Create({type: 'canvas', className: 'GameArea',
+            onMouseDown: this.onMouseDown, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp});
+        this.canvas.tabIndex = 1;
         this.ctx = this.canvas.getContext('2d');
         window.addEventListener("resize", this.resize);
         this.visible = false;
+        this.leftPressed = false;
+        this.rightPressed = false;
+        this.upPressed = false;
+        this.downPressed = false;
 
         this.colorSquareOptions = [];
         this.colorSquareOptions.push(new SquareShape(6, 5, 15, 15, "#0000ff"));
@@ -23,32 +31,44 @@ export class GameLogic {
 
         this.chosenColor = this.colorSquareOptions[0].getColor();
 
-        this.tileLayer = new TileLayer();
+        this.board = new Board();
 
-        this.drawLoop();
+        //Camera focus is tile based but can be fractional.
+        this.cameraFocus = new Point(0, 0);
+        //Set some basic tiles
+        for (let y = -100; y < 100; y++) {
+            for (let x = -100; x < 100; x++) {
+                this.board.setTileColor(x, y, Math.random(), Math.random(), Math.random(), 1);
+            }
+        }
+
+        this.tileLayerRenderer = new TileLayerRenderer(1000, 800);
+
+        this.logicLoop();
     }
 
-    drawLoop = () => {
-        window.requestAnimationFrame(this.drawLoop);
+    logicLoop = () => {
+        window.requestAnimationFrame(this.logicLoop);
         if (this.visible) {
+            this.logic();
             this.draw();
         }
     };
 
-    resize = () => {
-        let canvasWidth = this.canvas.width;
-        let canvasHeight = this.canvas.height;
-        let cssWidth = this.canvas.clientWidth;
-        let cssHeight = this.canvas.clientHeight;
-        if (canvasWidth !== cssWidth || canvasHeight !== cssHeight) {
-            this.canvas.width = cssWidth;
-            this.canvas.height = cssHeight;
-            this.tileLayer.setSize(cssWidth, cssHeight);
+    logic = () => {
+        if (this.leftPressed) {
+            this.cameraFocus.setX(this.cameraFocus.getX() + 0.1);
         }
-    };
-
-    setVisibility = (visible) => {
-        this.visible = visible;
+        if (this.rightPressed) {
+            this.cameraFocus.setX(this.cameraFocus.getX() - 0.1);
+        }
+        if (this.upPressed) {
+            this.cameraFocus.setY(this.cameraFocus.getY() + 0.1);
+        }
+        if (this.downPressed) {
+            this.cameraFocus.setY(this.cameraFocus.getY() - 0.1);
+        }
+        this.tileLayerRenderer.setFocusTilePosition(this.cameraFocus.getX(), this.cameraFocus.getY());
     };
 
     draw = () => {
@@ -59,8 +79,11 @@ export class GameLogic {
         this.ctx.fillStyle = this.chosenColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.tileLayer.draw(this.ctx);
+        this.tileLayerRenderer.draw(this.board);
 
+        this.ctx.drawImage(this.tileLayerRenderer.getCanvas(), 0, 0);
+
+        //Draw color selector
         this.ctx.strokeStyle = 'black';
         for (let square of this.colorSquareOptions) {
             this.ctx.fillStyle = square.getColor();
@@ -85,6 +108,61 @@ export class GameLogic {
                 this.chosenColor = colorSquare.getColor();
             }
         }
+    };
+
+    onKeyDown = (event) => {
+        //Left
+        if (event.keyCode === 37) {
+            this.leftPressed = true;
+        }
+        //Right
+        if (event.keyCode === 39) {
+            this.rightPressed = true;
+        }
+        //Up
+        if (event.keyCode === 38) {
+            this.upPressed = true;
+        }
+        //Down
+        if (event.keyCode === 40) {
+            this.downPressed = true;
+        }
+    };
+
+    onKeyUp = (event) => {
+        //Left
+        if (event.keyCode === 37) {
+            this.leftPressed = false;
+        }
+        //Right
+        if (event.keyCode === 39) {
+            this.rightPressed = false;
+        }
+        //Up
+        if (event.keyCode === 38) {
+            this.upPressed = false;
+        }
+        //Down
+        if (event.keyCode === 40) {
+            this.downPressed = false;
+        }
+    };
+
+    resize = () => {
+        let canvasWidth = this.canvas.width;
+        let canvasHeight = this.canvas.height;
+        let cssWidth = this.canvas.clientWidth;
+        let cssHeight = this.canvas.clientHeight;
+        if (canvasWidth !== cssWidth || canvasHeight !== cssHeight) {
+            this.canvas.width = cssWidth;
+            this.canvas.height = cssHeight;
+            this.tileLayerRenderer.setSize(cssWidth, cssHeight);
+        }
+    };
+
+    setVisibility = (visible) => {
+        this.visible = visible;
+        this.canvas.focus();
     };
 
     getCanvas = () => {
