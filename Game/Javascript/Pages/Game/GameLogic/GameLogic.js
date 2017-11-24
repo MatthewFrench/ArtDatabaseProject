@@ -42,8 +42,8 @@ export class GameLogic {
         //Camera focus is on a player ID.
         this.cameraFocusPlayerID = 1;
 
-        this.board.addPlayer(1, 'Test', 0, 0);
-        this.board.addPlayer(2, 'Bob', 50, 0);
+        this.addPlayer(1, 'Test', 0, 0);
+        this.addPlayer(2, 'Bob', 50, 0);
 
         //Set some basic tiles
         for (let x = -100; x < 100; x++) {
@@ -57,11 +57,15 @@ export class GameLogic {
             }
         }
 
-
         this.tileLayerRenderer = new TileLayerRenderer(1000, 800);
 
         this.logicLoop();
     }
+
+    addPlayer = (playerID, name, x, y) => {
+        let player = this.board.addPlayer(playerID, name, x, y);
+        this.physicsLogic.addPlayerBody(player);
+    };
 
     logicLoop = () => {
         window.requestAnimationFrame(this.logicLoop);

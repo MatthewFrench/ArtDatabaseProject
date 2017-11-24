@@ -72,7 +72,7 @@ export class PhysicsLogic {
         bodyDef.type = b2.BodyType.dynamicBody;
 
         // Create body with definition
-        let body = world.CreateBody(bodyDef);
+        let body = this.world.CreateBody(bodyDef);
 
         // Define fixture
         let fixDef = new b2.FixtureDef();
@@ -127,12 +127,18 @@ export class PhysicsLogic {
     updatePlayerPositionFromBody = (player) => {
         let playerBody = this.getPlayerBody(player);
         if (playerBody !== null) {
-            player.setX(playerBody.getPosition().x);
-            player.setY(playerBody.getPosition().y);
+            player.setX(playerBody.GetPosition().x);
+            player.setY(playerBody.GetPosition().y);
         }
     };
 
     logic = () => {
         this.world.Step(1 / 60, 10, 10);
+
+        //Update player locations with physics locations
+        this.playerBodies.forEach((body, player)=>{
+            player.setX(body.GetPosition().x);
+            player.setY(body.GetPosition().y);
+        });
     }
 }
