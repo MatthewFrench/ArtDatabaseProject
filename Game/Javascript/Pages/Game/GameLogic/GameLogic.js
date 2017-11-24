@@ -122,7 +122,7 @@ export class GameLogic {
                 Player_Height_Tiles * Tile_Height);
 
             this.ctx.fillStyle = 'red';
-            this.ctx.fillText(player.getName(), x, y);
+            this.ctx.fillText(player.getName(), x, y - 10);
         });
 
         //Draw color selector
