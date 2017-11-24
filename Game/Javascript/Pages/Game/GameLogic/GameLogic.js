@@ -2,6 +2,7 @@ import {Interface} from "../../../Utility/Interface";
 import {Board} from "./Board";
 import {Point} from "./Point";
 import {TileLayerRenderer} from "./TileLayerRenderer/TileLayerRenderer";
+import {PhysicsLogic} from "./PhysicsLogic";
 const Tile_Height = 10;
 const Tile_Width = 10;
 const Player_Width_Tiles = 2;
@@ -36,6 +37,7 @@ export class GameLogic {
         this.chosenColor = this.colorSquareOptions[0].getColor();
 
         this.board = new Board();
+        this.physicsLogic = new PhysicsLogic();
 
         //Camera focus is on a player ID.
         this.cameraFocusPlayerID = 1;
@@ -65,6 +67,7 @@ export class GameLogic {
         window.requestAnimationFrame(this.logicLoop);
         if (this.visible) {
             this.logic();
+            this.physicsLogic.logic();
             this.draw();
         }
     };
