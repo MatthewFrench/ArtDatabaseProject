@@ -9,7 +9,10 @@ window.onload = () => {
   Interface.InitializeMissedErrorTracker();
   new PixelPlatformerGame();
 
+  /*
+  //Unit Tests
   const {MessageTest} = require("./Javascript/Utility/Unit Tests/MessageTest.js");
   new MessageTest();
   new HashTest();
+  */
 };
