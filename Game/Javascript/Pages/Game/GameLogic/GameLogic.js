@@ -35,12 +35,15 @@ export class GameLogic {
 
         //Camera focus is tile based but can be fractional.
         this.cameraFocus = new Point(0, 0);
+        this.board.setTileColor(0, 0, Math.random(), Math.random(), Math.random(), 1);
         //Set some basic tiles
+        /*
         for (let y = -100; y < 100; y++) {
             for (let x = -100; x < 100; x++) {
                 this.board.setTileColor(x, y, Math.random(), Math.random(), Math.random(), 1);
             }
         }
+        */
 
         this.tileLayerRenderer = new TileLayerRenderer(1000, 800);
 
