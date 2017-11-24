@@ -5,13 +5,12 @@ const Num_Per_Vert = 2; // Ex: x, y
 const Verts_Per_Tile = 6;
 const Num_Per_Color = 4; // r, g, b, a
 
-export class TileLayer {
-
-    constructor(layerWidth, layerHeight) {
-        this.layerWidth = layerWidth;
-        this.layerHeight = layerHeight;
-        this.tilesHorizontal = Math.ceil(this.layerWidth / Tile_Width);
-        this.tilesVertical = Math.ceil(this.layerHeight / Tile_Height);
+export class TileChunk {
+    constructor(chunkWidth, chunkHeight) {
+        this.chunkWidth = chunkWidth;
+        this.chunkHeight = chunkHeight;
+        this.tilesHorizontal = Math.ceil(this.chunkWidth / Tile_Width);
+        this.tilesVertical = Math.ceil(this.chunkHeight / Tile_Height);
         this.totalTiles = this.tilesHorizontal * this.tilesVertical;
 
 //Vector Shader
@@ -22,8 +21,8 @@ export class TileLayer {
 
 //Create Canvas
         this.canvas = document.createElement('canvas');
-        this.canvas.width = this.layerWidth;
-        this.canvas.height = this.layerHeight;
+        this.canvas.width = this.chunkWidth;
+        this.canvas.height = this.chunkHeight;
 
         this.gl = this.canvas.getContext('webgl');
 
@@ -63,7 +62,7 @@ export class TileLayer {
         this.updateColorsBuffer();
 
         // Tell WebGL how to convert from clip space to pixels
-        this.gl.viewport(0, 0, layerWidth,layerHeight);
+        this.gl.viewport(0, 0, chunkWidth,chunkHeight);
 
         // Clear the canvas
         this.gl.clearColor(0, 0, 0, 0);
@@ -111,7 +110,7 @@ export class TileLayer {
     fillWithTiles = () => {
         for (let x = 0; x < this.tilesHorizontal; x++) {
             for (let y = 0; y < this.tilesVertical; y++) {
-                this.setRectangle(this.getTileNumber(x, y), x * Tile_Width + x, y * Tile_Height + y, Tile_Width, Tile_Height);
+                this.setRectangle(this.getTileNumber(x, y), x * Tile_Width, y * Tile_Height, Tile_Width, Tile_Height);
             }
         }
     };
@@ -157,6 +156,8 @@ export class TileLayer {
 
 
     fillWithColors = () => {
+        this.setColor(this.getTileNumber(0, 0), Math.random(), Math.random(), Math.random(), 1.0);
+        return;
         for (let y = 0; y < this.tilesVertical; y++) {
             for (let x = 0; x < this.tilesHorizontal; x++) {
                 this.setColor(this.getTileNumber(x, y), Math.random(), Math.random(), Math.random(), 1.0);
