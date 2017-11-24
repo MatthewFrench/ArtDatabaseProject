@@ -104,6 +104,9 @@ export class TileLayerRenderer {
         if (this.gl === null) {
             return;
         }
+
+        this.canvas.width = this.layerWidth;
+        this.canvas.height = this.layerHeight;
         //Set the global shader resolution
         this.gl.uniform2f(this.resolutionUniformLocation, this.layerWidth, this.layerHeight);
         //Set the opengl viewport size
@@ -189,13 +192,18 @@ export class TileLayerRenderer {
         let leftTile = Math.round(this.focusTileX - halfHorizontalTiles);
         let rightTile = Math.round(this.focusTileX + halfHorizontalTiles);
 
+        let halfScreenHeight = this.layerHeight / 2;
+        let halfScreenWidth = this.layerWidth / 2;
+
         //Loop between locations
         this.actualDrawTileCount = 0;
         for (let tileY = bottomTile; tileY < topTile; tileY++) {
             for (let tileX = leftTile; tileX < rightTile; tileX++) {
                 let tile = board.getTile(tileX, tileY);
                 if (tile !== null) {
-                    this.setRectanglePositionInPositionArray(this.actualDrawTileCount, tileX * Tile_Width, tileY * Tile_Height,
+                    this.setRectanglePositionInPositionArray(this.actualDrawTileCount,
+                        tile.getX() * Tile_Width + halfScreenWidth,
+                        tile.getY() * Tile_Height + halfScreenHeight,
                         Tile_Width, Tile_Height);
                     this.setRectangleColorInColorArray(this.actualDrawTileCount, tile.getR(), tile.getG(), tile.getB(), tile.getA());
                     this.actualDrawTileCount++;
