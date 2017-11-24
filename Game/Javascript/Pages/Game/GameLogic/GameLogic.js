@@ -2,6 +2,10 @@ import {Interface} from "../../../Utility/Interface";
 import {Board} from "./Board";
 import {Point} from "./Point";
 import {TileLayerRenderer} from "./TileLayerRenderer/TileLayerRenderer";
+const Tile_Height = 10;
+const Tile_Width = 10;
+const Player_Width_Tiles = 2;
+const Player_Height_Tiles = 5;
 
 export class GameLogic {
     constructor() {
@@ -33,8 +37,11 @@ export class GameLogic {
 
         this.board = new Board();
 
-        //Camera focus is tile based but can be fractional.
-        this.cameraFocus = new Point(0, 0);
+        //Camera focus is on a player ID.
+        this.cameraFocusPlayerID = 1;
+
+        this.board.addPlayer(1, 'Test', 0, 0);
+        this.board.addPlayer(2, 'Bob', 50, 0);
 
         //Set some basic tiles
         for (let x = -100; x < 100; x++) {
@@ -63,19 +70,22 @@ export class GameLogic {
     };
 
     logic = () => {
+        let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
         if (this.leftPressed) {
-            this.cameraFocus.setX(this.cameraFocus.getX() - 0.1);
+            focusPlayer.setX(focusPlayer.getX() - 0.1);
         }
         if (this.rightPressed) {
-            this.cameraFocus.setX(this.cameraFocus.getX() + 0.1);
+            focusPlayer.setX(focusPlayer.getX() + 0.1);
         }
         if (this.upPressed) {
-            this.cameraFocus.setY(this.cameraFocus.getY() + 0.1);
+            focusPlayer.setY(focusPlayer.getY() + 0.1);
         }
         if (this.downPressed) {
-            this.cameraFocus.setY(this.cameraFocus.getY() - 0.1);
+            focusPlayer.setY(focusPlayer.getY() - 0.1);
         }
-        this.tileLayerRenderer.setFocusTilePosition(this.cameraFocus.getX(), this.cameraFocus.getY());
+        this.tileLayerRenderer.setFocusTilePosition(
+            focusPlayer.getX(), focusPlayer.getY()
+        );
     };
 
     draw = () => {
@@ -89,6 +99,31 @@ export class GameLogic {
         this.tileLayerRenderer.draw(this.board);
 
         this.ctx.drawImage(this.tileLayerRenderer.getCanvas(), 0, 0);
+
+        //Draw players
+        let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
+        let focusPlayerPixelX = (focusPlayer.getX() - Player_Width_Tiles/2) * Tile_Width;
+        let focusPlayerPixelY = focusPlayer.getY() * Tile_Height;
+        this.board.getPlayers().forEach((player)=>{
+            this.ctx.fillStyle = 'blue';
+            this.ctx.strokeStyle = 'black';
+            let x = (player.getX() - Player_Width_Tiles/2) * Tile_Width - focusPlayerPixelX + this.canvas.width/2;
+            let y = focusPlayerPixelY - player.getY() * Tile_Height
+                - Player_Height_Tiles * Tile_Height + this.canvas.height/2;
+
+            this.ctx.fillRect(x,
+                y,
+                Player_Width_Tiles * Tile_Width,
+                Player_Height_Tiles * Tile_Height);
+
+            this.ctx.strokeRect(x,
+                y,
+                Player_Width_Tiles * Tile_Width,
+                Player_Height_Tiles * Tile_Height);
+
+            this.ctx.fillStyle = 'red';
+            this.ctx.fillText(player.getName(), x, y);
+        });
 
         //Draw color selector
         this.ctx.strokeStyle = 'black';

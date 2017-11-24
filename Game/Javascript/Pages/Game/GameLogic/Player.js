@@ -1,8 +1,25 @@
 
 
 export class Player {
-    constructor() {
-        this.x = 0;
-        this.y = 0;
+    constructor(playerID, name, x, y) {
+        this.playerID = playerID;
+        this.name = name;
+        this.x = x;
+        this.y = y;
+    }
+    getX = () => {
+        return this.x;
+    };
+    setX = (x) => {
+        this.x = x;
+    };
+    getY = () => {
+        return this.y;
+    };
+    setY = (y) => {
+        this.y = y;
+    };
+    getName = () => {
+        return this.name;
     }
 }
