@@ -4,13 +4,38 @@ Contains board size, players in board and tiles in the board.
  */
 
 import {Tile} from "./Tile";
+import {Player} from "./Player";
 
 export class Board {
     constructor() {
-        this.players = [];
+        this.players = new Map();
         //Tile format: [x][y] = Tile
         this.tiles = new Map();
     }
+    addPlayer = (playerID, name, x, y) => {
+        this.players.set(playerID, new Player(playerID, name, x, y));
+    };
+    updatePlayer = (playerID, x, y) => {
+        let player = this.getPlayer(playerID);
+        if (player === null) {
+            return;
+        }
+        player.setX(x);
+        player.setY(y);
+    };
+    getPlayer = (playerID) => {
+        let player = this.players.get(playerID);
+        if (player === undefined) {
+            return null;
+        }
+        return player;
+    };
+    getPlayers = () => {
+        return this.players;
+    };
+    removePlayer = (playerID) => {
+        this.players.delete(playerID);
+    };
     getTile = (x, y) => {
         let column = this.tiles.get(x);
         if (column === undefined) {
