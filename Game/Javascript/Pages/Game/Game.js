@@ -4,17 +4,17 @@ import {NewWorldPopover} from "./NewWorldPopover";
 import {ChatMessageCreator} from "../../Networking/Chat/ChatMessageCreator";
 import {Network} from "../../Networking/Network";
 import {ChatMessageHandler} from "../../Networking/Chat/ChatMessageHandler";
-import {GameRender} from "./Renderer/GameRender";
+import {GameLogic} from "./GameLogic/GameLogic";
 import {GameMessageHandler} from "../../Networking/Game/GameMessageHandler";
 import {BoardSelector} from "./BoardSelector";
 
 export class Game{
     constructor(switchToLoginPage){
-        this.gameRender = new GameRender();
+        this.gameLogic = new GameLogic();
         this.mainDiv = Interface.Create({type:'div', className: 'GamePage', elements:[
             {type: 'div', className: 'GameContainer', elements: [
                 {type: 'div', className: 'WorldWrapper', elements: [
-                    this.gameRender.getCanvas(),
+                    this.gameLogic.getCanvas(),
                     (this.boardSelector = new BoardSelector(this)).getDiv()
                 ]},
                 {type: 'div', className: 'ChatArea', elements: [
@@ -37,7 +37,7 @@ export class Game{
 
     setVisibility = (visible) => {
         this.visible = visible;
-        this.gameRender.setVisibility(visible);
+        this.gameLogic.setVisibility(visible);
     };
 
     updateSelectorBoard = async(boardID, boardName, numberInBoard, lastModified, tileCount) => {

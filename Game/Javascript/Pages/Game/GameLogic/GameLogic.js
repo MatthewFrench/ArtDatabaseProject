@@ -1,7 +1,7 @@
 import {Interface} from "../../../Utility/Interface";
-import {TileLayer} from "./TileLayer/TileLayer";
+import {TileLayer} from "./TileLayer";
 
-export class GameRender {
+export class GameLogic {
     constructor() {
         this.canvas = Interface.Create({type: 'canvas', className: 'GameArea', onMouseDown: this.onMouseDown});
         this.ctx = this.canvas.getContext('2d');
@@ -23,7 +23,7 @@ export class GameRender {
 
         this.chosenColor = this.colorSquareOptions[0].getColor();
 
-        this.tileLayer = new TileLayer(200, 200);
+        this.tileLayer = new TileLayer();
 
         this.drawLoop();
     }
@@ -43,6 +43,7 @@ export class GameRender {
         if (canvasWidth !== cssWidth || canvasHeight !== cssHeight) {
             this.canvas.width = cssWidth;
             this.canvas.height = cssHeight;
+            this.tileLayer.setSize(cssWidth, cssHeight);
         }
     };
 
@@ -51,14 +52,14 @@ export class GameRender {
     };
 
     draw = () => {
-        this.tileLayer.draw();
-
         this.resize();
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         //Draw background
         this.ctx.fillStyle = this.chosenColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        this.tileLayer.draw(this.ctx);
 
         this.ctx.strokeStyle = 'black';
         for (let square of this.colorSquareOptions) {
@@ -67,10 +68,6 @@ export class GameRender {
             this.ctx.fillRect(square.getX(), square.getY(), square.getWidth(), square.getHeight());
             this.ctx.stroke();
         }
-
-        this.ctx.drawImage(this.tileLayer.getCanvas(), 100, 100);
-        this.ctx.strokeStyle = 'black';
-        this.ctx.strokeRect(100, 100, 200, 200);
     };
 
     getMousePosition = (event) =>{
