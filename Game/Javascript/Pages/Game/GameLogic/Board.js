@@ -13,7 +13,9 @@ export class Board {
         this.tiles = new Map();
     }
     addPlayer = (playerID, name, x, y) => {
-        this.players.set(playerID, new Player(playerID, name, x, y));
+        let player = new Player(playerID, name, x, y);
+        this.players.set(playerID, player);
+        return player;
     };
     updatePlayer = (playerID, x, y) => {
         let player = this.getPlayer(playerID);
