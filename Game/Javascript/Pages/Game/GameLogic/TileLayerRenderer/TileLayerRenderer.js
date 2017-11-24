@@ -121,7 +121,9 @@ export class TileLayerRenderer {
 
         this.tilesHorizontal = Math.ceil(this.layerWidth / Tile_Width);
         this.tilesVertical = Math.ceil(this.layerHeight / Tile_Height);
-        this.totalTiles = this.tilesHorizontal * this.tilesVertical;
+        //Add padding
+        let padding = 1;
+        this.totalTiles = (this.tilesHorizontal + padding * 2) * (this.tilesVertical + padding * 2);
     };
 
     setFocusTilePosition = (focusTileX, focusTileY) => {
@@ -186,14 +188,21 @@ export class TileLayerRenderer {
         let halfHorizontalTiles = this.tilesHorizontal / 2;
         let halfVerticalTiles = this.tilesVertical / 2;
         //Calculate top and bottom tile location, top is going to be positive
-        let topTile = Math.round(this.focusTileY + halfVerticalTiles);
-        let bottomTile = Math.round(this.focusTileY - halfVerticalTiles);
+        let topTile = Math.ceil(this.focusTileY + halfVerticalTiles) + 1;
+        let bottomTile = Math.floor(this.focusTileY - halfVerticalTiles);
         //Calculate left and right tile location
-        let leftTile = Math.round(this.focusTileX - halfHorizontalTiles);
-        let rightTile = Math.round(this.focusTileX + halfHorizontalTiles);
+        let leftTile = Math.floor(this.focusTileX - halfHorizontalTiles);
+        let rightTile = Math.ceil(this.focusTileX + halfHorizontalTiles) + 1;
 
         let halfScreenHeight = this.layerHeight / 2;
         let halfScreenWidth = this.layerWidth / 2;
+
+        //Subtract tile width and height so we're exactly in the center
+        let offsetX = -Tile_Width/2;
+        let offsetY = -Tile_Height/2;
+        //Add position of self
+        offsetX += -this.focusTileX * Tile_Width;
+        offsetY += -this.focusTileY * Tile_Height;
 
         //Loop between locations
         this.actualDrawTileCount = 0;
@@ -202,8 +211,8 @@ export class TileLayerRenderer {
                 let tile = board.getTile(tileX, tileY);
                 if (tile !== null) {
                     this.setRectanglePositionInPositionArray(this.actualDrawTileCount,
-                        tile.getX() * Tile_Width + halfScreenWidth,
-                        tile.getY() * Tile_Height + halfScreenHeight,
+                        tile.getX() * Tile_Width + halfScreenWidth + offsetX,
+                        tile.getY() * Tile_Height + halfScreenHeight + offsetY,
                         Tile_Width, Tile_Height);
                     this.setRectangleColorInColorArray(this.actualDrawTileCount, tile.getR(), tile.getG(), tile.getB(), tile.getA());
                     this.actualDrawTileCount++;
@@ -230,7 +239,6 @@ export class TileLayerRenderer {
         this.gl.drawArrays(primitiveType, offset, count);
     };
 
-
     //Compile Shader Function
     compileShader = (type, src) => {
         let shader = this.gl.createShader(type);
@@ -243,29 +251,3 @@ export class TileLayerRenderer {
         return this.canvas;
     };
 }
-
-
-/*
-
-    fillWithColors = () => {
-        for (let y = 0; y < this.tilesVertical; y++) {
-            for (let x = 0; x < this.tilesHorizontal; x++) {
-                this.setRectangleColorInColorArray(this.getTileNumber(x, y), Math.random(), Math.random(), Math.random(), 1.0);
-            }
-        }
-    };
-
-
-
-    getTileNumber = (tileX, tileY) => {
-        return tileY * this.tilesHorizontal + tileX;
-    };
-
-    fillWithTiles = () => {
-        for (let x = 0; x < this.tilesHorizontal; x++) {
-            for (let y = 0; y < this.tilesVertical; y++) {
-                this.setRectanglePositionInPositionArray(this.getTileNumber(x, y), x * Tile_Width, y * Tile_Height, Tile_Width, Tile_Height);
-            }
-        }
-    };
- */
