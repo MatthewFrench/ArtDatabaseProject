@@ -41,12 +41,28 @@ export class GameLogic {
 
         //Camera focus is on a player ID.
         this.cameraFocusPlayerID = 1;
+        this.cameraFocusTileX = 0;
+        this.cameraFocusTileY = 0;
 
-        this.addPlayer(1, 'Test', 0, 5);
+        this.addPlayer(1, 'Test', 0, 10);
         this.addPlayer(2, 'Bob', 50, 5);
+        //Set some basic tiles
+        for (let x = -100; x < 100; x++) {
+            this.addOrUpdateTile(x, 0, Math.random(), Math.random(), Math.random(), 1);
+        }
+
+        for (let y = -100; y < 100; y++) {
+            for (let x = -100; x < 100; x++) {
+                if (Math.random() >= 0.98) {
+                    this.addOrUpdateTile(x, y, Math.random(), Math.random(), Math.random(), 1);
+                }
+            }
+        }
+
+
 
         this.addOrUpdateTile(0, 0, Math.random(), Math.random(), Math.random(), 1);
-        /*
+
         this.addOrUpdateTile(-1, 0, Math.random(), Math.random(), Math.random(), 1);
         this.addOrUpdateTile(1, 0, Math.random(), Math.random(), Math.random(), 1);
         this.addOrUpdateTile(-2, 0, Math.random(), Math.random(), Math.random(), 1);
@@ -70,37 +86,27 @@ export class GameLogic {
         this.addOrUpdateTile(6, 4, Math.random(), Math.random(), Math.random(), 1);
         this.addOrUpdateTile(-7, 4, Math.random(), Math.random(), Math.random(), 1);
         this.addOrUpdateTile(7, 4, Math.random(), Math.random(), Math.random(), 1);
-        */
-        //Set some basic tiles
-        //for (let x = -100; x < 100; x++) {
-        //    this.addOrUpdateTile(x, 0, Math.random(), Math.random(), Math.random(), 1);
-        //}
-/*
-        for (let y = -100; y < 100; y++) {
-            for (let x = -100; x < 100; x++) {
-                if (Math.random() >= 0.98) {
-                    this.addOrUpdateTile(x, y, Math.random(), Math.random(), Math.random(), 1);
-                }
-            }
-        }
-*/
+
+
         this.tileLayerRenderer = new TileLayerRenderer(1000, 800);
 
         this.logicLoop();
     }
 
     addPlayer = (playerID, name, x, y) => {
-        let player = this.board.addPlayer(playerID, name, x, y);
-        this.physicsLogic.addPlayerBody(player);
+        /*let player = */this.board.addPlayer(playerID, name, x, y);
+        //this.physicsLogic.addPlayerBody(player);
     };
     addOrUpdateTile = (x, y, r, g, b, a) => {
         this.board.setTileColor(x, y, r, g, b, a);
+/*
         let tile = this.board.getTile(x, y);
         if (a === 0.0) {
             this.physicsLogic.removeTileBody(tile);
         } else {
             this.physicsLogic.updateTileBodyPosition(tile, x, y);
         }
+        */
     };
 
     logicLoop = () => {
@@ -114,24 +120,35 @@ export class GameLogic {
     logic = () => {
         let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
         if (this.leftPressed) {
-            this.physicsLogic.applyForceToPlayer(focusPlayer, -10, 0);
+            focusPlayer.movingLeft = true;
+            //this.physicsLogic.applyForceToPlayer(focusPlayer, -10, 0);
             //focusPlayer.setX(focusPlayer.getX() - 0.1);
+        } else {
+            focusPlayer.movingLeft = false;
         }
         if (this.rightPressed) {
-            this.physicsLogic.applyForceToPlayer(focusPlayer, 10, 0);
+            focusPlayer.movingRight = true;
+            //this.physicsLogic.applyForceToPlayer(focusPlayer, 10, 0);
             //focusPlayer.setX(focusPlayer.getX() + 0.1);
+        } else {
+            focusPlayer.movingRight = false;
         }
         if (this.upPressed) {
-            this.physicsLogic.applyForceToPlayer(focusPlayer, 0, 10);
+            focusPlayer.jumping = true;
+            //this.physicsLogic.applyForceToPlayer(focusPlayer, 0, 10);
             //focusPlayer.setY(focusPlayer.getY() + 0.1);
+        } else {
+            focusPlayer.jumping = false;
         }
         if (this.downPressed) {
             //this.physicsLogic.applyForceToPlayer(focusPlayer, 0, 1);
             //focusPlayer.setY(focusPlayer.getY() - 0.1);
         }
-        this.physicsLogic.logic();
+        this.physicsLogic.logic(this.board);
+        this.cameraFocusTileX = focusPlayer.getX();
+        this.cameraFocusTileY = focusPlayer.getY();
         this.tileLayerRenderer.setFocusTilePosition(
-            focusPlayer.getX(), focusPlayer.getY()
+            this.cameraFocusTileX, this.cameraFocusTileY
         );
     };
 
@@ -147,30 +164,53 @@ export class GameLogic {
 
         this.ctx.drawImage(this.tileLayerRenderer.getCanvas(), 0, 0);
 
+        //Test drawing in tile transformation
+        this.ctx.save();
+        //this.enterTileDrawingCoordinateSystem();
+
+        //Draw
+        let tile = this.board.getTile(0, 0);
+        if (tile !== null) {
+            this.ctx.strokeStyle = 'black';
+            this.ctx.lineWidth = 1;//0.1;
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.convertTileXCoordinateToScreen(tile.getX()), this.convertTileYCoordinateToScreen(tile.getY()));
+            this.ctx.lineTo(this.convertTileXCoordinateToScreen(tile.getX()), this.convertTileYCoordinateToScreen(tile.getY() + 1));
+            this.ctx.lineTo(this.convertTileXCoordinateToScreen(tile.getX() + 1), this.convertTileYCoordinateToScreen(tile.getY() + 1));
+            this.ctx.lineTo(this.convertTileXCoordinateToScreen(tile.getX() + 1), this.convertTileYCoordinateToScreen(tile.getY()));
+            this.ctx.closePath();
+            this.ctx.stroke();
+        }
+
         //Draw players
-        let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
-        let focusPlayerPixelX = (focusPlayer.getX() - Player_Width_Tiles/2) * Tile_Width;
-        let focusPlayerPixelY = focusPlayer.getY() * Tile_Height;
         this.board.getPlayers().forEach((player)=>{
             this.ctx.fillStyle = 'blue';
             this.ctx.strokeStyle = 'black';
-            let x = (player.getX() - Player_Width_Tiles/2) * Tile_Width - focusPlayerPixelX + this.canvas.width/2;
-            let y = focusPlayerPixelY - player.getY() * Tile_Height
-                - Player_Height_Tiles * Tile_Height + this.canvas.height/2;
 
-            this.ctx.fillRect(x,
-                y,
-                Player_Width_Tiles * Tile_Width,
-                Player_Height_Tiles * Tile_Height);
+            this.ctx.beginPath();
 
-            this.ctx.strokeRect(x,
-                y,
-                Player_Width_Tiles * Tile_Width,
-                Player_Height_Tiles * Tile_Height);
+            //Player X and Y is in the bottom center of the player rectangle
+            let leftX = player.getX() + 0.5 - Player_Width_Tiles/2;
+            let rightX = player.getX() + 0.5 + Player_Width_Tiles/2;
+            let bottomY = player.getY();
+            let topY = player.getY() + Player_Height_Tiles;
+
+            this.ctx.moveTo(this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(bottomY));
+            this.ctx.lineTo(this.convertTileXCoordinateToScreen(rightX), this.convertTileYCoordinateToScreen(bottomY));
+            this.ctx.lineTo(this.convertTileXCoordinateToScreen(rightX), this.convertTileYCoordinateToScreen(topY));
+            this.ctx.lineTo(this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY));
+
+            this.ctx.closePath();
+            this.ctx.fill();
+            this.ctx.stroke();
 
             this.ctx.fillStyle = 'red';
-            this.ctx.fillText(player.getName(), x, y - 10);
+            this.ctx.font = '20px Helvetica';
+            this.ctx.textAlign="center";
+            this.ctx.fillText(player.getName(), this.convertTileXCoordinateToScreen(player.getX() + 0.5), this.convertTileYCoordinateToScreen(topY + 0.5));
         });
+
+        this.ctx.restore();
 
         //Draw color selector
         this.ctx.strokeStyle = 'black';
@@ -180,6 +220,56 @@ export class GameLogic {
             this.ctx.fillRect(square.getX(), square.getY(), square.getWidth(), square.getHeight());
             this.ctx.stroke();
         }
+    };
+
+    enterTileDrawingCoordinateSystem = () => {
+        //Place 0,0 at the center of the screen
+        this.ctx.translate(this.canvas.width/2, this.canvas.height * 0.5);
+        //Flip the coordinate system
+        this.ctx.scale(1, -1);
+        //Set the scale so 1 = 1 tile instead of 1 pixel
+        this.ctx.scale(Tile_Width, Tile_Height);
+        //Move to the center of the tile, instead of the camera being on the bottom left corner,
+        //let the camera be on the center of the tile
+        this.ctx.translate(-0.5, -0.5);
+        //Pan the camera to focus on the player
+        let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
+        let focusPlayerTileX = 0;
+        let focusPlayerTileY = 0;
+        if (focusPlayer !== null) {
+            focusPlayerTileX = focusPlayer.getX();
+            focusPlayerTileY = focusPlayer.getY();
+        }
+        this.ctx.translate(-focusPlayerTileX, -focusPlayerTileY);
+    };
+
+    convertTileCoordinateToScreen = (oldPoint) => {
+        let point = new Point(oldPoint.x, oldPoint.y);
+        point.x -= this.cameraFocusTileX;
+        point.y -= this.cameraFocusTileY;
+        point.x -= 0.5;
+        point.y -= 0.5;
+        point.x *= Tile_Width;
+        point.y *= Tile_Height;
+        point.y *= -1;
+        point.x += this.canvas.width/2;
+        point.y += this.canvas.height * 0.5;
+        return point;
+    };
+    convertTileXCoordinateToScreen = (x) => {
+        x -= this.cameraFocusTileX;
+        x -= 0.5;
+        x *= Tile_Width;
+        x += this.canvas.width/2;
+        return x;
+    };
+    convertTileYCoordinateToScreen = (y) => {
+        y -= this.cameraFocusTileY;
+        y -= 0.5;
+        y *= Tile_Height;
+        y *= -1;
+        y += this.canvas.height * 0.5;
+        return y;
     };
 
     getMousePosition = (event) =>{

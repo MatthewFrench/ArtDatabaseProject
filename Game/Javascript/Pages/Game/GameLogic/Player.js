@@ -6,6 +6,11 @@ export class Player {
         this.name = name;
         this.x = x;
         this.y = y;
+        this.movingLeft = false;
+        this.movingRight = false;
+        this.jumping = false;
+        this.speedX = 0;
+        this.speedY = 0;
     }
     getX = () => {
         return this.x;
