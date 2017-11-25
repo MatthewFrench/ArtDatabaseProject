@@ -1,9 +1,9 @@
 const Player_Width_Tiles = 2;
 //Player height is 5 but subtract a tiny bit to allow physics to pass it underneath tight spaces.
 const Player_Height_Tiles = 4.9;
-const Gravity = 0.01;
+const Gravity = 0.02;
 const Player_Move_Speed = 0.01;
-const Player_Jump_Speed = 0.4;
+const Player_Jump_Speed = 0.8;
 const Ground_Friction = 0.98;
 const Cut_Off = 0.0001;
 
