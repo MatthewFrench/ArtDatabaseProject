@@ -69,9 +69,17 @@ export class PhysicsLogic {
 
             //Apply movement
             if (player.movingLeft) {
+                //Apply a massive slowdown to allow easy mid-air moving
+                if (player.speedX > 0) {
+                    player.speedX *= 0.9;
+                }
                 player.speedX -= Player_Move_Speed;
             }
             if (player.movingRight) {
+                //Apply a massive slowdown to allow easy mid-air moving
+                if (player.speedX < 0) {
+                    player.speedX *= 0.9;
+                }
                 player.speedX += Player_Move_Speed;
             }
             if (player.jumping && onGround && player.speedY < Player_Jump_Speed) {
