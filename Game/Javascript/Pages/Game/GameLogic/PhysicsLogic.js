@@ -117,11 +117,12 @@ export class PhysicsLogic {
     unhighlightAllTiles = (board) => {
         board.tiles.forEach((x) => {
             x.forEach((tile)=>{
-                if (tile.a > 0) {
-                    tile.r = 0;
-                    tile.g = 1;
-                    tile.b = 0;
-                    tile.a = 1;
+                if (tile.highlighted) {
+                    tile.highlighted = false;
+                    tile.r = tile.originalR;
+                    tile.g = tile.originalG;
+                    tile.b = tile.originalB;
+                    tile.a = tile.originalA;
                 }
             });
         });
@@ -129,10 +130,17 @@ export class PhysicsLogic {
 
     highlightTiles = (tiles) => {
         for (let tile of tiles) {
-            tile.r = 1;
-            tile.g = 0;
-            tile.b = 0;
-            tile.a = 1;
+            if (!tile.highlighted) {
+                tile.highlighted = true;
+                tile.originalR = tile.r;
+                tile.originalG = tile.g;
+                tile.originalB = tile.b;
+                tile.originalA = tile.a;
+                tile.r = 1;
+                tile.g = 0;
+                tile.b = 0;
+                tile.a = 1;
+            }
         }
     };
 
