@@ -25,7 +25,7 @@ export class PhysicsLogic {
 
             //Check for collision
             let left = Math.floor(player.x - Player_Width_Tiles/2 + 0.5);
-            let right = Math.floor(player.x + Player_Width_Tiles/2 + 0.5);
+            let right = Math.floor(player.x + Player_Width_Tiles/2);
             let bottom = Math.floor(player.y);
             let top = Math.floor(player.y + Player_Height_Tiles);
 
