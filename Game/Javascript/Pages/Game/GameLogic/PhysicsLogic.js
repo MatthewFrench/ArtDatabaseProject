@@ -13,29 +13,6 @@ export class PhysicsLogic {
 
         let gravity = new b2.Vec2(0, -9.8);
         this.world = new b2.World(gravity);
-
-        /*
-        var debugDraw = new b2.Draw();
-
-        debugDraw.DrawSegment = function(vert1Ptr, vert2Ptr, colorPtr ) {
-
-        };
-// Empty implementations for unused methods.
-        debugDraw.DrawPolygon = function() {};
-        debugDraw.DrawSolidPolygon = function() {};
-        debugDraw.DrawCircle = function() {};
-        debugDraw.DrawSolidCircle = function() {};
-        debugDraw.DrawTransform = function() {};
-
-        this.world.SetDebugDraw( debugDraw );
-
-        this.canvas = document.createElement('canvas');
-        this.canvas.style.position = 'absolute';
-        this.canvas.style.bottom = '0';
-        this.canvas.style.right = '0';
-        this.canvas.width = 200;
-        this.canvas.height = 200;
-        */
     }
 
     addTileBody(tile) {
@@ -44,16 +21,20 @@ export class PhysicsLogic {
         bodyDef.type = b2.BodyType.staticBody;
 
         // Create body with definition
-        let body = world.CreateBody(bodyDef);
+        let body = this.world.CreateBody(bodyDef);
 
         // Define fixture
         let fixDef = new b2.FixtureDef();
         fixDef.density = 1.0;
         fixDef.friction = 0.2;
-        fixDef.restitution = 0.8;
+        fixDef.restitution = 0.0;
 
         let shape = new b2.PolygonShape();
-        shape.SetAsBox(1 / Tiles_Per_Meter, 1 / Tiles_Per_Meter);
+        shape.Set([new b2.Vec2(0, 0),
+            new b2.Vec2(1 / Tiles_Per_Meter, 0),
+            new b2.Vec2(1 / Tiles_Per_Meter, 1 / Tiles_Per_Meter),
+            new b2.Vec2(0, 1 / Tiles_Per_Meter)]);
+        //shape.SetAsBox(1 / Tiles_Per_Meter, 1 / Tiles_Per_Meter);
 
         fixDef.shape = shape;
 
@@ -78,10 +59,15 @@ export class PhysicsLogic {
         let fixDef = new b2.FixtureDef();
         fixDef.density = 1.0;
         fixDef.friction = 0.2;
-        fixDef.restitution = 0.8;
+        fixDef.restitution = 0.0;
 
         let shape = new b2.PolygonShape();
-        shape.SetAsBox(Player_Tile_Width / Tiles_Per_Meter, Player_Tile_Height / Tiles_Per_Meter);
+        let playerWidth = Player_Tile_Width / Tiles_Per_Meter;
+        shape.Set([new b2.Vec2(-playerWidth/2, 0),
+            new b2.Vec2(playerWidth-playerWidth/2, 0),
+            new b2.Vec2(playerWidth-playerWidth/2, Player_Tile_Height / Tiles_Per_Meter),
+            new b2.Vec2(-playerWidth/2, Player_Tile_Height / Tiles_Per_Meter)]);
+        //shape.SetAsBox(Player_Tile_Width / Tiles_Per_Meter, Player_Tile_Height / Tiles_Per_Meter);
 
         fixDef.shape = shape;
 
@@ -113,14 +99,25 @@ export class PhysicsLogic {
     updateTileBodyPosition = (tile, x, y) => {
         let body = this.getTileBody(tile);
         if (body !== null) {
-            body.setTransform(x / Tiles_Per_Meter, y / Tiles_Per_Meter, 0);
+            body.SetTransform(x / Tiles_Per_Meter, y / Tiles_Per_Meter, 0);
+        } else {
+            //Create tile
+            this.addTileBody(tile);
+        }
+    };
+
+    removeTileBody = (tile) => {
+        let body = this.getTileBody(tile);
+        if (body !== null) {
+            this.world.DestroyBody(body);
+            this.tileBodies.delete(tile);
         }
     };
 
     updatePlayerBodyPosition = (player, x, y) => {
         let body = this.getPlayerBody(player);
         if (body !== null) {
-            body.setTransform(x / Tiles_Per_Meter, y / Tiles_Per_Meter, 0);
+            body.SetTransform(x / Tiles_Per_Meter, y / Tiles_Per_Meter, 0);
         }
     };
 
@@ -132,13 +129,22 @@ export class PhysicsLogic {
         }
     };
 
+    applyForceToPlayer = (player, xForce, yForce) => {
+        let playerBody = this.getPlayerBody(player);
+        if (playerBody !== null) {
+            playerBody.ApplyForceToCenter(new b2.Vec2(xForce, yForce), true);
+        }
+    };
+
     logic = () => {
-        this.world.Step(1 / 60, 10, 10);
+        /*
+        this.world.Step(1 / 60, 30, 30);
 
         //Update player locations with physics locations
         this.playerBodies.forEach((body, player)=>{
             player.setX(body.GetPosition().x);
             player.setY(body.GetPosition().y);
         });
+        */
     }
 }
