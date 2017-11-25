@@ -42,21 +42,48 @@ export class GameLogic {
         //Camera focus is on a player ID.
         this.cameraFocusPlayerID = 1;
 
-        this.addPlayer(1, 'Test', 0, 0);
-        this.addPlayer(2, 'Bob', 50, 0);
+        this.addPlayer(1, 'Test', 0, 5);
+        this.addPlayer(2, 'Bob', 50, 5);
 
+        this.addOrUpdateTile(0, 0, Math.random(), Math.random(), Math.random(), 1);
+        /*
+        this.addOrUpdateTile(-1, 0, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(1, 0, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(-2, 0, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(2, 0, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(-3, 0, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(3, 0, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(-4, 0, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(4, 0, Math.random(), Math.random(), Math.random(), 1);
+
+        this.addOrUpdateTile(-4, 1, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(4, 1, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(-4, 2, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(4, 2, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(-4, 3, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(4, 3, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(-4, 4, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(4, 4, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(-5, 4, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(5, 4, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(-6, 4, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(6, 4, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(-7, 4, Math.random(), Math.random(), Math.random(), 1);
+        this.addOrUpdateTile(7, 4, Math.random(), Math.random(), Math.random(), 1);
+        */
         //Set some basic tiles
-        for (let x = -100; x < 100; x++) {
-            this.board.setTileColor(x, 0, Math.random(), Math.random(), Math.random(), 1);
-        }
+        //for (let x = -100; x < 100; x++) {
+        //    this.addOrUpdateTile(x, 0, Math.random(), Math.random(), Math.random(), 1);
+        //}
+/*
         for (let y = -100; y < 100; y++) {
             for (let x = -100; x < 100; x++) {
-                if (Math.random() >= 0.95) {
-                    this.board.setTileColor(x, y, Math.random(), Math.random(), Math.random(), 1);
+                if (Math.random() >= 0.98) {
+                    this.addOrUpdateTile(x, y, Math.random(), Math.random(), Math.random(), 1);
                 }
             }
         }
-
+*/
         this.tileLayerRenderer = new TileLayerRenderer(1000, 800);
 
         this.logicLoop();
@@ -66,12 +93,20 @@ export class GameLogic {
         let player = this.board.addPlayer(playerID, name, x, y);
         this.physicsLogic.addPlayerBody(player);
     };
+    addOrUpdateTile = (x, y, r, g, b, a) => {
+        this.board.setTileColor(x, y, r, g, b, a);
+        let tile = this.board.getTile(x, y);
+        if (a === 0.0) {
+            this.physicsLogic.removeTileBody(tile);
+        } else {
+            this.physicsLogic.updateTileBodyPosition(tile, x, y);
+        }
+    };
 
     logicLoop = () => {
         window.requestAnimationFrame(this.logicLoop);
         if (this.visible) {
             this.logic();
-            this.physicsLogic.logic();
             this.draw();
         }
     };
@@ -79,17 +114,22 @@ export class GameLogic {
     logic = () => {
         let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
         if (this.leftPressed) {
-            focusPlayer.setX(focusPlayer.getX() - 0.1);
+            this.physicsLogic.applyForceToPlayer(focusPlayer, -10, 0);
+            //focusPlayer.setX(focusPlayer.getX() - 0.1);
         }
         if (this.rightPressed) {
-            focusPlayer.setX(focusPlayer.getX() + 0.1);
+            this.physicsLogic.applyForceToPlayer(focusPlayer, 10, 0);
+            //focusPlayer.setX(focusPlayer.getX() + 0.1);
         }
         if (this.upPressed) {
-            focusPlayer.setY(focusPlayer.getY() + 0.1);
+            this.physicsLogic.applyForceToPlayer(focusPlayer, 0, 10);
+            //focusPlayer.setY(focusPlayer.getY() + 0.1);
         }
         if (this.downPressed) {
-            focusPlayer.setY(focusPlayer.getY() - 0.1);
+            //this.physicsLogic.applyForceToPlayer(focusPlayer, 0, 1);
+            //focusPlayer.setY(focusPlayer.getY() - 0.1);
         }
+        this.physicsLogic.logic();
         this.tileLayerRenderer.setFocusTilePosition(
             focusPlayer.getX(), focusPlayer.getY()
         );
