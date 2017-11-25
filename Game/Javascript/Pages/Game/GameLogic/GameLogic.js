@@ -53,7 +53,7 @@ export class GameLogic {
 
         for (let y = -100; y < 100; y++) {
             for (let x = -100; x < 100; x++) {
-                if (Math.random() >= 0.98) {
+                if (Math.random() >= 0.99) {
                     this.addOrUpdateTile(x, y, Math.random(), Math.random(), Math.random(), 1);
                 }
             }
