@@ -54,6 +54,9 @@ export class Tile {
     getA = () => {
         return this.a;
     };
+    getTypeID = () => {
+        return this.typeID;
+    };
     getTileID = () => {
         return this.tileID;
     };
