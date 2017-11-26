@@ -20,7 +20,10 @@ export const Controllers = {
     ID: 3,
     Messages: {
         //Sends a create world request
-        CreateNewWorld: 1
+        CreateNewWorld: 1,
+        //Requests switching to a board ID
+        RequestBoardSwitch: 2,
+        //
     }
   }
 };
