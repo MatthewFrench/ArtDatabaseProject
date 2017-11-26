@@ -77,7 +77,7 @@ export class GameMessageCreator {
         message.addUint8(Messages.UpdateTile);
         message.addInt32(tile.getX());
         message.addInt32(tile.getY());
-        message.addInt16(tile.getTypeID());
+        message.addUint16(tile.getTypeID());
         message.addUint8(tile.getR());
         message.addUint8(tile.getG());
         message.addUint8(tile.getB());
