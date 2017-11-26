@@ -13,9 +13,10 @@ export class GameLogic {
         this.greenSlider = Interface.Create({type: 'input', className: 'RedSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
         this.redSlider = Interface.Create({type: 'input', className: 'GreenSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
         this.blueSlider = Interface.Create({type: 'input', className: 'BlueSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
+        this.alphaSlider = Interface.Create({type: 'input', className: 'AlphaSlider',  inputType: 'range', min: 0, max: 1, step: .01, value: 1, onChange: this.changePreviewColor});
         this.eyeDropButton = Interface.Create({type: 'div', text: '\r\neye\r\n\r\ndrop', className: 'EyeDropButton', onClick: this.eyeDropButtonClicked});
         //holds the value of the color to be used for a tile
-        this.previewSquare = new SquareShape(68, 85, 15, 15, "rgba(0, 0, 0, 1");
+        this.previewSquare = new SquareShape(88, 85, 15, 15, "rgba(0, 0, 0, 1");
         this.eyeDropperOn = false;
         this.canvas = Interface.Create({type: 'canvas', className: 'GameArea',
             onMouseDown: this.onMouseDown, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onMouseMove: this.onMouseMove});
@@ -299,17 +300,18 @@ export class GameLogic {
         //pull blue data
         let pixelBlue = pixelInfo.data[2];
         //pull alpha data
-        //let pixelAlpha = pixelInfo.data[3];
+        let pixelAlpha = pixelInfo.data[3];
 
         //set background color to a hex representation of the value pulled from canvas
         //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
         //set background color to a rgba representation of the value pulled from canvas
-        this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + 1 + ")";
+        this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha + ")";
 
         //set slider values to color selected
         this.redSlider.value = pixelRed;
         this.greenSlider.value = pixelGreen;
         this.blueSlider.value = pixelBlue;
+        this.alphaSlider.value = pixelAlpha;
         //switch cursor in canvas back to standard pointer
         this.canvas.style.cursor = "pointer";
 
@@ -408,6 +410,10 @@ export class GameLogic {
         return this.blueSlider;
     };
 
+    getAlphaSlider = () => {
+        return this.alphaSlider;
+    };
+
     getEyeDropButton = () => {
         return this.eyeDropButton;
     };
@@ -416,8 +422,9 @@ export class GameLogic {
         let rh = parseInt(this.redSlider.value, 10);
         let gh = parseInt(this.greenSlider.value, 10);
         let bh = parseInt(this.blueSlider.value, 10);
+        let ah = parseFloat(this.alphaSlider.value, 10);
 
-        this.previewSquare.color = 'rgba(' + rh + ", " + gh + ", " + bh + ", " + 1 + ")";
+        this.previewSquare.color = 'rgba(' + rh + ", " + gh + ", " + bh + ", " + ah + ")";
     };
 
     eyeDropButtonClicked = () => {

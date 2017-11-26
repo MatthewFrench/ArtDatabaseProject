@@ -17,6 +17,7 @@ export class Game{
                     this.gameLogic.getRedSlider(),
                     this.gameLogic.getGreenSlider(),
                     this.gameLogic.getBlueSlider(),
+                    this.gameLogic.getAlphaSlider(),
                     this.gameLogic.getCanvas(),
                     this.gameLogic.getEyeDropButton(),
                     (this.boardSelector = new BoardSelector(this)).getDiv()
