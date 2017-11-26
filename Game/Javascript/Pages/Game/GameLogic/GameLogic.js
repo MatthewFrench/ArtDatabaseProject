@@ -10,8 +10,14 @@ const Player_Height_Tiles = 5;
 
 export class GameLogic {
     constructor() {
+        this.greenSlider = Interface.Create({type: 'input', className: 'RedSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
+        this.redSlider = Interface.Create({type: 'input', className: 'GreenSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
+        this.blueSlider = Interface.Create({type: 'input', className: 'BlueSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
+        this.eyeDropButton = Interface.Create({type: 'div', text: 'eye\r\n\r\ndrop', className: 'EyeDropButton', onClick: this.eyeDropButtonClicked});
+        this.previewColor = "ffffff";
+        this.eyeDropperOn = false;
         this.canvas = Interface.Create({type: 'canvas', className: 'GameArea',
-            onMouseDown: this.onMouseDown, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp});
+            onMouseDown: this.onMouseDown, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onMouseMove: this.onMouseMove});
         this.canvas.tabIndex = 1;
         this.ctx = this.canvas.getContext('2d');
         window.addEventListener("resize", this.resize);
@@ -157,7 +163,7 @@ export class GameLogic {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         //Draw background
-        this.ctx.fillStyle = this.chosenColor;
+        this.ctx.fillStyle = this.previewColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         this.tileLayerRenderer.draw(this.board);
@@ -213,13 +219,13 @@ export class GameLogic {
         this.ctx.restore();
 
         //Draw color selector
-        this.ctx.strokeStyle = 'black';
+        /*this.ctx.strokeStyle = 'black';
         for (let square of this.colorSquareOptions) {
             this.ctx.fillStyle = square.getColor();
             this.ctx.strokeRect(square.getX(), square.getY(), square.getWidth(), square.getHeight());
             this.ctx.fillRect(square.getX(), square.getY(), square.getWidth(), square.getHeight());
             this.ctx.stroke();
-        }
+        }*/
     };
 
     enterTileDrawingCoordinateSystem = () => {
@@ -281,12 +287,29 @@ export class GameLogic {
     };
 
     onMouseDown = (event) => {
-        let mousePosition = this.getMousePosition(event);
-        for(let colorSquare of this.colorSquareOptions){
-            if(colorSquare.isPositionInSquare(mousePosition.x, mousePosition.y)){
-                this.chosenColor = colorSquare.getColor();
-            }
+        //check if eyedropper enabled
+        if(!this.eyeDropperOn){
+            return;
         }
+        //get mouse coordinates
+        let mousePosition = this.getMousePosition(event);
+        //get information about pixel at mouse coordinates from canvas
+        let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
+
+        //pull red data
+        let pixelRed = pixelInfo.data[0];
+        //pull green data
+        let pixelGreen = pixelInfo.data[1];
+        //pull blue data
+        let pixelBlue = pixelInfo.data[2];
+
+        //set background color to a hex representation of the value pulled from canvas
+        this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
+
+        this.canvas.style.cursor = "pointer";
+
+        //turn off the eyedropper
+        this.eyeDropperOn = false;
     };
 
     onKeyDown = (event) => {
@@ -327,6 +350,10 @@ export class GameLogic {
         }
     };
 
+    onMouseMove = (event) => {
+        //possible preview window for eyedropper color picking goes here
+    }
+
     resize = () => {
         let canvasWidth = this.canvas.width;
         let canvasHeight = this.canvas.height;
@@ -347,6 +374,49 @@ export class GameLogic {
     getCanvas = () => {
         return this.canvas;
     };
+
+    getGreenSlider = () => {
+        return this.greenSlider;
+    };
+
+    getRedSlider = () => {
+        return this.redSlider;
+    };
+
+    getBlueSlider = () => {
+        return this.blueSlider;
+    };
+
+    getEyeDropButton = () => {
+        return this.eyeDropButton;
+    };
+
+    rgbToHex = (rgbValue) => {
+        let hex = rgbValue.toString(16);
+        if(hex.length < 2){
+            return "0" + hex;
+        }
+        else{
+            return hex;
+        }
+    };
+
+    changePreviewColor = () => {
+        let rh = parseInt(this.redSlider.value, 10);
+        let gh = parseInt(this.greenSlider.value, 10);
+        let bh = parseInt(this.blueSlider.value, 10);
+
+        this.previewColor = '#' + this.rgbToHex(rh) + this.rgbToHex(gh) + this.rgbToHex(bh);
+
+        console.log(this.previewColor);
+    };
+
+    eyeDropButtonClicked = () => {
+        this.canvas.style.cursor = "crosshair";
+        this.eyeDropperOn = true;
+    }
+
+
 }
 
 
