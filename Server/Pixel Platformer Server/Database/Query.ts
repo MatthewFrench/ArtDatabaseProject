@@ -42,7 +42,9 @@ export class Query {
         //Get a connection
         let connection = await databaseInstance.getConnection();
         //Create SQL
-        let sql = "Select * from Tile where board_id = ?";
+        let sql = "Select Tile.*, TileType.type_id as type_id from Tile " +
+            "left join TileType on TileType.tile_id = Tile.tile_id " +
+            "where board_id = ?";
         //Execute Query
         let [results] = await connection.query(sql, [boardID]);
         //Release the connection
@@ -51,19 +53,35 @@ export class Query {
         return results;
     }
 
-    /**  SetTile
+    /**  UpdateOrInsertTile
      * After changing a tile in local memory, send the
      * update information to the board’s database.
      */
-    static async SetTile(tileID, boardID, x, y, color, creatorID, lastModifiedID) {
+    static async UpdateOrInsertTile(boardID, x, y,
+                         r, g, b, a,
+                         creatorOrLastModifiedID, tileTypeID) {
         //Get a connection
         let connection = await databaseInstance.getConnection();
         //Create SQL
-        let sql = "insert into Tile (tile_id,board_id,x,y,color,creator_id, last_modified_id) values (?,?,?,?,?,?,?) on duplicate key update color = ?";
+        let sql = "insert into Tile (board_id,x,y,color_r,color_g,color_b,color_a," +
+            "creator_id,last_modified_id) " +
+            "values (?,?,?,?,?,?,?,?,?) " +
+            "on duplicate key update color_r = ?, color_g = ?, color_b = ?, color_a = ?, " +
+            "last_modified_id = ?";
         //Execute Query
-        await connection.query(sql, [tileID, boardID, x, y, color, creatorID, lastModifiedID, color]);
+        await connection.query(sql, [boardID, x, y, r, g, b, a,
+            creatorOrLastModifiedID, creatorOrLastModifiedID,
+            r, g, b, a, creatorOrLastModifiedID]);
+        sql = 'select tile_id from Tile where board_id = ? and x = ? and y = ?';
+        let [results] = await connection.query(sql, [boardID, x, y]);
+        //Set the tile type
+        let tileID = results[0]['tile_id'];
+        sql = 'insert into TileType (tile_id, type_id) values (?, ?) ' +
+            'on duplicate key update type_id = ?';
+        await connection.query(sql, [tileID, tileTypeID, tileTypeID]);
         //Release connection
         connection.release();
+        return tileID;
     }
 
     /****** PLAYER QUERIES ******/

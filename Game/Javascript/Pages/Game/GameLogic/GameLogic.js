@@ -356,7 +356,7 @@ export class GameLogic {
 
     onMouseMove = (event) => {
         //possible preview window for eyedropper color picking goes here
-    }
+    };
 
     resize = () => {
         let canvasWidth = this.canvas.width;
