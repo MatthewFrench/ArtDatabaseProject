@@ -166,8 +166,11 @@ export class Query {
         let [result] = await connection.query(sql, [playerID]);
         //Release the connection
         connection.release();
+        if (result.length === 0) {
+            return null;
+        }
         //Pass back results
-        return result;
+        return result[0];
     }
 
     /**    SetPlayerSprite
