@@ -2,15 +2,15 @@ import {NetworkHandler} from "./Networking/NetworkHandler";
 
 const {Query} = require("./Database/Query");
 const {Configuration} = require("./Configuration");
-const {Network} = require("./Networking/Network");
-const {GameLogic} = require("./Logic/GameLogic");
-const {ChatLogic} = require("./Logic/ChatLogic");
-const {AccountLogic} = require("./Logic/AccountLogic");
+import {GameLogic} from "./Logic/GameLogic";
+import {AccountLogic} from "./Logic/AccountLogic";
+import {ChatLogic} from "./Logic/ChatLogic";
+import {Network} from "./Networking/Network";
 
 export class PixelPlatformerServer {
-  gameLogic: any;
-  chatLogic: any;
-  accountLogic: any;
+  gameLogic: GameLogic;
+  chatLogic: ChatLogic;
+  accountLogic: AccountLogic;
   constructor() {
     Configuration.Initialize(); //Load the config file
     Query.Initialize();
@@ -22,7 +22,6 @@ export class PixelPlatformerServer {
     this.accountLogic = new AccountLogic(this);
   }
   playerConnected = async (player) => {
-    this.gameLogic.playerConnected(player).then();
     this.chatLogic.playerConnected(player).then();
     this.accountLogic.playerConnected(player).then();
   };

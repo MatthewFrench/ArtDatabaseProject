@@ -2,11 +2,10 @@ import {AccountMessageCreator as MsgCreator} from "../Networking/Account/Account
 const MsgHandler = require("./../Networking/Account/AccountMessageHandler").AccountMessageHandler;
 import {Query} from "../Database/Query";
 import {Player} from "../Player/Player";
-import {NetworkHandler} from "../Networking/NetworkHandler";
-import {GameMessageCreator} from "../Networking/Game/GameMessageCreator";
+import {PixelPlatformerServer} from "../PixelPlatformerServer";
 
 export class AccountLogic {
-    server: any;
+    server: PixelPlatformerServer;
 
     constructor(server) {
         this.server = server;
@@ -24,7 +23,6 @@ export class AccountLogic {
     
 
     handleTryLoginMessage = async (player : Player, username, password) => {
-
         let userInfo = await Query.UserLogin(username, password).then();
         if (userInfo === null) {
             //Send login failed
@@ -47,16 +45,7 @@ export class AccountLogic {
             //Send login success
             player.send(MsgCreator.LoginStatus(true));
 
-            //Send all boards
-            let boards = await Query.GetAllBoards();
-            for (let board of boards) {
-                let boardName = board['name'];
-                let boardID = board['board_id'];
-                NetworkHandler.SendToAllLoggedIn(
-                    GameMessageCreator.UpdateSelectorBoard(boardID,
-                        boardName, 0, new Date(),
-                        0));
-            }
+            this.server.gameLogic.playerLoggedIn(player);
         }
     };
 

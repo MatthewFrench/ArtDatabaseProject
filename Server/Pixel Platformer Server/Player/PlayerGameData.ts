@@ -1,7 +1,9 @@
 
 
+import {Board} from "../Logic/Game/Board";
+
 export class PlayerGameData {
-    private currentBoardID = -1;
+    private currentBoard : Board = null;
     private locationX = 0;
     private locationY = 0;
     private speedX = 0;
@@ -13,10 +15,16 @@ export class PlayerGameData {
 
     }
     getCurrentBoardID = () => {
-        return this.currentBoardID;
+        if (this.currentBoard === null) {
+            return -1;
+        }
+        return this.currentBoard.getBoardID();
     };
-    setCurrentBoardID = (boardID) => {
-        this.currentBoardID = boardID;
+    getCurrentBoard = () => {
+        return this.currentBoard;
+    };
+    setCurrentBoard = (board) => {
+        this.currentBoard = board;
     };
     getX = () => {
         return this.locationX;

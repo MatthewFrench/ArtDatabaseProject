@@ -2,6 +2,8 @@ import {Player} from "../../Player/Player";
 import {Query} from "../../Database/Query";
 import {Tile} from "./Tile";
 import {Physics} from "./Physics";
+import {GameMessageCreator} from "../../Networking/Game/GameMessageCreator";
+import {ChatMessageCreator} from "../../Networking/Chat/ChatMessageCreator";
 
 export class Board {
     physics : Physics;
@@ -13,20 +15,25 @@ export class Board {
     isDeleted: boolean;
     maxWidth: number;
     maxHeight: number;
+    lastModifiedDate = new Date();
 
     constructor(boardID) {
         this.boardID = boardID;
         this.players = new Map();
         this.tiles = new Map();
+        this.loadBoardInfo().then(()=>{
+            this.loadTilesFromDatabase().then();
+        });
     }
 
     loadBoardInfo = async() => {
-        let boardInfo = Query.GetBoardByID(this.boardID);
+        let boardInfo = await Query.GetBoardByID(this.boardID);
         this.name = boardInfo['name'];
         this.creatorID = boardInfo['creator_id'];
         this.isDeleted = boardInfo['is_deleted'] == 1;
         this.maxWidth = boardInfo['max_width'];
         this.maxHeight = boardInfo['max_height'];
+        console.log('Loading board: ' + this.name);
     };
 
     loadTilesFromDatabase = async () => {
@@ -50,28 +57,52 @@ export class Board {
                 this.tiles.set(x, new Map());
             }
             this.tiles.get(x).set(y, tile);
+            if (this.players.size > 0) {
+                this.sendToAllPlayersInBoard(GameMessageCreator.UpdateTile(tile));
+            }
         }
+        console.log('Finished Loading Tiles for board: ' + this.name);
     };
 
     //Run from logic loop
     logic = () => {
         this.physics.logic();
         //Send moving player locations
-        //TODO
+        for (let [playerID, player] of this.players) {
+            this.sendToAllPlayersInBoard(GameMessageCreator.UpdatePlayer(player));
+        }
     };
 
     addPlayer = (player : Player) => {
         //Send add player to all players
+        this.sendToAllPlayersInBoard(GameMessageCreator.AddPlayer(player));
+        player.getGameData().setCurrentBoard(this);
+        //Tell the player that it is now in a new board
+        player.send(GameMessageCreator.SwitchToBoard(this.boardID));
         this.players.set(player.getAccountData().getPlayerID(), player);
         //Send all existing players to new player
+        for (let [playerID, prevPlayer] of this.players) {
+            player.send(GameMessageCreator.AddPlayer(prevPlayer));
+        }
+        //Send self focus
+        player.send(GameMessageCreator.FocusPlayer(player));
         //Send all tile data to new player (inefficient)
-        //TODO
+        for (let [x, yMap] of this.tiles) {
+            for (let [y, tile] of yMap) {
+                player.send(GameMessageCreator.UpdateTile(tile));
+            }
+        }
+        //Send chat message telling the player he switched to a board
+        player.send(ChatMessageCreator.AddChatMessage(this.boardID,
+            player.getAccountData().getPlayerID(), '<span style="color: red">Server</span>',
+            'Entered Board - ' + this.name, new Date()));
     };
 
     removePlayer = (player : Player) => {
         this.players.delete(player.getAccountData().getPlayerID());
         //Send remove player to all players
-        //TODO
+        this.sendToAllPlayersInBoard(GameMessageCreator.RemovePlayer(player));
+        player.getGameData().setCurrentBoard(null);
     };
 
     addOrUpdateTile = (x, y, r, g, b, a, tileType, player: Player) => {
@@ -93,9 +124,8 @@ export class Board {
             tile.setTileID(tileID);
         });
 
-        //Send updates to nearby players
-        //TODO
-        //x, y, r, g, b, a, tileType
+        //Send updates to players
+        this.sendToAllPlayersInBoard(GameMessageCreator.UpdateTile(tile));
     };
 
     sendToAllPlayersInBoard = (binaryMessage) => {
@@ -121,5 +151,25 @@ export class Board {
 
     getPlayers = () : Map<number, Player> => {
         return this.players;
+    };
+
+    getName = () => {
+        return this.name;
+    };
+
+    getNumberOfPlayers = () => {
+        return this.players.size;
+    };
+
+    getLastModifiedDate = () => {
+        return this.lastModifiedDate;
+    };
+
+    getTileCount = () => {
+        let count = 0;
+        for (let [x, column] of this.tiles) {
+            count += column.size;
+        }
+        return count;
     };
 }
