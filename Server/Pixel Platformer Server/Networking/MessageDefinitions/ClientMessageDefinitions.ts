@@ -20,7 +20,9 @@ export const Controllers = {
         ID: 3,
         Messages: {
             //Adds or updates a board in the selector
-            UpdateSelectorBoard: 1
+            UpdateSelectorBoard: 1,
+            //Switch to board, message sent to player telling player to be in board
+            SwitchToBoard: 2,
         }
     }
 };

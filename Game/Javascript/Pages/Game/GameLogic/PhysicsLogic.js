@@ -8,8 +8,7 @@ const Ground_Friction = 0.98;
 const Cut_Off = 0.0001;
 
 export class PhysicsLogic {
-    constructor() {
-    }
+    constructor() {}
     logic = (board) => {
         this.unhighlightAllTiles(board);
         let players = board.getPlayers();
