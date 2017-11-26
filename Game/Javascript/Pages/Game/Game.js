@@ -14,8 +14,13 @@ export class Game{
         this.mainDiv = Interface.Create({type:'div', className: 'GamePage', elements:[
             {type: 'div', className: 'GameContainer', elements: [
                 {type: 'div', className: 'WorldWrapper', elements: [
+                    this.gameLogic.getRedSlider(),
+                    this.gameLogic.getGreenSlider(),
+                    this.gameLogic.getBlueSlider(),
                     this.gameLogic.getCanvas(),
+                    this.gameLogic.getEyeDropButton(),
                     (this.boardSelector = new BoardSelector(this)).getDiv()
+
                 ]},
                 {type: 'div', className: 'ChatArea', elements: [
                     this.chatArea = Interface.Create({type: 'div', className: 'MessageLog'}),
