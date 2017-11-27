@@ -376,7 +376,7 @@ export class GameLogic {
             this.blueSlider.value = pixelBlue;
             this.alphaSlider.value = pixelAlpha;
             //switch cursor in canvas back to standard pointer
-            this.canvas.style.cursor = "pointer";
+            this.canvas.style.cursor = "";
 
             //turn off the eyedropper
             this.eyeDropperOn = false;
@@ -427,11 +427,9 @@ export class GameLogic {
             this.greenSlider.value = pixelGreen;
             this.blueSlider.value = pixelBlue;
             this.alphaSlider.value = pixelAlpha;
-            //switch cursor in canvas back to standard pointer
-            this.canvas.style.cursor = "pointer";
 
             //turn off the eyedropper
-            this.eyeDropperOn = false;
+            //this.eyeDropperOn = false;
 
             this.updateSliderLabels();
         }
