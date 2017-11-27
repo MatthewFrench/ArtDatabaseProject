@@ -23,7 +23,7 @@ export class GameMessageCreator {
         let message = new MessageWriter();
         message.addUint8(GameID);
         message.addUint8(Messages.MovingLeft);
-        message.addUint8(moving?0:1);
+        message.addUint8(moving?1:0);
         return message.toBuffer();
     }
 
@@ -31,7 +31,7 @@ export class GameMessageCreator {
         let message = new MessageWriter();
         message.addUint8(GameID);
         message.addUint8(Messages.MovingRight);
-        message.addUint8(moving?0:1);
+        message.addUint8(moving?1:0);
         return message.toBuffer();
     }
 
@@ -39,7 +39,7 @@ export class GameMessageCreator {
         let message = new MessageWriter();
         message.addUint8(GameID);
         message.addUint8(Messages.Jumping);
-        message.addUint8(moving?0:1);
+        message.addUint8(moving?1:0);
         return message.toBuffer();
     }
 

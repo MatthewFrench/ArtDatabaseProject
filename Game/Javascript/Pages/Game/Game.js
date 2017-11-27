@@ -7,6 +7,7 @@ import {ChatMessageHandler} from "../../Networking/Chat/ChatMessageHandler";
 import {GameLogic} from "./GameLogic/GameLogic";
 import {GameMessageHandler} from "../../Networking/Game/GameMessageHandler";
 import {BoardSelector} from "./BoardSelector";
+import {GameMessageCreator} from "../../Networking/Game/GameMessageCreator";
 
 export class Game{
     constructor(switchToLoginPage){
@@ -39,7 +40,18 @@ export class Game{
 
         ChatMessageHandler.AddChatMessageListener(this.gotChatMessage);
         GameMessageHandler.AddUpdateSelectorBoardListener(this.updateSelectorBoard);
+        GameMessageHandler.AddAddPlayerListener(this.gotPlayedAddedMessage);
+        GameMessageHandler.AddUpdateTileListener(this.gotTileUpdateMessage);
+        GameMessageHandler.AddSwitchToBoardListener(this.gotBoardSwitchedToMessage);
+        GameMessageHandler.AddUpdatePlayerListener(this.gotPlayerUpdatedMessage);
+        GameMessageHandler.AddRemovePlayerListener(this.gotPlayerRemovedMessage);
+        GameMessageHandler.AddFocusPlayerIDListener(this.gotSetPlayerFocusMessage);
     }
+
+    //Event handler from the board selector
+    requestSwitchToBoard = (boardID) => {
+        Network.Send(GameMessageCreator.RequestBoardSwitch(boardID));
+    };
 
     setVisibility = (visible) => {
         this.visible = visible;
@@ -53,6 +65,26 @@ export class Game{
 
     gotChatMessage = async (boardID, playerID, chatPrefix, chatMessage, time) => {
         this.addMessageToChatArea(chatPrefix + ' : ' + chatMessage);
+    };
+
+
+    gotPlayedAddedMessage = async (playerID, displayName, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
+        this.gameLogic.addPlayer(playerID, displayName, x, y, speedX, speedY, movingLeft, movingRight, jumping);
+    };
+    gotTileUpdateMessage = async (x, y, typeID, r, g, b, a) => {
+        this.gameLogic.updateTile(x, y, typeID, r, g, b, a);
+    };
+    gotBoardSwitchedToMessage = async (boardID) => {
+        this.gameLogic.resetBoardToNewBoard(boardID);
+    };
+    gotPlayerUpdatedMessage = async (playerID, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
+        this.gameLogic.updatePlayer(playerID, x, y, speedX, speedY, movingLeft, movingRight, jumping);
+    };
+    gotPlayerRemovedMessage = async (playerID) => {
+        this.gameLogic.removePlayer(playerID);
+    };
+    gotSetPlayerFocusMessage = async (playerID) => {
+        this.gameLogic.setPlayerFocusID(playerID);
     };
 
     addMessageToChatArea = (message) => {

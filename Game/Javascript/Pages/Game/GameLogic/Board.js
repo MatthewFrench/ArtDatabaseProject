@@ -7,23 +7,30 @@ import {Tile} from "./Tile";
 import {Player} from "./Player";
 
 export class Board {
-    constructor() {
+    constructor(boardID) {
+        this.boardID = boardID;
         this.players = new Map();
         //Tile format: [x][y] = Tile
         this.tiles = new Map();
     }
-    addPlayer = (playerID, name, x, y) => {
-        let player = new Player(playerID, name, x, y);
+    addPlayer = (playerID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
+        let player = new Player(playerID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping);
         this.players.set(playerID, player);
         return player;
     };
-    updatePlayer = (playerID, x, y) => {
+    updatePlayer = (playerID, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
         let player = this.getPlayer(playerID);
         if (player === null) {
             return;
         }
         player.setX(x);
         player.setY(y);
+        //Change to setters later
+        player.speedX = speedX;
+        player.speedY = speedY;
+        player.movingLeft = movingLeft;
+        player.movingRight = movingRight;
+        player.jumping = jumping;
     };
     getPlayer = (playerID) => {
         let player = this.players.get(playerID);
@@ -62,12 +69,9 @@ export class Board {
         }
         return tile;
     };
-    setTileColor = (x, y, r, g, b, a) => {
+    setTile = (x, y, typeID,  r, g, b, a) => {
         let tile = this.getTileCreate(x, y);
         tile.setColor(r, g, b, a);
+        tile.setTypeID(typeID);
     };
-    clearBoard = () => {
-        this.players = [];
-        this.tiles = new Map();
-    }
 }
