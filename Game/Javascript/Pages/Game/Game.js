@@ -50,6 +50,10 @@ export class Game{
         GameMessageHandler.AddFocusPlayerIDListener(this.gotSetPlayerFocusMessage);
     }
 
+    focusOnGameCanvas = () => {
+        this.gameLogic.getCanvas().focus();
+    };
+
     //Event handler from the board selector
     requestSwitchToBoard = (boardID) => {
         Network.Send(GameMessageCreator.RequestBoardSwitch(boardID));
@@ -68,7 +72,6 @@ export class Game{
     gotChatMessage = async (boardID, playerID, chatPrefix, chatMessage, time) => {
         this.addMessageToChatArea(chatPrefix + ' : ' + chatMessage);
     };
-
 
     gotPlayedAddedMessage = async (playerID, displayName, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
         this.gameLogic.addPlayer(playerID, displayName, x, y, speedX, speedY, movingLeft, movingRight, jumping);
@@ -99,6 +102,7 @@ export class Game{
         if (event.keyCode === 13){
             Network.Send(ChatMessageCreator.NewChatMessage(this.messageInputbox.value));
             this.messageInputbox.value = '';
+            this.focusOnGameCanvas();
         }
     };
 
