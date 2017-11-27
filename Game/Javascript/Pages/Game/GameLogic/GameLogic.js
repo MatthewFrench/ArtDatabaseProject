@@ -11,6 +11,15 @@ const Tile_Height = 10;
 const Tile_Width = 10;
 const Player_Width_Tiles = 2;
 const Player_Height_Tiles = 5;
+const Sprite_Width = 26;
+const Sprite_Horizontal_Distance = 64;
+const Sprite_Total_Width = 768;
+const Sprite_Total_Height = 474;
+const Sprite_Vertical_Table = [0, 62, 58, 61, 61, 61, 61, 64];
+const Sprite_X_Start = 18;
+const Frame_Next_Max = 4;
+const Frame_Total_Max = 2;
+const Idiot_Frame_Table = [1, 0, 2];
 
 export class GameLogic {
     constructor() {
@@ -41,6 +50,9 @@ export class GameLogic {
         this.eyeDropperOn = false;
         this.playerSpriteSheet = new Image();
         this.playerSpriteSheet.src = spriteSheet;
+        this.frameNumber = 0;
+        this.frameNextNumber = 0;
+        this.facingIndex = 4;
 
         this.canvas = Interface.Create({type: 'canvas', className: 'GameArea',
             onMouseDown: this.onMouseDown, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp,
@@ -145,6 +157,16 @@ export class GameLogic {
         if (focusPlayer !== null) {
             if (this.leftPressed) {
                 focusPlayer.movingLeft = true;
+                this.frameNextNumber += 1;
+                if(this.frameNextNumber > Frame_Next_Max){
+                    this.frameNextNumber = 0;
+                    this.frameNumber += 1;
+                    if(this.frameNumber > Frame_Total_Max){
+                        this.frameNumber = 0;
+                    }
+                    this.facingIndex = 9 + Idiot_Frame_Table[this.frameNumber];
+                }
+                console.log(this.frameNumber, this.frameNextNumber);
                 //this.physicsLogic.applyForceToPlayer(focusPlayer, -10, 0);
                 //focusPlayer.setX(focusPlayer.getX() - 0.1);
             } else {
@@ -152,6 +174,16 @@ export class GameLogic {
             }
             if (this.rightPressed) {
                 focusPlayer.movingRight = true;
+                this.frameNextNumber += 1;
+                if(this.frameNextNumber > Frame_Next_Max){
+                    this.frameNextNumber = 0;
+                    this.frameNumber += 1;
+                    if(this.frameNumber > Frame_Total_Max){
+                        this.frameNumber = 0;
+                    }
+                    this.facingIndex = 3 + Idiot_Frame_Table[this.frameNumber];
+                }
+                console.log(this.frameNumber, this.frameNextNumber);
                 //this.physicsLogic.applyForceToPlayer(focusPlayer, 10, 0);
                 //focusPlayer.setX(focusPlayer.getX() + 0.1);
             } else {
@@ -159,6 +191,7 @@ export class GameLogic {
             }
             if (this.upPressed) {
                 focusPlayer.jumping = true;
+                this.facingIndex = 8;
                 //this.physicsLogic.applyForceToPlayer(focusPlayer, 0, 10);
                 //focusPlayer.setY(focusPlayer.getY() + 0.1);
             } else {
@@ -214,22 +247,26 @@ export class GameLogic {
             this.ctx.fillStyle = 'blue';
             this.ctx.strokeStyle = 'black';
 
-            this.ctx.beginPath();
+
+
+            //this.ctx.beginPath();
 
             //Player X and Y is in the bottom center of the player rectangle
             let leftX = player.getX() + 0.5 - Player_Width_Tiles/2;
             let rightX = player.getX() + 0.5 + Player_Width_Tiles/2;
             let bottomY = player.getY();
             let topY = player.getY() + Player_Height_Tiles;
+            this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * this.facingIndex, 0, Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
 
-            this.ctx.moveTo(this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(bottomY));
+
+            /*this.ctx.moveTo(this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(bottomY));
             this.ctx.lineTo(this.convertTileXCoordinateToScreen(rightX), this.convertTileYCoordinateToScreen(bottomY));
             this.ctx.lineTo(this.convertTileXCoordinateToScreen(rightX), this.convertTileYCoordinateToScreen(topY));
             this.ctx.lineTo(this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY));
 
             this.ctx.closePath();
             this.ctx.fill();
-            this.ctx.stroke();
+            this.ctx.stroke();*/
 
             this.ctx.fillStyle = 'red';
             this.ctx.font = '20px Helvetica';
@@ -479,16 +516,23 @@ export class GameLogic {
         //Left
         if (event.keyCode === 37 && this.leftPressed === true) {
             this.leftPressed = false;
+            this.facingIndex = 10;
+            this.frameNextNumber = 0;
+            this.frameNumber = 0;
             Network.Send(GameMessageCreator.MovingLeft(this.leftPressed));
         }
         //Right
         if (event.keyCode === 39 && this.rightPressed === true) {
             this.rightPressed = false;
+            this.facingIndex = 4;
+            this.frameNextNumber = 0;
+            this.frameNumber = 0;
             Network.Send(GameMessageCreator.MovingRight(this.rightPressed));
         }
         //Up
         if (event.keyCode === 38 && this.upPressed === true) {
             this.upPressed = false;
+            this.facingIndex = 4;
             Network.Send(GameMessageCreator.Jumping(this.upPressed));
         }
         //Down
