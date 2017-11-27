@@ -62,6 +62,7 @@ export class Query {
                          creatorOrLastModifiedID, tileTypeID) {
         //Get a connection
         let connection = await databaseInstance.getConnection();
+        await connection.beginTransaction();
         //Create SQL
         let sql = "insert into Tile (board_id,x,y,color_r,color_g,color_b,color_a," +
             "creator_id,last_modified_id) " +
@@ -83,7 +84,7 @@ export class Query {
         //Add to history
         let historyID = await Query.SetHistory(new Date(), tileID, creatorOrLastModifiedID, r, g, b, a);
         await Query.SetHistoryTileType(historyID, tileTypeID);
-
+        await connection.commit();
         //Release connection
         connection.release();
         return tileID;
