@@ -5,6 +5,7 @@ export class BoardSelector {
     constructor(game) {
         this.game = game;
         this.rows = [];
+        this.currentBoardID = -1;
         this.mainDiv = Interface.Create({
             type: 'div', className: 'BoardSelector', elements: [
                 {type: 'div', text: 'Create World', className: 'CreateWorld', onClick: this.createWorldClicked},
@@ -12,6 +13,10 @@ export class BoardSelector {
             ]
         })
     }
+
+    setCurrentBoardID = (boardID) => {
+        this.currentBoardID = boardID;
+    };
 
     boardClicked = (boardID) => {
         this.game.requestSwitchToBoard(boardID);
@@ -30,7 +35,18 @@ export class BoardSelector {
     };
 
     sortBoards = () => {
+        //Unhighlight all rows
+        for (let row of this.rows) {
+            if (row.boardID !== this.currentBoardID) {
+                row.getDiv().classList.remove('Selected');
+            } else {
+                row.getDiv().classList.add('Selected');
+            }
+        }
         this.rows.sort((row1, row2) => {
+            if (row1.boardID === this.currentBoardID) {
+                return 1;
+            }
             if (row1.numberInBoard < row2.numberInBoard) {
                 return -1;
             }
