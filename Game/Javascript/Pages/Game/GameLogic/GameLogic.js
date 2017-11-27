@@ -41,9 +41,10 @@ export class GameLogic {
                 {type: 'div', text: '255', className: 'AlphaValue'},
             ]}),
             {type: 'div', text: 'Tile Type', className: 'TileLabel'},
-            {type: 'div', text: 'Background', className: 'BackgroundButton', onClick: this.backgroundTileTypeClicked},
-            {type: 'div', text: 'Solid', className: 'SolidButton', onClick: this.solidTileTypeClicked},
-            {type: 'div', text: 'Foreground', className: 'ForegroundButton', onClick: this.foregroundTileTypeClicked}
+            this.deleteTypeButton = Interface.Create({type: 'div', text: 'Delete', className: 'DeleteButton', onClick: this.deleteTileTypeClicked}),
+            this.backgroundTypeButton = Interface.Create({type: 'div', text: 'Background', className: 'BackgroundButton', onClick: this.backgroundTileTypeClicked}),
+            this.solidTypeButton = Interface.Create({type: 'div', text: 'Solid', className: 'SolidButton Selected', onClick: this.solidTileTypeClicked}),
+            this.foregroundTypeButton = Interface.Create({type: 'div', text: 'Foreground', className: 'ForegroundButton', onClick: this.foregroundTileTypeClicked})
         ]});
         //holds the value of the color to be used for a tile
         this.previewSquare = Interface.Create({type: 'div', className: 'PreviewSquare'});
@@ -92,13 +93,32 @@ export class GameLogic {
     }
 
     backgroundTileTypeClicked = () => {
+        this.deleteTypeButton.classList.remove('Selected');
+        this.solidTypeButton.classList.remove('Selected');
+        this.foregroundTypeButton.classList.remove('Selected');
+        this.backgroundTypeButton.classList.add('Selected');
         this.currentTileType = 3;
     };
     solidTileTypeClicked = () => {
+        this.deleteTypeButton.classList.remove('Selected');
+        this.solidTypeButton.classList.add('Selected');
+        this.foregroundTypeButton.classList.remove('Selected');
+        this.backgroundTypeButton.classList.remove('Selected');
         this.currentTileType = 4;
     };
     foregroundTileTypeClicked = () => {
+        this.deleteTypeButton.classList.remove('Selected');
+        this.solidTypeButton.classList.remove('Selected');
+        this.foregroundTypeButton.classList.add('Selected');
+        this.backgroundTypeButton.classList.remove('Selected');
         this.currentTileType = 5;
+    };
+    deleteTileTypeClicked = () => {
+        this.deleteTypeButton.classList.add('Selected');
+        this.solidTypeButton.classList.remove('Selected');
+        this.foregroundTypeButton.classList.remove('Selected');
+        this.backgroundTypeButton.classList.remove('Selected');
+        this.currentTileType = 6;
     };
 
     resetBoardToNewBoard = (boardID) => {
@@ -166,7 +186,7 @@ export class GameLogic {
                     }
                     this.facingIndex = 9 + Idiot_Frame_Table[this.frameNumber];
                 }
-                console.log(this.frameNumber, this.frameNextNumber);
+                //console.log(this.frameNumber, this.frameNextNumber);
                 //this.physicsLogic.applyForceToPlayer(focusPlayer, -10, 0);
                 //focusPlayer.setX(focusPlayer.getX() - 0.1);
             } else {
