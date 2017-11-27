@@ -250,6 +250,11 @@ export class GameLogic {
             let bottomY = focusPlayer.getY();
             let topY = focusPlayer.getY() + Player_Height_Tiles;
             this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * this.facingIndex, 0, Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
+
+            this.ctx.fillStyle = 'red';
+            this.ctx.font = '20px Helvetica';
+            this.ctx.textAlign="center";
+            this.ctx.fillText(focusPlayer.getName(), this.convertTileXCoordinateToScreen(focusPlayer.getX() + 0.5), this.convertTileYCoordinateToScreen(topY + 0.5));
         }
 
         this.board.getPlayers().forEach((player)=>{
