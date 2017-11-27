@@ -20,6 +20,7 @@ export class BoardSelector {
 
     boardClicked = (boardID) => {
         this.game.requestSwitchToBoard(boardID);
+        this.game.focusOnGameCanvas();
     };
 
     updateBoard = (boardName, boardID, numberInBoard, lastModified, tileCount) => {
