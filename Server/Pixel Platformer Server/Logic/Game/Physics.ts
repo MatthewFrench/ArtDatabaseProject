@@ -9,6 +9,8 @@ const Player_Jump_Speed = 0.8;
 const Ground_Friction = 0.98;
 const Cut_Off = 0.0001;
 
+const Solid_Tile_Type = 4;
+
 export class Physics {
     board: Board;
     constructor(board) {this.board = board;}
@@ -131,7 +133,7 @@ export class Physics {
         let tiles = [];
         for (let x = x1; x <= x2; x++) {
             let tile = this.board.getTile(x, y);
-            if (tile !== null && tile.a !== 0) {
+            if (tile !== null && tile.getTypeID() === Solid_Tile_Type) {
                 tiles.push(tile);
             }
         }
@@ -141,7 +143,7 @@ export class Physics {
     isHorizontalCollision = (x1, x2, y) => {
         for (let x = x1; x <= x2; x++) {
             let tile = this.board.getTile(x, y);
-            if (tile !== null && tile.a !== 0) {
+            if (tile !== null && tile.getTypeID() === Solid_Tile_Type) {
                 return true;
             }
         }
@@ -153,7 +155,7 @@ export class Physics {
         let tiles = [];
         for (let y = y1; y <= y2; y++) {
             let tile = this.board.getTile(x, y);
-            if (tile !== null && tile.a !== 0) {
+            if (tile !== null && tile.getTypeID() === Solid_Tile_Type) {
                 tiles.push(tile);
             }
         }
@@ -163,7 +165,7 @@ export class Physics {
     isVerticalCollision = (x, y1, y2) => {
         for (let y = y1; y <= y2; y++) {
             let tile = this.board.getTile(x, y);
-            if (tile !== null && tile.a !== 0) {
+            if (tile !== null && tile.getTypeID() === Solid_Tile_Type) {
                 return true;
             }
         }

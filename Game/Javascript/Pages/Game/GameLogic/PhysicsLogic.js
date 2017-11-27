@@ -7,6 +7,8 @@ const Player_Jump_Speed = 0.8;
 const Ground_Friction = 0.98;
 const Cut_Off = 0.0001;
 
+const Solid_Tile_Type = 4;
+
 export class PhysicsLogic {
     constructor() {}
     logic = (board) => {
@@ -143,10 +145,10 @@ export class PhysicsLogic {
                 tile.originalG = tile.g;
                 tile.originalB = tile.b;
                 tile.originalA = tile.a;
-                tile.r = 1;
+                tile.r = 255;
                 tile.g = 0;
                 tile.b = 0;
-                tile.a = 1;
+                tile.a = 255;
             }
         }
     };
@@ -155,7 +157,7 @@ export class PhysicsLogic {
         let tiles = [];
         for (let x = x1; x <= x2; x++) {
             let tile = board.getTile(x, y);
-            if (tile !== null && tile.a !== 0) {
+            if (tile !== null && tile.getTypeID() === Solid_Tile_Type) {
                 tiles.push(tile);
             }
         }
@@ -165,7 +167,7 @@ export class PhysicsLogic {
     isHorizontalCollision = (board, x1, x2, y) => {
         for (let x = x1; x <= x2; x++) {
             let tile = board.getTile(x, y);
-            if (tile !== null && tile.a !== 0) {
+            if (tile !== null && tile.getTypeID() === Solid_Tile_Type) {
                 return true;
             }
         }
@@ -177,7 +179,7 @@ export class PhysicsLogic {
         let tiles = [];
         for (let y = y1; y <= y2; y++) {
             let tile = board.getTile(x, y);
-            if (tile !== null && tile.a !== 0) {
+            if (tile !== null && tile.getTypeID() === Solid_Tile_Type) {
                 tiles.push(tile);
             }
         }
@@ -187,7 +189,7 @@ export class PhysicsLogic {
     isVerticalCollision = (board, x, y1, y2) => {
         for (let y = y1; y <= y2; y++) {
             let tile = board.getTile(x, y);
-            if (tile !== null && tile.a !== 0) {
+            if (tile !== null && tile.getTypeID() === Solid_Tile_Type) {
                 return true;
             }
         }
