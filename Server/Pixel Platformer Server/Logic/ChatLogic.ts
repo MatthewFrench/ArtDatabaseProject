@@ -21,8 +21,12 @@ export class ChatLogic {
 
         let time = new Date();
 
+        let boardName = player.getGameData().getCurrentBoard().getName();
+        if(!boardName){
+            boardName = 'Unknown Board';
+        }
         let messagePrefix = time.toLocaleString() + ', ' +
-            '[Board Name]' + ', ' +
+            boardName + ', ' +
             player.getAccountData().getDisplayName();
 
         //Santize chat message
