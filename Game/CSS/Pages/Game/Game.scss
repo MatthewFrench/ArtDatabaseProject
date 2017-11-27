@@ -67,10 +67,155 @@
         text-align: center;
         vertical-align: middle;
         left: 85px;
-        top: 25px;
+        top: 2px;
 
         &:hover {
           box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+        }
+      }
+
+      .TileSelector{
+        background-color: white;
+        padding: 2px;
+        border-radius: 2px;
+        border: solid 2px #b5b5b5;
+        position: absolute;
+        width: 100px;
+        height: 90px;
+        left: 1px;
+        top: 104px;
+
+        .RGBALabel{
+          position: absolute;
+          left: 4px;
+          top: 1px;
+          width: 80px;
+          height: 30px;
+          font-size: 10px;
+
+          .RedLabel{
+            color: red;
+            position: absolute;
+            left: 2px;
+            top: 1px;
+            width: 5px;
+          }
+
+          .GreenLabel{
+            color: green;
+            position: absolute;
+            left: 22px;
+            top: 1px;
+            width: 5px;
+          }
+
+          .BlueLabel{
+            color: blue;
+            position: absolute;
+            left: 42px;
+            top: 1px;
+            width: 5px;
+          }
+
+          .AlphaLabel{
+            color: black;
+            position: absolute;
+            left: 62px;
+            top: 1px;
+            width: 5px;
+          }
+
+          .RedValue{
+            color: red;
+            position: absolute;
+            left: 2px;
+            top: 10px;
+            width: 5px;
+          }
+
+          .GreenValue{
+            color: green;
+            position: absolute;
+            left: 22px;
+            top: 10px;
+            width: 5px;
+          }
+
+          .BlueValue{
+            color: blue;
+            position: absolute;
+            left: 42px;
+            top: 10px;
+            width: 5px;
+          }
+
+          .AlphaValue{
+            color: black;
+            position: absolute;
+            left: 62px;
+            top: 10px;
+            width: 5px;
+          }
+        }
+
+        .TileLabel{
+          font-size: 10px;
+          position: absolute;
+          width: 60px;
+          text-align: center;
+          left: 18px;
+          top: 24px;
+        }
+
+        .BackgroundButton{
+          font-size: 12px;
+          padding: 1px;
+          border-radius: 1px;
+          border: solid 1px #b5b5b5;
+          position: absolute;
+          width: 60px;
+          left: 18px;
+          top: 36px;
+          height: 12px;
+          cursor: pointer;
+
+          &:hover {
+            box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+          }
+        }
+
+        .SolidButton{
+          font-size: 12px;
+          padding: 1px;
+          border-radius: 1px;
+          border: solid 1px #b5b5b5;
+          position: absolute;
+          width: 60px;
+          left: 18px;
+          top: 54px;
+          height: 12px;
+          cursor: pointer;
+
+          &:hover {
+            box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+          }
+        }
+
+        .ForegroundButton{
+          font-size: 12px;
+          padding: 1px;
+          border-radius: 1px;
+          border: solid 1px #b5b5b5;
+          position: absolute;
+          width: 60px;
+          left: 18px;
+          top: 72px;
+          height: 15px;
+          cursor: pointer;
+
+          &:hover {
+            box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+          }
         }
       }
 
