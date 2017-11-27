@@ -17,13 +17,15 @@ export class Board {
     maxHeight: number;
     lastModifiedDate = new Date();
 
-    constructor(boardID) {
+    constructor(boardID, onFinishLoad : () => void) {
         this.physics = new Physics(this);
         this.boardID = boardID;
         this.players = new Map();
         this.tiles = new Map();
         this.loadBoardInfo().then(()=>{
-            this.loadTilesFromDatabase().then();
+            this.loadTilesFromDatabase().then(()=>{
+                onFinishLoad();
+            });
         });
     }
 
