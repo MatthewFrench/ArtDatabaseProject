@@ -127,6 +127,7 @@ export class GameLogic {
                 boardName, board.getNumberOfPlayers(), board.getLastModifiedDate(),
                 board.getTileCount());
             NetworkHandler.SendToAllLoggedIn(message);
+            this.switchPlayerToBoard(player, boardID);
         });
     };
 }
