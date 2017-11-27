@@ -31,15 +31,16 @@ export class GameLogic {
                 {type: 'div', text: '1', className: 'AlphaValue'},
             ]}),
             {type: 'div', text: 'Tile Type', className: 'TileLabel'},
-            {type: 'div', text: 'Background', className: 'BackgroundButton', onClick: this.backgroundButtonClicked},
-            {type: 'div', text: 'Solid', className: 'SolidButton', onClick: this.solidButtonClicked},
-            {type: 'div', text: 'Foreground', className: 'ForegroundButton', onClick: this.foregroundButtonClicked}
+            {type: 'div', text: 'Background', className: 'BackgroundButton', onClick: this.backgroundTileTypeClicked},
+            {type: 'div', text: 'Solid', className: 'SolidButton', onClick: this.solidTileTypeClicked},
+            {type: 'div', text: 'Foreground', className: 'ForegroundButton', onClick: this.foregroundTileTypeClicked}
         ]});
         //holds the value of the color to be used for a tile
-        this.previewSquare = new SquareShape(88, 85, 15, 15, "rgba(0, 0, 0, 1");
+        this.previewSquare = new SquareShape(88, 85, 15, 15, "rgba(0, 0, 0, 1)");
         this.eyeDropperOn = false;
         this.canvas = Interface.Create({type: 'canvas', className: 'GameArea',
-            onMouseDown: this.onMouseDown, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onMouseMove: this.onMouseMove});
+            onMouseDown: this.onMouseDown, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp,
+            onMouseMove: this.onMouseMove, onMouseUp: this.onMouseUp});
         this.canvas.tabIndex = 1;
         this.ctx = this.canvas.getContext('2d');
         window.addEventListener("resize", this.resize);
@@ -57,10 +58,25 @@ export class GameLogic {
         this.cameraFocusTileX = 0;
         this.cameraFocusTileY = 0;
 
+        this.previouslyPlacedTileX = null;
+        this.previouslyPlacedTileY = null;
+        this.mouseDown = false;
+        this.currentTileType = 4; //Solid
+
         this.tileLayerRenderer = new TileLayerRenderer(1000, 800);
 
         this.logicLoop();
     }
+
+    backgroundTileTypeClicked = () => {
+        this.currentTileType = 3;
+    };
+    solidTileTypeClicked = () => {
+        this.currentTileType = 4;
+    };
+    foregroundTileTypeClicked = () => {
+        this.currentTileType = 5;
+    };
 
     resetBoardToNewBoard = (boardID) => {
         this.board = new Board(boardID);
@@ -85,6 +101,11 @@ export class GameLogic {
 
     setPlayerFocusID = (cameraFocusPlayerID) => {
         this.cameraFocusPlayerID = cameraFocusPlayerID;
+    };
+
+    //Called by the mouse handler to set a tile change to the server
+    placeTile = (x, y) => {
+        this.updateTile(x, y, this.currentTileType);
     };
 
     //addOrUpdateTile = (x, y, r, g, b, a) => {
@@ -254,6 +275,8 @@ export class GameLogic {
         point.y *= -1;
         point.x += this.canvas.width/2;
         point.y += this.canvas.height * 0.5;
+        point.x = Math.floor(point.x);
+        point.y = Math.floor(point.y);
         return point;
     };
     convertTileXCoordinateToScreen = (x) => {
@@ -261,6 +284,7 @@ export class GameLogic {
         x -= 0.5;
         x *= Tile_Width;
         x += this.canvas.width/2;
+        x = Math.floor(x);
         return x;
     };
     convertTileYCoordinateToScreen = (y) => {
@@ -269,6 +293,39 @@ export class GameLogic {
         y *= Tile_Height;
         y *= -1;
         y += this.canvas.height * 0.5;
+        y = Math.floor(y);
+        return y;
+    };
+
+    convertScreenCoordinateToTile = (oldPoint) => {
+        let point = new Point(oldPoint.x, oldPoint.y);
+
+        point.y -= this.canvas.height * 0.5;
+        point.x -= this.canvas.width/2;
+        point.y /= -1;
+        point.y /= Tile_Height;
+        point.x /= Tile_Width;
+        point.y += 0.5;
+        point.x += 0.5;
+        point.y += this.cameraFocusTileY;
+        point.x += this.cameraFocusTileX;
+
+        return point;
+    };
+
+    convertScreenXCoordinateToTile = (x) => {
+        x -= this.canvas.width/2;
+        x /= Tile_Width;
+        x += 0.5;
+        x += this.cameraFocusTileX;
+        return x;
+    };
+    convertScreenYCoordinateToTile = (y) => {
+        y -= this.canvas.height * 0.5;
+        y /= -1;
+        y /= Tile_Height;
+        y += 0.5;
+        y += this.cameraFocusTileY;
         return y;
     };
 
@@ -283,37 +340,87 @@ export class GameLogic {
     onMouseDown = (event) => {
         //check if eyedropper enabled
         if(!this.eyeDropperOn){
-            return;
+            //Handle tile placement
+            this.previouslyPlacedTileX = null;
+            this.previouslyPlacedTileY = null;
+            this.mouseDown = true;
+            //Get tile position
+            let mousePosition = this.getMousePosition(event);
+            this.previouslyPlacedTileX = this.convertScreenXCoordinateToTile(mousePosition.x);
+            this.previouslyPlacedTileY = this.convertScreenYCoordinateToTile(mousePosition.y);
+            this.placeTile(this.previouslyPlacedTileX, this.previouslyPlacedTileY);
+
+        } else {
+            //get mouse coordinates
+            let mousePosition = this.getMousePosition(event);
+            //get information about pixel at mouse coordinates from canvas
+            let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
+
+            //pull red data
+            let pixelRed = pixelInfo.data[0];
+            //pull green data
+            let pixelGreen = pixelInfo.data[1];
+            //pull blue data
+            let pixelBlue = pixelInfo.data[2];
+            //pull alpha data
+            let pixelAlpha = pixelInfo.data[3];
+
+            //set background color to a hex representation of the value pulled from canvas
+            //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
+            //set background color to a rgba representation of the value pulled from canvas
+            this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha + ")";
+
+            //set slider values to color selected
+            this.redSlider.value = pixelRed;
+            this.greenSlider.value = pixelGreen;
+            this.blueSlider.value = pixelBlue;
+            this.alphaSlider.value = pixelAlpha;
+            //switch cursor in canvas back to standard pointer
+            this.canvas.style.cursor = "pointer";
+
+            //turn off the eyedropper
+            this.eyeDropperOn = false;
         }
-        //get mouse coordinates
-        let mousePosition = this.getMousePosition(event);
-        //get information about pixel at mouse coordinates from canvas
-        let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
+    };
 
-        //pull red data
-        let pixelRed = pixelInfo.data[0];
-        //pull green data
-        let pixelGreen = pixelInfo.data[1];
-        //pull blue data
-        let pixelBlue = pixelInfo.data[2];
-        //pull alpha data
-        let pixelAlpha = pixelInfo.data[3];
+    onMouseMove = (event) => {
+        //possible preview window for eyedropper color picking goes here
+        if(!this.eyeDropperOn){
+            //Handle tile placement
+            if (this.mouseDown) {
+                //Get tile position
+                let mousePosition = this.getMousePosition(event);
+                let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
+                let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
+                if (this.previouslyPlacedTileX !== tileX || this.previouslyPlacedTileY !== tileY) {
+                    this.previouslyPlacedTileX = tileX;
+                    this.previouslyPlacedTileY = tileY;
 
-        //set background color to a hex representation of the value pulled from canvas
-        //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
-        //set background color to a rgba representation of the value pulled from canvas
-        this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha + ")";
+                    this.placeTile(this.previouslyPlacedTileX, this.previouslyPlacedTileY);
+                }
+            }
 
-        //set slider values to color selected
-        this.redSlider.value = pixelRed;
-        this.greenSlider.value = pixelGreen;
-        this.blueSlider.value = pixelBlue;
-        this.alphaSlider.value = pixelAlpha;
-        //switch cursor in canvas back to standard pointer
-        this.canvas.style.cursor = "pointer";
+        } else {
+            //get mouse coordinates
+            let mousePosition = this.getMousePosition(event);
+            //get information about pixel at mouse coordinates from canvas
+            let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
 
-        //turn off the eyedropper
-        this.eyeDropperOn = false;
+            //pull red data
+            let pixelRed = pixelInfo.data[0];
+            //pull green data
+            let pixelGreen = pixelInfo.data[1];
+            //pull blue data
+            let pixelBlue = pixelInfo.data[2];
+            //set the color of the preview square to whatever the mouse is over at the moment
+            this.previewSquare.color = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + 1 + ")";
+        }
+    };
+
+    onMouseUp = (event) => {
+        this.previouslyPlacedTileX = null;
+        this.previouslyPlacedTileY = null;
+        this.mouseDown = false;
     };
 
     onKeyDown = (event) => {
@@ -358,26 +465,6 @@ export class GameLogic {
         if (event.keyCode === 40 && this.downPressed === true) {
             this.downPressed = false;
         }
-    };
-
-    onMouseMove = (event) => {
-        //possible preview window for eyedropper color picking goes here
-        if(!this.eyeDropperOn){
-            return;
-        }
-        //get mouse coordinates
-        let mousePosition = this.getMousePosition(event);
-        //get information about pixel at mouse coordinates from canvas
-        let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
-
-        //pull red data
-        let pixelRed = pixelInfo.data[0];
-        //pull green data
-        let pixelGreen = pixelInfo.data[1];
-        //pull blue data
-        let pixelBlue = pixelInfo.data[2];
-        //set the color of the preview square to whatever the mouse is over at the moment
-        this.previewSquare.color = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + 1 + ")";
     };
 
     resize = () => {
