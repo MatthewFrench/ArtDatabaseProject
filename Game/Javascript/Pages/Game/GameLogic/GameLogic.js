@@ -243,12 +243,21 @@ export class GameLogic {
         }
 
         //Draw players
+        let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
+        if (focusPlayer !== null) {
+            let leftX = focusPlayer.getX() + 0.5 - Player_Width_Tiles/2;
+            let rightX = focusPlayer.getX() + 0.5 + Player_Width_Tiles/2;
+            let bottomY = focusPlayer.getY();
+            let topY = focusPlayer.getY() + Player_Height_Tiles;
+            this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * this.facingIndex, 0, Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
+        }
+
         this.board.getPlayers().forEach((player)=>{
+            if(player.playerID === this.cameraFocusPlayerID){
+                return;
+            }
             this.ctx.fillStyle = 'blue';
             this.ctx.strokeStyle = 'black';
-
-
-
             //this.ctx.beginPath();
 
             //Player X and Y is in the bottom center of the player rectangle
@@ -256,7 +265,22 @@ export class GameLogic {
             let rightX = player.getX() + 0.5 + Player_Width_Tiles/2;
             let bottomY = player.getY();
             let topY = player.getY() + Player_Height_Tiles;
-            this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * this.facingIndex, 0, Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
+
+            let facing = 0;
+            if(player.movingLeft){
+                facing = 9;
+            }
+            else if(player.movingRight){
+                facing = 5;
+            }
+            else if(player.jumping){
+                facing = 8;
+            }
+            else{
+                facing = 7;
+            }
+
+            this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * facing, 0, Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
 
 
             /*this.ctx.moveTo(this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(bottomY));
