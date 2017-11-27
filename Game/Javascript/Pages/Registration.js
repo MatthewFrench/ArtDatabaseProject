@@ -44,6 +44,7 @@ export class Registration {
     gotRegisterStatusMessage = async (success) => {
         console.log('Register status from server: ' + success);
         if (success) {
+            Network.Send(AccountMessageCreator.Login(this.usernameTxt.value, this.passwordTxt.value));
 
         }
         this.registerButton.disabled = false;
