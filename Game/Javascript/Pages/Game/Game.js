@@ -21,6 +21,7 @@ export class Game{
                     this.gameLogic.getCanvas(),
                     this.gameLogic.getEyeDropButton(),
                     this.gameLogic.getTileSelector(),
+                    this.gameLogic.getPreviewSquare(),
                     (this.boardSelector = new BoardSelector(this)).getDiv()
 
                 ]},
