@@ -18,6 +18,18 @@ module.exports = {
         loader: "sass-loader" // compiles Sass to CSS
       }]
     },
+
+        {
+            test: /\.(jpg|png|svg)$/,
+            use: [
+                {
+                    loader: 'file-loader',
+                    options: {}
+                }
+            ]
+        },
+
+
       {
         test: /\.js$/,
         exclude: /(node_modules|bower_components)/,

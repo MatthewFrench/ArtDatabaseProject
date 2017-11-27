@@ -25,8 +25,13 @@ module.exports = {
       },
           {
               test: /\.(jpg|png|svg)$/,
-              loader: 'file',
-              include: '/Images'
+              use: [
+                  {
+                      loader: 'file-loader',
+                      options: {}
+                  }
+              ]
+
           },
         {
           test: /\.js$/,

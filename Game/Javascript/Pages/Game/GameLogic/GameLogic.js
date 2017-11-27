@@ -5,6 +5,7 @@ import {TileLayerRenderer} from "./TileLayerRenderer/TileLayerRenderer";
 import {PhysicsLogic} from "./PhysicsLogic";
 import {GameMessageCreator} from "../../../Networking/Game/GameMessageCreator";
 import {Network} from "../../../Networking/Network";
+import spriteSheet from "../../../../Images/walkcyclevarious.png";
 
 const Tile_Height = 10;
 const Tile_Width = 10;
@@ -38,6 +39,9 @@ export class GameLogic {
         //holds the value of the color to be used for a tile
         this.previewSquare = Interface.Create({type: 'div', className: 'PreviewSquare'});
         this.eyeDropperOn = false;
+        this.playerSpriteSheet = new Image();
+        this.playerSpriteSheet.src = spriteSheet;
+
         this.canvas = Interface.Create({type: 'canvas', className: 'GameArea',
             onMouseDown: this.onMouseDown, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp,
             onMouseMove: this.onMouseMove, onMouseUp: this.onMouseUp});
