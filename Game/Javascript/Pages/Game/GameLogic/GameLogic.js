@@ -16,7 +16,7 @@ export class GameLogic {
         this.redSlider = Interface.Create({type: 'input', className: 'RedSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
         this.greenSlider = Interface.Create({type: 'input', className: 'GreenSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
         this.blueSlider = Interface.Create({type: 'input', className: 'BlueSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
-        this.alphaSlider = Interface.Create({type: 'input', className: 'AlphaSlider',  inputType: 'range', min: 0, max: 1, step: .01, value: 1, onChange: this.changePreviewColor});
+        this.alphaSlider = Interface.Create({type: 'input', className: 'AlphaSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 255, onChange: this.changePreviewColor});
         this.eyeDropButton = Interface.Create({type: 'div', text: '\r\neye\r\n\r\ndrop', className: 'EyeDropButton', onClick: this.eyeDropButtonClicked});
 
         this.tileSelector = Interface.Create({type: 'div', className: 'TileSelector', elements: [
@@ -25,10 +25,10 @@ export class GameLogic {
                 {type: 'div', text: 'G', className: 'GreenLabel'},
                 {type: 'div', text: 'B', className: 'BlueLabel'},
                 {type: 'div', text: 'A', className: 'AlphaLabel'},
-                {type: 'div', text: '0', className: 'RedValue'},
-                {type: 'div', text: '0', className: 'GreenValue'},
-                {type: 'div', text: '0', className: 'BlueValue'},
-                {type: 'div', text: '1', className: 'AlphaValue'},
+                {type: 'div', text: '255', className: 'RedValue'},
+                {type: 'div', text: '255', className: 'GreenValue'},
+                {type: 'div', text: '255', className: 'BlueValue'},
+                {type: 'div', text: '255', className: 'AlphaValue'},
             ]}),
             {type: 'div', text: 'Tile Type', className: 'TileLabel'},
             {type: 'div', text: 'Background', className: 'BackgroundButton', onClick: this.backgroundTileTypeClicked},
@@ -64,6 +64,13 @@ export class GameLogic {
         this.currentTileType = 4; //Solid
 
         this.tileLayerRenderer = new TileLayerRenderer(1000, 800);
+
+        this.redSlider.value = 0;
+        this.greenSlider.value = 0;
+        this.blueSlider.value = 0;
+        this.alphaSlider.value = 255;
+        this.changePreviewColor();
+        this.updateSliderLabels();
 
         this.logicLoop();
     }
@@ -105,7 +112,8 @@ export class GameLogic {
 
     //Called by the mouse handler to set a tile change to the server
     placeTile = (x, y) => {
-        this.updateTile(x, y, this.currentTileType);
+        Network.Send(GameMessageCreator.SetTile(x, y, this.currentTileType, parseInt(this.redSlider.value),
+            parseInt(this.greenSlider.value), parseInt(this.blueSlider.value), parseInt(this.alphaSlider.value)));
     };
 
     //addOrUpdateTile = (x, y, r, g, b, a) => {
@@ -275,8 +283,6 @@ export class GameLogic {
         point.y *= -1;
         point.x += this.canvas.width/2;
         point.y += this.canvas.height * 0.5;
-        point.x = Math.floor(point.x);
-        point.y = Math.floor(point.y);
         return point;
     };
     convertTileXCoordinateToScreen = (x) => {
@@ -284,7 +290,6 @@ export class GameLogic {
         x -= 0.5;
         x *= Tile_Width;
         x += this.canvas.width/2;
-        x = Math.floor(x);
         return x;
     };
     convertTileYCoordinateToScreen = (y) => {
@@ -293,7 +298,6 @@ export class GameLogic {
         y *= Tile_Height;
         y *= -1;
         y += this.canvas.height * 0.5;
-        y = Math.floor(y);
         return y;
     };
 
@@ -309,6 +313,8 @@ export class GameLogic {
         point.x += 0.5;
         point.y += this.cameraFocusTileY;
         point.x += this.cameraFocusTileX;
+        point.x = Math.floor(point.x);
+        point.y = Math.floor(point.y);
 
         return point;
     };
@@ -318,6 +324,7 @@ export class GameLogic {
         x /= Tile_Width;
         x += 0.5;
         x += this.cameraFocusTileX;
+        x = Math.floor(x);
         return x;
     };
     convertScreenYCoordinateToTile = (y) => {
@@ -326,6 +333,7 @@ export class GameLogic {
         y /= Tile_Height;
         y += 0.5;
         y += this.cameraFocusTileY;
+        y = Math.floor(y);
         return y;
     };
 
@@ -368,7 +376,7 @@ export class GameLogic {
             //set background color to a hex representation of the value pulled from canvas
             //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
             //set background color to a rgba representation of the value pulled from canvas
-            this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha + ")";
+            this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha/255 + ")";
 
             //set slider values to color selected
             this.redSlider.value = pixelRed;
@@ -420,7 +428,7 @@ export class GameLogic {
             //set background color to a rgba representation of the value pulled from canvas
             //this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha + ")";
 
-            this.previewSquare.style.backgroundColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha + ")";
+            this.previewSquare.style.backgroundColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha/255 + ")";
 
             //set slider values to color selected
             this.redSlider.value = pixelRed;
@@ -540,7 +548,7 @@ export class GameLogic {
         let bh = parseInt(this.blueSlider.value, 10);
         let ah = parseFloat(this.alphaSlider.value, 10);
 
-        this.previewSquare.style.backgroundColor = 'rgba(' + rh + ", " + gh + ", " + bh + ", " + ah + ")";
+        this.previewSquare.style.backgroundColor = 'rgba(' + rh + ", " + gh + ", " + bh + ", " + ah/255 + ")";
         this.updateSliderLabels();
 
     };
@@ -550,57 +558,10 @@ export class GameLogic {
         this.eyeDropperOn = true;
     };
 
-    backgroundButtonClicked = () => {
-        //whatever Matt wants to update the selected tile type for placement
-    };
-
-    solidButtonClicked = () => {
-        //whatever Matt wants to update the selected tile type for placement
-    };
-
-    foregroundButtonClicked = () => {
-        //whatever Matt wants to update the selected tile type for placement
-    };
-
     updateSliderLabels = () => {
         this.rgbaLabel.childNodes[4].innerText = this.redSlider.value;
         this.rgbaLabel.childNodes[5].innerText = this.greenSlider.value;
         this.rgbaLabel.childNodes[6].innerText = this.blueSlider.value;
         this.rgbaLabel.childNodes[7].innerText = this.alphaSlider.value;
-    }
-}
-
-
-class SquareShape {
-    constructor(x, y, w, h, color) {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
-        this.color = color;
-    }
-
-    getX = () => {
-        return this.x;
-    };
-
-    getY = () => {
-        return this.y;
-    };
-
-    getWidth = () => {
-        return this.w;
-    };
-
-    getHeight = () => {
-        return this.h;
-    };
-
-    getColor = () => {
-        return this.color;
-    };
-
-    isPositionInSquare = (x, y) =>{
-        return (x >= this.x && x <= this.x + this.w && y >= this.y && y <= this.y + this.h);
     }
 }
