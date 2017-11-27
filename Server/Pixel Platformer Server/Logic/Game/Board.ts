@@ -5,6 +5,8 @@ import {Physics} from "./Physics";
 import {GameMessageCreator} from "../../Networking/Game/GameMessageCreator";
 import {ChatMessageCreator} from "../../Networking/Chat/ChatMessageCreator";
 import {Stopwatch} from "../../Utility/Stopwatch";
+import {Network} from "../../Networking/Network";
+import {NetworkHandler} from "../../Networking/NetworkHandler";
 
 export class Board {
     physics : Physics;
@@ -81,6 +83,12 @@ export class Board {
         }
     };
 
+    updateBoardSelectorForThisBoard = () => {
+        NetworkHandler.SendToAllLoggedIn(GameMessageCreator.UpdateSelectorBoard(this.boardID,
+            this.getName(), this.getNumberOfPlayers(), this.getLastModifiedDate(),
+            this.getTileCount()));
+    };
+
     addPlayer = (player : Player) => {
         //Send add player to all players
         this.sendToAllPlayersInBoard(GameMessageCreator.AddPlayer(player));
@@ -104,6 +112,8 @@ export class Board {
         player.send(ChatMessageCreator.AddChatMessage(this.boardID,
             player.getAccountData().getPlayerID(), '<span style="color: red">Server</span>',
             'Entered Board - ' + this.name, new Date()));
+
+        this.updateBoardSelectorForThisBoard();
     };
 
     removePlayer = (player : Player) => {
@@ -111,6 +121,8 @@ export class Board {
         //Send remove player to all players
         this.sendToAllPlayersInBoard(GameMessageCreator.RemovePlayer(player));
         player.getGameData().setCurrentBoard(null);
+
+        this.updateBoardSelectorForThisBoard();
     };
 
     addOrUpdateTile = (x, y, r, g, b, a, tileType, player: Player) => {
@@ -134,6 +146,8 @@ export class Board {
 
         //Send updates to players
         this.sendToAllPlayersInBoard(GameMessageCreator.UpdateTile(tile));
+
+        this.updateBoardSelectorForThisBoard();
     };
 
     sendToAllPlayersInBoard = (binaryMessage) => {
