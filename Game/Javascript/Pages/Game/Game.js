@@ -20,6 +20,7 @@ export class Game{
                     this.gameLogic.getAlphaSlider(),
                     this.gameLogic.getCanvas(),
                     this.gameLogic.getEyeDropButton(),
+                    this.gameLogic.getTileSelector(),
                     (this.boardSelector = new BoardSelector(this)).getDiv()
 
                 ]},
