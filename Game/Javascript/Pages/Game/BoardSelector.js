@@ -13,11 +13,14 @@ export class BoardSelector {
         })
     }
 
+    boardClicked = (boardID) => {
+        this.game.requestSwitchToBoard(boardID);
+    };
 
     updateBoard = (boardName, boardID, numberInBoard, lastModified, tileCount) => {
         let foundRow = this.getRowByBoardID(boardID);
         if(foundRow === null){
-            let newRow = new BoardRow(boardName, boardID, numberInBoard, lastModified, tileCount);
+            let newRow = new BoardRow(boardName, boardID, numberInBoard, lastModified, tileCount, this.boardClicked);
             this.rows.push(newRow);
             this.rowContainer.appendChild(newRow.getDiv());
         }
