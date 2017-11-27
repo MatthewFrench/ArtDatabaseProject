@@ -79,6 +79,11 @@ export class Query {
         sql = 'insert into TileType (tile_id, type_id) values (?, ?) ' +
             'on duplicate key update type_id = ?';
         await connection.query(sql, [tileID, tileTypeID, tileTypeID]);
+
+        //Add to history
+        let historyID = await Query.SetHistory(new Date(), tileID, creatorOrLastModifiedID, r, g, b, a);
+        await Query.SetHistoryTileType(historyID, tileTypeID);
+
         //Release connection
         connection.release();
         return tileID;
@@ -396,13 +401,25 @@ export class Query {
      * (Params) - historyID, date_time, tile_id, player_id, color
      * (Returns) - boolean
      */
-    static async SetHistory(historyID, dateTime, tileID, playerID, color) {
+    static async SetHistory(dateTime, tileID, playerID, r, g, b, a) {
         //Get a connection
         let connection = await databaseInstance.getConnection();
         //Create SQL
-        let sql = "insert into History(history_id, date_time, tile_id, player_id, color) values (?,?,?,?,?)";
+        let sql = "insert into History(date_time, tile_id, player_id, color_r, color_g, color_b, color_a) values (?,?,?,?,?,?,?)";
         //Execute Query
-        let [result] = await connection.query(sql, [historyID, dateTime, tileID, playerID, color]);
+        let [result] = await connection.query(sql, [dateTime, tileID, playerID, r, g, b, a]);
+        //Release the connection
+        connection.release();
+        //Pass back results
+        return result['insertId'];
+    }
+    static async SetHistoryTileType(historyID, tileType) {
+        //Get a connection
+        let connection = await databaseInstance.getConnection();
+        //Create SQL
+        let sql = "insert into HistoryTileType(history_id, type_id) values (?,?)";
+        //Execute Query
+        let [result] = await connection.query(sql, [historyID, tileType]);
         //Release the connection
         connection.release();
         //Pass back results
