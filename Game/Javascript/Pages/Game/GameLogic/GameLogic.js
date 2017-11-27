@@ -36,7 +36,7 @@ export class GameLogic {
             {type: 'div', text: 'Foreground', className: 'ForegroundButton', onClick: this.foregroundTileTypeClicked}
         ]});
         //holds the value of the color to be used for a tile
-        this.previewSquare = new SquareShape(88, 85, 15, 15, "rgba(0, 0, 0, 1)");
+        this.previewSquare = Interface.Create({type: 'div', className: 'PreviewSquare'});
         this.eyeDropperOn = false;
         this.canvas = Interface.Create({type: 'canvas', className: 'GameArea',
             onMouseDown: this.onMouseDown, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp,
@@ -237,10 +237,10 @@ export class GameLogic {
         }*/
 
         //Draw preview square for color selection using slider/picker system
-        this.ctx.fillStyle = this.previewSquare.getColor();
+        /*this.ctx.fillStyle = this.previewSquare.getColor();
         this.ctx.strokeRect(this.previewSquare.getX(), this.previewSquare.getY(), this.previewSquare.getWidth(), this.previewSquare.getHeight());
         this.ctx.fillRect(this.previewSquare.getX(), this.previewSquare.getY(), this.previewSquare.getWidth(), this.previewSquare.getHeight());
-        this.ctx.stroke();
+        this.ctx.stroke();*/
     };
 
     enterTileDrawingCoordinateSystem = () => {
@@ -412,8 +412,28 @@ export class GameLogic {
             let pixelGreen = pixelInfo.data[1];
             //pull blue data
             let pixelBlue = pixelInfo.data[2];
-            //set the color of the preview square to whatever the mouse is over at the moment
-            this.previewSquare.color = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + 1 + ")";
+            //pull alpha data
+            let pixelAlpha = pixelInfo.data[3];
+
+            //set background color to a hex representation of the value pulled from canvas
+            //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
+            //set background color to a rgba representation of the value pulled from canvas
+            //this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha + ")";
+
+            this.previewSquare.style.backgroundColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha + ")";
+
+            //set slider values to color selected
+            this.redSlider.value = pixelRed;
+            this.greenSlider.value = pixelGreen;
+            this.blueSlider.value = pixelBlue;
+            this.alphaSlider.value = pixelAlpha;
+            //switch cursor in canvas back to standard pointer
+            this.canvas.style.cursor = "pointer";
+
+            //turn off the eyedropper
+            this.eyeDropperOn = false;
+
+            this.updateSliderLabels();
         }
     };
 
@@ -512,18 +532,19 @@ export class GameLogic {
         return this.tileSelector;
     };
 
+    getPreviewSquare = () => {
+        return this.previewSquare;
+    };
+
     changePreviewColor = () => {
         let rh = parseInt(this.redSlider.value, 10);
         let gh = parseInt(this.greenSlider.value, 10);
         let bh = parseInt(this.blueSlider.value, 10);
         let ah = parseFloat(this.alphaSlider.value, 10);
 
-        this.previewSquare.color = 'rgba(' + rh + ", " + gh + ", " + bh + ", " + ah + ")";
+        this.previewSquare.style.backgroundColor = 'rgba(' + rh + ", " + gh + ", " + bh + ", " + ah + ")";
+        this.updateSliderLabels();
 
-        this.rgbaLabel.childNodes[4].innerText = this.redSlider.value;
-        this.rgbaLabel.childNodes[5].innerText = this.greenSlider.value;
-        this.rgbaLabel.childNodes[6].innerText = this.blueSlider.value;
-        this.rgbaLabel.childNodes[7].innerText = this.alphaSlider.value;
     };
 
     eyeDropButtonClicked = () => {
@@ -531,7 +552,24 @@ export class GameLogic {
         this.eyeDropperOn = true;
     };
 
+    backgroundButtonClicked = () => {
+        //whatever Matt wants to update the selected tile type for placement
+    };
 
+    solidButtonClicked = () => {
+        //whatever Matt wants to update the selected tile type for placement
+    };
+
+    foregroundButtonClicked = () => {
+        //whatever Matt wants to update the selected tile type for placement
+    };
+
+    updateSliderLabels = () => {
+        this.rgbaLabel.childNodes[4].innerText = this.redSlider.value;
+        this.rgbaLabel.childNodes[5].innerText = this.greenSlider.value;
+        this.rgbaLabel.childNodes[6].innerText = this.blueSlider.value;
+        this.rgbaLabel.childNodes[7].innerText = this.alphaSlider.value;
+    }
 }
 
 
