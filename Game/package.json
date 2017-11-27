@@ -4,7 +4,7 @@
   "description": "Pixel Platformer game.",
   "main": "webpack.config.js",
   "dependencies": {
-    "Buffer": "0.0.0",
+    "buffer": "^5.0.8",
     "bcryptjs": "^2.4.3",
     "lucy-b2": "^1.0.1",
     "socket.io-client": "^2.0.4",
