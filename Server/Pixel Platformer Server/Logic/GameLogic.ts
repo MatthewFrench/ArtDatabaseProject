@@ -25,7 +25,7 @@ export class GameLogic {
             for (let board of boards) {
                 let boardName = board['name'];
                 let boardID = board['board_id'];
-                this.boards.set(boardID, new Board(boardID));
+                this.boards.set(boardID, new Board(boardID, () => {}));
             }
         });
         //Setup the logic loop
@@ -94,7 +94,9 @@ export class GameLogic {
         let board = this.getBoardByID(boardID);
         if (board === null) {
             //Set default board
-            board = this.boards.get(1);
+            if (this.boards.size > 0) {
+                board = this.boards.values().next().value;
+            }
         }
         if (player.getGameData().getCurrentBoard() !== null) {
             player.getGameData().getCurrentBoard().removePlayer(player);
@@ -103,7 +105,9 @@ export class GameLogic {
         player.getGameData().setSpeedY(0);
         player.getGameData().setX(x);
         player.getGameData().setY(y);
-        board.addPlayer(player);
+        if (board !== null) {
+            board.addPlayer(player);
+        }
     };
     handleNewCreateWorldMessage = async(player: Player, worldName: string) => {
         let boardID = await Query.CreateBoard(worldName, player.getAccountData().getPlayerID());
@@ -115,13 +119,14 @@ export class GameLogic {
         }
         let boardInfo = await Query.GetBoardByID(boardID);
         let boardName = boardInfo['name'];
-        let board = new Board(boardID);
-        this.boards.set(boardID, board);
+        let board = new Board(boardID, ()=>{
+            this.boards.set(boardID, board);
 
-        //Send board selector update message
-        let message = GameMessageCreator.UpdateSelectorBoard(boardID,
-                board.getName(), board.getNumberOfPlayers(), board.getLastModifiedDate(),
+            //Send board selector update message
+            let message = GameMessageCreator.UpdateSelectorBoard(boardID,
+                boardName, board.getNumberOfPlayers(), board.getLastModifiedDate(),
                 board.getTileCount());
-        NetworkHandler.SendToAllLoggedIn(message);
+            NetworkHandler.SendToAllLoggedIn(message);
+        });
     };
 }
