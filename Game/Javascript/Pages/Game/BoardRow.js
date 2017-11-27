@@ -1,13 +1,16 @@
 import {Interface} from "../../Utility/Interface.js";
 
 export class BoardRow{
-    constructor(boardName, boardID, numberInBoard, lastModified, tileCount){
+    constructor(boardName, boardID, numberInBoard, lastModified, tileCount, boardClickedCallback){
+        this.boardClickedCallback = boardClickedCallback;
         this.boardName = boardName;
         this.boardID = boardID;
         this.numberInBoard = numberInBoard;
         this.lastModified = lastModified;
         this.tileCount = tileCount;
-        this.mainDiv = Interface.Create({type: 'div', className: 'BoardRow', elements: [
+        this.mainDiv = Interface.Create({type: 'div', className: 'BoardRow',
+            onClick: () => {this.boardClickedCallback(this.boardID);},
+            elements: [
             {type: 'div', elements: [
                 this.boardNameDiv = Interface.Create({type: 'div', text: boardName, className: 'BoardName'}),
                 {type: 'div', elements: [

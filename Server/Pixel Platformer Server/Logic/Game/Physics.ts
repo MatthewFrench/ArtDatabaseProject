@@ -123,7 +123,7 @@ export class Physics {
             playerGameData.setX(x);
             playerGameData.setY(y);
             playerGameData.setSpeedX(speedX);
-            playerGameData.setSpeedX(speedY);
+            playerGameData.setSpeedY(speedY);
         });
     };
 
