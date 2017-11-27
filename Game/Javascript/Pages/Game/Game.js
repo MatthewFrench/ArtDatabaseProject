@@ -77,6 +77,8 @@ export class Game{
         this.gameLogic.updateTile(x, y, typeID, r, g, b, a);
     };
     gotBoardSwitchedToMessage = async (boardID) => {
+        this.boardSelector.setCurrentBoardID(boardID);
+        this.boardSelector.sortBoards();
         this.gameLogic.resetBoardToNewBoard(boardID);
     };
     gotPlayerUpdatedMessage = async (playerID, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
