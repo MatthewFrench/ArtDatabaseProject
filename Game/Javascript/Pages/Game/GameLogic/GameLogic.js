@@ -13,11 +13,28 @@ const Player_Height_Tiles = 5;
 
 export class GameLogic {
     constructor() {
-        this.greenSlider = Interface.Create({type: 'input', className: 'RedSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
-        this.redSlider = Interface.Create({type: 'input', className: 'GreenSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
+        this.redSlider = Interface.Create({type: 'input', className: 'RedSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
+        this.greenSlider = Interface.Create({type: 'input', className: 'GreenSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
         this.blueSlider = Interface.Create({type: 'input', className: 'BlueSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
         this.alphaSlider = Interface.Create({type: 'input', className: 'AlphaSlider',  inputType: 'range', min: 0, max: 1, step: .01, value: 1, onChange: this.changePreviewColor});
         this.eyeDropButton = Interface.Create({type: 'div', text: '\r\neye\r\n\r\ndrop', className: 'EyeDropButton', onClick: this.eyeDropButtonClicked});
+
+        this.tileSelector = Interface.Create({type: 'div', className: 'TileSelector', elements: [
+            this.rgbaLabel = Interface.Create({type: 'div', className: 'RGBALabel', elements: [
+                {type: 'div', text: 'R', className: 'RedLabel'},
+                {type: 'div', text: 'G', className: 'GreenLabel'},
+                {type: 'div', text: 'B', className: 'BlueLabel'},
+                {type: 'div', text: 'A', className: 'AlphaLabel'},
+                {type: 'div', text: '0', className: 'RedValue'},
+                {type: 'div', text: '0', className: 'GreenValue'},
+                {type: 'div', text: '0', className: 'BlueValue'},
+                {type: 'div', text: '1', className: 'AlphaValue'},
+            ]}),
+            {type: 'div', text: 'Tile Type', className: 'TileLabel'},
+            {type: 'div', text: 'Background', className: 'BackgroundButton', onClick: this.backgroundButtonClicked},
+            {type: 'div', text: 'Solid', className: 'SolidButton', onClick: this.solidButtonClicked},
+            {type: 'div', text: 'Foreground', className: 'ForegroundButton', onClick: this.foregroundButtonClicked}
+        ]});
         //holds the value of the color to be used for a tile
         this.previewSquare = new SquareShape(88, 85, 15, 15, "rgba(0, 0, 0, 1");
         this.eyeDropperOn = false;
@@ -404,6 +421,10 @@ export class GameLogic {
         return this.eyeDropButton;
     };
 
+    getTileSelector = () => {
+        return this.tileSelector;
+    };
+
     changePreviewColor = () => {
         let rh = parseInt(this.redSlider.value, 10);
         let gh = parseInt(this.greenSlider.value, 10);
@@ -411,6 +432,11 @@ export class GameLogic {
         let ah = parseFloat(this.alphaSlider.value, 10);
 
         this.previewSquare.color = 'rgba(' + rh + ", " + gh + ", " + bh + ", " + ah + ")";
+
+        this.rgbaLabel.childNodes[4].innerText = this.redSlider.value;
+        this.rgbaLabel.childNodes[5].innerText = this.greenSlider.value;
+        this.rgbaLabel.childNodes[6].innerText = this.blueSlider.value;
+        this.rgbaLabel.childNodes[7].innerText = this.alphaSlider.value;
     };
 
     eyeDropButtonClicked = () => {
