@@ -33,6 +33,11 @@
     border-top: solid 1px black;
     text-align: left;
     padding: 5px;
+
+    &.Selected {
+      background-color: lightblue;
+    }
+
     .BoardName{
       font-size: 20px;
       font-weight: bold;
