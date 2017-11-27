@@ -21,6 +21,11 @@ const Frame_Next_Max = 4;
 const Frame_Total_Max = 2;
 const Idiot_Frame_Table = [1, 0, 2];
 
+const Background_Tile_Type = 3;
+const Solid_Tile_Type = 4;
+const Foreground_Tile_Type = 5;
+const Deleted_Tile_Type = 6;
+
 export class GameLogic {
     constructor() {
         this.redSlider = Interface.Create({type: 'input', className: 'RedSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
@@ -41,9 +46,10 @@ export class GameLogic {
                 {type: 'div', text: '255', className: 'AlphaValue'},
             ]}),
             {type: 'div', text: 'Tile Type', className: 'TileLabel'},
-            {type: 'div', text: 'Background', className: 'BackgroundButton', onClick: this.backgroundTileTypeClicked},
-            {type: 'div', text: 'Solid', className: 'SolidButton', onClick: this.solidTileTypeClicked},
-            {type: 'div', text: 'Foreground', className: 'ForegroundButton', onClick: this.foregroundTileTypeClicked}
+            this.deleteTypeButton = Interface.Create({type: 'div', text: 'Delete', className: 'DeleteButton', onClick: this.deleteTileTypeClicked}),
+            this.backgroundTypeButton = Interface.Create({type: 'div', text: 'Background', className: 'BackgroundButton', onClick: this.backgroundTileTypeClicked}),
+            this.solidTypeButton = Interface.Create({type: 'div', text: 'Solid', className: 'SolidButton Selected', onClick: this.solidTileTypeClicked}),
+            this.foregroundTypeButton = Interface.Create({type: 'div', text: 'Foreground', className: 'ForegroundButton', onClick: this.foregroundTileTypeClicked})
         ]});
         //holds the value of the color to be used for a tile
         this.previewSquare = Interface.Create({type: 'div', className: 'PreviewSquare'});
@@ -77,9 +83,11 @@ export class GameLogic {
         this.previouslyPlacedTileX = null;
         this.previouslyPlacedTileY = null;
         this.mouseDown = false;
-        this.currentTileType = 4; //Solid
+        this.currentTileType = Solid_Tile_Type;
 
-        this.tileLayerRenderer = new TileLayerRenderer(1000, 800);
+        this.backgroundTileLayerRenderer = new TileLayerRenderer(1000, 800, Background_Tile_Type);
+        this.solidTileLayerRenderer = new TileLayerRenderer(1000, 800, Solid_Tile_Type);
+        this.foregroundTileLayerRenderer = new TileLayerRenderer(1000, 800, Foreground_Tile_Type);
 
         this.redSlider.value = 0;
         this.greenSlider.value = 0;
@@ -92,13 +100,32 @@ export class GameLogic {
     }
 
     backgroundTileTypeClicked = () => {
-        this.currentTileType = 3;
+        this.deleteTypeButton.classList.remove('Selected');
+        this.solidTypeButton.classList.remove('Selected');
+        this.foregroundTypeButton.classList.remove('Selected');
+        this.backgroundTypeButton.classList.add('Selected');
+        this.currentTileType = Background_Tile_Type;
     };
     solidTileTypeClicked = () => {
-        this.currentTileType = 4;
+        this.deleteTypeButton.classList.remove('Selected');
+        this.solidTypeButton.classList.add('Selected');
+        this.foregroundTypeButton.classList.remove('Selected');
+        this.backgroundTypeButton.classList.remove('Selected');
+        this.currentTileType = Solid_Tile_Type;
     };
     foregroundTileTypeClicked = () => {
-        this.currentTileType = 5;
+        this.deleteTypeButton.classList.remove('Selected');
+        this.solidTypeButton.classList.remove('Selected');
+        this.foregroundTypeButton.classList.add('Selected');
+        this.backgroundTypeButton.classList.remove('Selected');
+        this.currentTileType = Foreground_Tile_Type;
+    };
+    deleteTileTypeClicked = () => {
+        this.deleteTypeButton.classList.add('Selected');
+        this.solidTypeButton.classList.remove('Selected');
+        this.foregroundTypeButton.classList.remove('Selected');
+        this.backgroundTypeButton.classList.remove('Selected');
+        this.currentTileType = Deleted_Tile_Type;
     };
 
     resetBoardToNewBoard = (boardID) => {
@@ -166,7 +193,7 @@ export class GameLogic {
                     }
                     this.facingIndex = 9 + Idiot_Frame_Table[this.frameNumber];
                 }
-                console.log(this.frameNumber, this.frameNextNumber);
+                //console.log(this.frameNumber, this.frameNextNumber);
                 //this.physicsLogic.applyForceToPlayer(focusPlayer, -10, 0);
                 //focusPlayer.setX(focusPlayer.getX() - 0.1);
             } else {
@@ -183,7 +210,7 @@ export class GameLogic {
                     }
                     this.facingIndex = 3 + Idiot_Frame_Table[this.frameNumber];
                 }
-                console.log(this.frameNumber, this.frameNextNumber);
+                //console.log(this.frameNumber, this.frameNextNumber);
                 //this.physicsLogic.applyForceToPlayer(focusPlayer, 10, 0);
                 //focusPlayer.setX(focusPlayer.getX() + 0.1);
             } else {
@@ -207,9 +234,9 @@ export class GameLogic {
             this.cameraFocusTileX = focusPlayer.getX();
             this.cameraFocusTileY = focusPlayer.getY();
         }
-        this.tileLayerRenderer.setFocusTilePosition(
-            this.cameraFocusTileX, this.cameraFocusTileY
-        );
+        this.backgroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
+        this.solidTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
+        this.foregroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
     };
 
     draw = () => {
@@ -220,27 +247,15 @@ export class GameLogic {
         this.ctx.fillStyle = "rgba(255, 255, 255, 1)";
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.tileLayerRenderer.draw(this.board);
+        this.backgroundTileLayerRenderer.draw(this.board);
 
-        this.ctx.drawImage(this.tileLayerRenderer.getCanvas(), 0, 0);
+        this.solidTileLayerRenderer.draw(this.board);
+
+        this.ctx.drawImage(this.backgroundTileLayerRenderer.getCanvas(), 0, 0);
+        this.ctx.drawImage(this.solidTileLayerRenderer.getCanvas(), 0, 0);
 
         //Test drawing in tile transformation
         this.ctx.save();
-        //this.enterTileDrawingCoordinateSystem();
-
-        //Draw
-        let tile = this.board.getTile(0, 0);
-        if (tile !== null) {
-            this.ctx.strokeStyle = 'black';
-            this.ctx.lineWidth = 1;//0.1;
-            this.ctx.beginPath();
-            this.ctx.moveTo(this.convertTileXCoordinateToScreen(tile.getX()), this.convertTileYCoordinateToScreen(tile.getY()));
-            this.ctx.lineTo(this.convertTileXCoordinateToScreen(tile.getX()), this.convertTileYCoordinateToScreen(tile.getY() + 1));
-            this.ctx.lineTo(this.convertTileXCoordinateToScreen(tile.getX() + 1), this.convertTileYCoordinateToScreen(tile.getY() + 1));
-            this.ctx.lineTo(this.convertTileXCoordinateToScreen(tile.getX() + 1), this.convertTileYCoordinateToScreen(tile.getY()));
-            this.ctx.closePath();
-            this.ctx.stroke();
-        }
 
         //Draw players
         let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
@@ -304,6 +319,10 @@ export class GameLogic {
         });
 
         this.ctx.restore();
+
+        this.foregroundTileLayerRenderer.draw(this.board);
+        this.ctx.drawImage(this.foregroundTileLayerRenderer.getCanvas(), 0, 0);
+
 
         //Draw color selector
         /*this.ctx.strokeStyle = 'black';
@@ -578,7 +597,9 @@ export class GameLogic {
         if (canvasWidth !== cssWidth || canvasHeight !== cssHeight) {
             this.canvas.width = cssWidth;
             this.canvas.height = cssHeight;
-            this.tileLayerRenderer.setSize(cssWidth, cssHeight);
+            this.backgroundTileLayerRenderer.setSize(cssWidth, cssHeight);
+            this.solidTileLayerRenderer.setSize(cssWidth, cssHeight);
+            this.foregroundTileLayerRenderer.setSize(cssWidth, cssHeight);
         }
     };
 

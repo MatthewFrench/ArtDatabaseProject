@@ -92,7 +92,7 @@
         border: solid 2px #b5b5b5;
         position: absolute;
         width: 100px;
-        height: 90px;
+        height: 108px;
         left: 1px;
         top: 104px;
 
@@ -178,7 +178,11 @@
           top: 24px;
         }
 
-        .BackgroundButton{
+        .Selected {
+          background-color: lightblue;
+        }
+
+        .DeleteButton{
           font-size: 12px;
           padding: 1px;
           border-radius: 1px;
@@ -191,7 +195,7 @@
           cursor: pointer;
         }
 
-        .SolidButton{
+        .BackgroundButton{
           font-size: 12px;
           padding: 1px;
           border-radius: 1px;
@@ -204,7 +208,7 @@
           cursor: pointer;
         }
 
-        .ForegroundButton{
+        .SolidButton{
           font-size: 12px;
           padding: 1px;
           border-radius: 1px;
@@ -213,6 +217,19 @@
           width: 60px;
           left: 18px;
           top: 72px;
+          height: 12px;
+          cursor: pointer;
+        }
+
+        .ForegroundButton{
+          font-size: 12px;
+          padding: 1px;
+          border-radius: 1px;
+          border: solid 1px #b5b5b5;
+          position: absolute;
+          width: 60px;
+          left: 18px;
+          top: 90px;
           height: 15px;
           cursor: pointer;
         }

@@ -18,5 +18,5 @@ void main() {
 
     gl_Position = vec4(clipSpace, 0, 1);
     //Set color
-    fragment_Color = a_color;
+    fragment_Color = a_color / 255.0;
 }
