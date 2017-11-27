@@ -548,29 +548,29 @@ export class GameLogic {
 
     onKeyDown = (event) => {
         //Left
-        if (event.keyCode === 37 && this.leftPressed === false) {
+        if ((event.keyCode === 37 || event.keyCode === 65) && this.leftPressed === false) {
             this.leftPressed = true;
             Network.Send(GameMessageCreator.MovingLeft(this.leftPressed));
         }
         //Right
-        if (event.keyCode === 39 && this.rightPressed === false) {
+        if ((event.keyCode === 39 || event.keyCode === 68) && this.rightPressed === false) {
             this.rightPressed = true;
             Network.Send(GameMessageCreator.MovingRight(this.rightPressed));
         }
         //Up
-        if (event.keyCode === 38 && this.upPressed === false) {
+        if ((event.keyCode === 38 || event.keyCode === 87) && this.upPressed === false) {
             this.upPressed = true;
             Network.Send(GameMessageCreator.Jumping(this.upPressed));
         }
         //Down
-        if (event.keyCode === 40 && this.downPressed === false) {
+        if ((event.keyCode === 40 || event.keyCode === 83) && this.downPressed === false) {
             this.downPressed = true;
         }
     };
 
     onKeyUp = (event) => {
         //Left
-        if (event.keyCode === 37 && this.leftPressed === true) {
+        if ((event.keyCode === 37 || event.keyCode === 65) && this.leftPressed === true) {
             this.leftPressed = false;
             this.facingIndex = 10;
             this.frameNextNumber = 0;
@@ -578,7 +578,7 @@ export class GameLogic {
             Network.Send(GameMessageCreator.MovingLeft(this.leftPressed));
         }
         //Right
-        if (event.keyCode === 39 && this.rightPressed === true) {
+        if ((event.keyCode === 39 || event.keyCode === 68) && this.rightPressed === true) {
             this.rightPressed = false;
             this.facingIndex = 4;
             this.frameNextNumber = 0;
@@ -586,13 +586,13 @@ export class GameLogic {
             Network.Send(GameMessageCreator.MovingRight(this.rightPressed));
         }
         //Up
-        if (event.keyCode === 38 && this.upPressed === true) {
+        if ((event.keyCode === 38 || event.keyCode === 87) && this.upPressed === true) {
             this.upPressed = false;
             this.facingIndex = 4;
             Network.Send(GameMessageCreator.Jumping(this.upPressed));
         }
         //Down
-        if (event.keyCode === 40 && this.downPressed === true) {
+        if ((event.keyCode === 40 || event.keyCode === 83) && this.downPressed === true) {
             this.downPressed = false;
         }
     };
