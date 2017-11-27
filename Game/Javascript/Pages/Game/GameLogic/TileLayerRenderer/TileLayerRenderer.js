@@ -6,8 +6,9 @@ const Verts_Per_Tile = 6;
 const Num_Per_Color = 4; // r, g, b, a
 
 export class TileLayerRenderer {
-    constructor(layerWidth, layerHeight) {
+    constructor(layerWidth, layerHeight, renderTileType) {
         //************** Variables
+        this.renderTileType = renderTileType;
         //This is the center of where the camera is looking
         this.focusTileX = 0;
         this.focusTileY = 0;
@@ -209,7 +210,7 @@ export class TileLayerRenderer {
         for (let tileY = bottomTile; tileY < topTile; tileY++) {
             for (let tileX = leftTile; tileX < rightTile; tileX++) {
                 let tile = board.getTile(tileX, tileY);
-                if (tile !== null) {
+                if (tile !== null && tile.getTypeID() === this.renderTileType) {
                     this.setRectanglePositionInPositionArray(this.actualDrawTileCount,
                         tile.getX() * Tile_Width + halfScreenWidth + offsetX,
                         tile.getY() * Tile_Height + halfScreenHeight + offsetY,
