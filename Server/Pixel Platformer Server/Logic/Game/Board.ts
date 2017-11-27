@@ -4,6 +4,7 @@ import {Tile} from "./Tile";
 import {Physics} from "./Physics";
 import {GameMessageCreator} from "../../Networking/Game/GameMessageCreator";
 import {ChatMessageCreator} from "../../Networking/Chat/ChatMessageCreator";
+import {Stopwatch} from "../../Utility/Stopwatch";
 
 export class Board {
     physics : Physics;
@@ -16,6 +17,7 @@ export class Board {
     maxWidth: number;
     maxHeight: number;
     lastModifiedDate = new Date();
+    updatePlayerStopwatch = new Stopwatch();
 
     constructor(boardID, onFinishLoad : () => void) {
         this.physics = new Physics(this);
@@ -71,8 +73,11 @@ export class Board {
     logic = () => {
         this.physics.logic();
         //Send moving player locations
-        for (let [playerID, player] of this.players) {
-            this.sendToAllPlayersInBoard(GameMessageCreator.UpdatePlayer(player));
+        if (this.updatePlayerStopwatch.getMilliseconds() >= 30) {
+            this.updatePlayerStopwatch.reset();
+            for (let [playerID, player] of this.players) {
+                this.sendToAllPlayersInBoard(GameMessageCreator.UpdatePlayer(player));
+            }
         }
     };
 
