@@ -18,6 +18,7 @@ export class Board {
     lastModifiedDate = new Date();
 
     constructor(boardID) {
+        this.physics = new Physics(this);
         this.boardID = boardID;
         this.players = new Map();
         this.tiles = new Map();

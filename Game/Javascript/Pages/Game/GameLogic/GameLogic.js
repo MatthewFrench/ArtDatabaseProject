@@ -3,6 +3,9 @@ import {Board} from "./Board";
 import {Point} from "./Point";
 import {TileLayerRenderer} from "./TileLayerRenderer/TileLayerRenderer";
 import {PhysicsLogic} from "./PhysicsLogic";
+import {GameMessageCreator} from "../../../Networking/Game/GameMessageCreator";
+import {Network} from "../../../Networking/Network";
+
 const Tile_Height = 10;
 const Tile_Width = 10;
 const Player_Width_Tiles = 2;
@@ -47,9 +50,7 @@ export class GameLogic {
         this.upPressed = false;
         this.downPressed = false;
 
-
-
-        this.board = new Board();
+        this.board = new Board(-1);
         this.physicsLogic = new PhysicsLogic();
 
         //Camera focus is on a player ID.
@@ -57,65 +58,38 @@ export class GameLogic {
         this.cameraFocusTileX = 0;
         this.cameraFocusTileY = 0;
 
-        this.addPlayer(1, 'Test', 0, 10);
-        this.addPlayer(2, 'Bob', 50, 5);
-        //Set some basic tiles
-        for (let x = -100; x < 100; x++) {
-            this.addOrUpdateTile(x, 0, Math.random(), Math.random(), Math.random(), 1);
-        }
-
-        for (let y = 0; y < 100; y+=5) {
-            this.addOrUpdateTile(-7, y, Math.random(), Math.random(), Math.random(), 1);
-        }
-
-        for (let y = -100; y < 100; y++) {
-            for (let x = -100; x < 100; x++) {
-                if (Math.random() >= 0.99) {
-                    this.addOrUpdateTile(x, y, Math.random(), Math.random(), Math.random(), 1);
-                }
-            }
-        }
-
-
-
-        this.addOrUpdateTile(0, 0, Math.random(), Math.random(), Math.random(), 1);
-
-        this.addOrUpdateTile(-1, 0, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(1, 0, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(-2, 0, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(2, 0, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(-3, 0, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(3, 0, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(-4, 0, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(4, 0, Math.random(), Math.random(), Math.random(), 1);
-
-        this.addOrUpdateTile(-4, 1, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(4, 1, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(-4, 2, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(4, 2, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(-4, 3, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(4, 3, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(-4, 4, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(4, 4, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(-5, 4, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(5, 4, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(-6, 4, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(6, 4, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(-7, 4, Math.random(), Math.random(), Math.random(), 1);
-        this.addOrUpdateTile(7, 4, Math.random(), Math.random(), Math.random(), 1);
-
-
         this.tileLayerRenderer = new TileLayerRenderer(1000, 800);
 
         this.logicLoop();
     }
 
-    addPlayer = (playerID, name, x, y) => {
-        /*let player = */this.board.addPlayer(playerID, name, x, y);
+    resetBoardToNewBoard = (boardID) => {
+        this.board = new Board(boardID);
+    };
+
+    updateTile = (x, y, typeID, r, g, b, a) => {
+        this.board.setTile(x, y, typeID, r, g, b, a);
+    };
+
+    addPlayer = (playerID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
+        /*let player = */this.board.addPlayer(playerID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping);
         //this.physicsLogic.addPlayerBody(player);
     };
-    addOrUpdateTile = (x, y, r, g, b, a) => {
-        this.board.setTileColor(x, y, r, g, b, a);
+
+    removePlayer = (playerID) => {
+        this.board.removePlayer(playerID);
+    };
+
+    updatePlayer = (playerID, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
+        this.board.updatePlayer(playerID, x, y, speedX, speedY, movingLeft, movingRight, jumping);
+    };
+
+    setPlayerFocusID = (cameraFocusPlayerID) => {
+        this.cameraFocusPlayerID = cameraFocusPlayerID;
+    };
+
+    //addOrUpdateTile = (x, y, r, g, b, a) => {
+    //    this.board.setTileColor(x, y, r, g, b, a);
 /*
         let tile = this.board.getTile(x, y);
         if (a === 0.0) {
@@ -124,7 +98,7 @@ export class GameLogic {
             this.physicsLogic.updateTileBodyPosition(tile, x, y);
         }
         */
-    };
+    //};
 
     logicLoop = () => {
         window.requestAnimationFrame(this.logicLoop);
@@ -136,34 +110,38 @@ export class GameLogic {
 
     logic = () => {
         let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
-        if (this.leftPressed) {
-            focusPlayer.movingLeft = true;
-            //this.physicsLogic.applyForceToPlayer(focusPlayer, -10, 0);
-            //focusPlayer.setX(focusPlayer.getX() - 0.1);
-        } else {
-            focusPlayer.movingLeft = false;
-        }
-        if (this.rightPressed) {
-            focusPlayer.movingRight = true;
-            //this.physicsLogic.applyForceToPlayer(focusPlayer, 10, 0);
-            //focusPlayer.setX(focusPlayer.getX() + 0.1);
-        } else {
-            focusPlayer.movingRight = false;
-        }
-        if (this.upPressed) {
-            focusPlayer.jumping = true;
-            //this.physicsLogic.applyForceToPlayer(focusPlayer, 0, 10);
-            //focusPlayer.setY(focusPlayer.getY() + 0.1);
-        } else {
-            focusPlayer.jumping = false;
-        }
-        if (this.downPressed) {
-            //this.physicsLogic.applyForceToPlayer(focusPlayer, 0, 1);
-            //focusPlayer.setY(focusPlayer.getY() - 0.1);
+        if (focusPlayer !== null) {
+            if (this.leftPressed) {
+                focusPlayer.movingLeft = true;
+                //this.physicsLogic.applyForceToPlayer(focusPlayer, -10, 0);
+                //focusPlayer.setX(focusPlayer.getX() - 0.1);
+            } else {
+                focusPlayer.movingLeft = false;
+            }
+            if (this.rightPressed) {
+                focusPlayer.movingRight = true;
+                //this.physicsLogic.applyForceToPlayer(focusPlayer, 10, 0);
+                //focusPlayer.setX(focusPlayer.getX() + 0.1);
+            } else {
+                focusPlayer.movingRight = false;
+            }
+            if (this.upPressed) {
+                focusPlayer.jumping = true;
+                //this.physicsLogic.applyForceToPlayer(focusPlayer, 0, 10);
+                //focusPlayer.setY(focusPlayer.getY() + 0.1);
+            } else {
+                focusPlayer.jumping = false;
+            }
+            if (this.downPressed) {
+                //this.physicsLogic.applyForceToPlayer(focusPlayer, 0, 1);
+                //focusPlayer.setY(focusPlayer.getY() - 0.1);
+            }
         }
         this.physicsLogic.logic(this.board);
-        this.cameraFocusTileX = focusPlayer.getX();
-        this.cameraFocusTileY = focusPlayer.getY();
+        if (focusPlayer !== null) {
+            this.cameraFocusTileX = focusPlayer.getX();
+            this.cameraFocusTileY = focusPlayer.getY();
+        }
         this.tileLayerRenderer.setFocusTilePosition(
             this.cameraFocusTileX, this.cameraFocusTileY
         );
@@ -345,38 +323,44 @@ export class GameLogic {
 
     onKeyDown = (event) => {
         //Left
-        if (event.keyCode === 37) {
+        if (event.keyCode === 37 && this.leftPressed === false) {
             this.leftPressed = true;
+            Network.Send(GameMessageCreator.MovingLeft(this.leftPressed));
         }
         //Right
-        if (event.keyCode === 39) {
+        if (event.keyCode === 39 && this.rightPressed === false) {
             this.rightPressed = true;
+            Network.Send(GameMessageCreator.MovingRight(this.rightPressed));
         }
         //Up
-        if (event.keyCode === 38) {
+        if (event.keyCode === 38 && this.upPressed === false) {
             this.upPressed = true;
+            Network.Send(GameMessageCreator.Jumping(this.upPressed));
         }
         //Down
-        if (event.keyCode === 40) {
+        if (event.keyCode === 40 && this.downPressed === false) {
             this.downPressed = true;
         }
     };
 
     onKeyUp = (event) => {
         //Left
-        if (event.keyCode === 37) {
+        if (event.keyCode === 37 && this.leftPressed === true) {
             this.leftPressed = false;
+            Network.Send(GameMessageCreator.MovingLeft(this.leftPressed));
         }
         //Right
-        if (event.keyCode === 39) {
+        if (event.keyCode === 39 && this.rightPressed === true) {
             this.rightPressed = false;
+            Network.Send(GameMessageCreator.MovingRight(this.rightPressed));
         }
         //Up
-        if (event.keyCode === 38) {
+        if (event.keyCode === 38 && this.upPressed === true) {
             this.upPressed = false;
+            Network.Send(GameMessageCreator.Jumping(this.upPressed));
         }
         //Down
-        if (event.keyCode === 40) {
+        if (event.keyCode === 40 && this.downPressed === true) {
             this.downPressed = false;
         }
     };

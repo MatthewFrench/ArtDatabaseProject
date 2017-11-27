@@ -15,6 +15,11 @@ export class GameLogic {
         this.server = server;
         this.boards = new Map();
         MsgHandler.AddNewCreateWorldListener(this.handleNewCreateWorldMessage);
+        MsgHandler.AddMovingLeftListener(this.handleMovingLeftMessage);
+        MsgHandler.AddRequestBoardSwitchListener(this.handleRequestBoardSwitchMessage);
+        MsgHandler.AddSetTileListener(this.handleSetTileMessage);
+        MsgHandler.AddMovingRightListener(this.handleMovingRightMessage);
+        MsgHandler.AddJumpingListener(this.handleJumpingMessage);
         //Load all boards
         Query.GetAllBoards().then((boards) => {
             for (let board of boards) {
@@ -23,7 +28,34 @@ export class GameLogic {
                 this.boards.set(boardID, new Board(boardID));
             }
         });
+        //Setup the logic loop
+        setInterval(this.logic, 1000/60); //60 fps
     }
+    logic = () => {
+        for (let [boardID, board] of this.boards) {
+            board.logic();
+        }
+    };
+    handleRequestBoardSwitchMessage = async(player: Player, boardID: number) => {
+        this.switchPlayerToBoard(player, boardID);
+    };
+    handleSetTileMessage = async(player: Player, x: number, y: number, typeID: number,
+                                 r: number, g: number, b: number, a: number) => {
+        let board = player.getGameData().getCurrentBoard();
+        if (board !== null) {
+            board.addOrUpdateTile(x, y, r, g, b, a, typeID, player);
+        }
+    };
+    handleMovingLeftMessage = async (player: Player, moving: boolean) => {
+        player.getGameData().setMovingLeft(moving);
+    };
+    handleMovingRightMessage = async(player: Player, moving: boolean) => {
+        player.getGameData().setMovingRight(moving);
+    };
+    handleJumpingMessage = async(player: Player, moving: boolean) => {
+        player.getGameData().setJumping(moving);
+    };
+
     playerLoggedIn = async (player : Player) => {
         //Send all board information to the selector
         for (let [boardID, board] of this.boards) {
@@ -67,10 +99,20 @@ export class GameLogic {
         if (player.getGameData().getCurrentBoard() !== null) {
             player.getGameData().getCurrentBoard().removePlayer(player);
         }
+        player.getGameData().setSpeedX(0);
+        player.getGameData().setSpeedY(0);
+        player.getGameData().setX(x);
+        player.getGameData().setY(y);
         board.addPlayer(player);
     };
     handleNewCreateWorldMessage = async(player: Player, worldName: string) => {
         let boardID = await Query.CreateBoard(worldName, player.getAccountData().getPlayerID());
+        //Create basic line at the bottom to catch players
+        for (let x = -5; x < 5; x++) {
+            await Query.UpdateOrInsertTile(boardID, x, 0, 0, 0, 0, 255,
+                player.getAccountData().getPlayerID(), 4);
+            //Tile id of 4 as solid for starting
+        }
         let boardInfo = await Query.GetBoardByID(boardID);
         let boardName = boardInfo['name'];
         let board = new Board(boardID);

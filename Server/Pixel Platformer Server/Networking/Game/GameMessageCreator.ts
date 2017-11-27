@@ -65,9 +65,9 @@ export class GameMessageCreator {
         message.addDouble(player.getGameData().getY());
         message.addDouble(player.getGameData().getSpeedX());
         message.addDouble(player.getGameData().getSpeedY());
-        message.addUint8(player.getGameData().getMovingLeft());
-        message.addUint8(player.getGameData().getMovingRight());
-        message.addUint8(player.getGameData().getJumping());
+        message.addUint8(player.getGameData().getMovingLeft()?1:0);
+        message.addUint8(player.getGameData().getMovingRight()?1:0);
+        message.addUint8(player.getGameData().getJumping()?1:0);
         return message.toBuffer();
     };
     //Update tile message
