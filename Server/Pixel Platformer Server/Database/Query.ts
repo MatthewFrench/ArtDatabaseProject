@@ -1,4 +1,5 @@
 import {Hashing} from "../Utility/Hashing";
+import {Stopwatch} from "../Utility/Stopwatch";
 
 let {Database} = require("./Database");
 const {Configuration} = require("../Configuration");
@@ -20,19 +21,27 @@ export class Query {
     }
 
     static async UseConnection(callback) {
+        let connection = null;
+        let success = false;
         try {
             //Get a connection
-            let connection = await databaseInstance.getConnection();
+            connection = await databaseInstance.getConnection();
             try {
                 await callback(connection);
+                success = true;
             } finally {
                 //Release the connection
                 connection.release();
             }
         } catch (err) {
+            connection.destroy();
+            //Assume the entire pool has been compromised
+            databaseInstance.resetConnectionPool();
             console.log(err);
             console.log(err.stack);
+            success = false;
         }
+        return success;
     }
 
     static async GetSprites() {
@@ -454,5 +463,101 @@ export class Query {
         let [result] = await connection.query(sql, [historyID, tileType]);
         //Pass back results
         return result;
+    }
+
+    static async BatchUpdateTileColors(connection, tileDataQueueList) {
+        let justTileStopwatch = new Stopwatch();
+        let data = [];
+        for (let tileData of tileDataQueueList) {
+            let boardID = tileData['boardID'];
+            let x = tileData['x'];
+            let y = tileData['y'];
+            let r = tileData['r'];
+            let g = tileData['g'];
+            let b = tileData['b'];
+            let a = tileData['a'];
+            let creatorOrLastModifiedID = tileData['creatorOrLastModifiedID'];
+
+            data.push([boardID, x, y, r, g, b, a,
+                creatorOrLastModifiedID, creatorOrLastModifiedID]);
+        }
+
+        //Create SQL
+        let sql = "insert into Tile (board_id,x,y,color_r,color_g,color_b,color_a," +
+            "creator_id,last_modified_id) " +
+            "values ? " +
+            "on duplicate key update color_r = VALUES(color_r), color_g = VALUES(color_g), " +
+            "color_b = VALUES(color_b), color_a = VALUES(color_a), " +
+            "last_modified_id = VALUES(last_modified_id)";
+
+        //Execute Query
+        try {
+            await connection.query(sql, [data]);
+        } catch (err) {
+            console.log('SQL error: ' + sql);
+            console.log('Data: ' + JSON.stringify(data));
+            throw err;
+        }
+        console.log('Inserting Just Tiles: ' + Math.round(justTileStopwatch.getMilliseconds()) + 'ms');
+    }
+
+    public static async BatchUpdateTileTypes(connection, tileDataQueueList) {
+        let tileTypeStopwatch = new Stopwatch();
+
+        let tileTypeSQL = '';
+        let tileTypeData = [];
+        for (let tileData of tileDataQueueList) {
+            let boardID = tileData['boardID'];
+            let x = tileData['x'];
+            let y = tileData['y'];
+            let tileTypeID = tileData['tileTypeID'];
+            tileTypeSQL += 'INSERT INTO TileType(tile_id, type_id) ' +
+                'SELECT tile_id, ? ' +
+                'FROM Tile WHERE Tile.x = ? and Tile.y = ? and Tile.board_id = ? ' +
+                'ON DUPLICATE KEY UPDATE type_id=VALUES(type_id); ';
+            tileTypeData.push(tileTypeID, x, y, boardID);
+        }
+        try {
+            await connection.query(tileTypeSQL, tileTypeData);
+        } catch (err) {
+            console.log('SQL error: ' + tileTypeSQL);
+            console.log('Data: ' + JSON.stringify(tileTypeData));
+            throw err;
+        }
+
+        console.log('Setting Tile Types: ' + Math.round(tileTypeStopwatch.getMilliseconds()) + 'ms');
+    }
+    static async BatchInsertHistoryAndHistoryType(connection, tileDataQueueList) {
+        let historyStopwatch = new Stopwatch();
+
+        let historySQL = '';
+        let historyData = [];
+        for (let tileData of tileDataQueueList) {
+            let boardID = tileData['boardID'];
+            let x = tileData['x'];
+            let y = tileData['y'];
+            let r = tileData['r'];
+            let g = tileData['g'];
+            let b = tileData['b'];
+            let a = tileData['a'];
+            let tileTypeID = tileData['tileTypeID'];
+            let modifiedTime = tileData['time'];
+            let creatorOrLastModifiedID = tileData['creatorOrLastModifiedID'];
+            historySQL += 'INSERT INTO History(tile_id, date_time, player_id, color_r, color_g, color_b, color_a) ' +
+                'SELECT tile_id, ?, ?, ?, ?, ?, ? ' +
+                'FROM Tile WHERE Tile.x = ? and Tile.y = ? and Tile.board_id = ?; ';
+            historySQL += 'INSERT INTO HistoryTileType(history_id, type_id) ' +
+                '  VALUES(LAST_INSERT_ID(), ?); ';
+            historyData.push(modifiedTime, creatorOrLastModifiedID, r, g, b, a, x, y, boardID, tileTypeID);
+        }
+        try {
+            await connection.query(historySQL, historyData);
+        } catch (err) {
+            console.log('SQL error: ' + historySQL);
+            console.log('Data: ' + JSON.stringify(historyData));
+            throw err;
+        }
+
+        console.log('Inserting History: ' + Math.round(historyStopwatch.getMilliseconds()) + 'ms');
     }
 }

@@ -1,7 +1,7 @@
 //Holds information for a tile.
 export class Tile {
     boardID : number;
-    tileID : number;
+    //tileID : number;
     typeID : number;
     x : number;
     y : number;
@@ -11,9 +11,9 @@ export class Tile {
     a : number;
     creatorID : number;
     lastModifiedID : number;
-    constructor(tileID, boardID, typeID, x, y, r, g, b, a, creatorID, lastModifiedID) {
+    constructor(/*tileID, */boardID, typeID, x, y, r, g, b, a, creatorID, lastModifiedID) {
         this.boardID = boardID;
-        this.tileID = tileID;
+        //this.tileID = tileID;
         this.typeID = typeID;
         this.x = x;
         this.y = y;
@@ -57,10 +57,12 @@ export class Tile {
     getTypeID = () => {
         return this.typeID;
     };
+    /*
     getTileID = () => {
         return this.tileID;
     };
     setTileID = (tileID) => {
         this.tileID = tileID;
     };
+    */
 }

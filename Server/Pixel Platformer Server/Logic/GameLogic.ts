@@ -5,15 +5,19 @@ import {Utility} from "../Utility/Utility";
 import {NetworkHandler} from "../Networking/NetworkHandler";
 import {Query} from "../Database/Query";
 import {Board} from "./Game/Board";
+import {Stopwatch} from "../Utility/Stopwatch";
+import {TileUpdateQueue} from "./Game/TileUpdateQueue";
 const MsgHandler = require("./../Networking/Game/GameMessageHandler").GameMessageHandler;
 
 export class GameLogic {
     server: any;
     boards: Map<number, Board>;
+    flushDBTilesStopwatch: Stopwatch;
 
     constructor(server) {
         this.server = server;
         this.boards = new Map();
+        this.flushDBTilesStopwatch = new Stopwatch();
         MsgHandler.AddNewCreateWorldListener(this.handleNewCreateWorldMessage);
         MsgHandler.AddMovingLeftListener(this.handleMovingLeftMessage);
         MsgHandler.AddRequestBoardSwitchListener(this.handleRequestBoardSwitchMessage);
@@ -34,6 +38,10 @@ export class GameLogic {
     logic = () => {
         for (let [boardID, board] of this.boards) {
             board.logic();
+        }
+        if (this.flushDBTilesStopwatch.getMinutes() >= 2) {
+            TileUpdateQueue.FlushTileUpdateQueue();
+            this.flushDBTilesStopwatch.reset();
         }
     };
     handleRequestBoardSwitchMessage = async(player: Player, boardID: number) => {

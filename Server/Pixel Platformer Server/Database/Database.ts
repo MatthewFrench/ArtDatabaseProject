@@ -5,19 +5,36 @@ let mysql = require("mysql2/promise");
 //Execute Query Function
 
 export class Database {
-  connectionPool: any;
+    host: any;
+    port: any;
+    database: any;
+    username: any;
+    password: any;
+    connectionPool: any;
 
-  constructor(host, port, database, username, password) {
-    this.connectionPool = mysql.createPool({
-      host: host,
-      port: port,
-      database: database,
-      user: username,
-      password: password
-    });
-  }
+    constructor(host, port, database, username, password) {
+        this.host = host;
+        this.port = port;
+        this.database = database;
+        this.username = username;
+        this.password = password;
+        this.resetConnectionPool();
+    }
 
-  async getConnection() {
-    return await this.connectionPool.getConnection();
-  }
+    resetConnectionPool() {
+        this.connectionPool = mysql.createPool({
+            host: this.host,
+            port: this.port,
+            database: this.database,
+            user: this.username,
+            password: this.password,
+            supportBigNumbers: true,
+            multipleStatements: true,
+            connectionLimit: 50
+        });
+    }
+
+    async getConnection() {
+        return await this.connectionPool.getConnection();
+    }
 }
