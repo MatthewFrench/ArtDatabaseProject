@@ -7,6 +7,7 @@ import {ChatMessageCreator} from "../../Networking/Chat/ChatMessageCreator";
 import {Stopwatch} from "../../Utility/Stopwatch";
 import {Network} from "../../Networking/Network";
 import {NetworkHandler} from "../../Networking/NetworkHandler";
+import {TileUpdateQueue} from "./TileUpdateQueue";
 
 export class Board {
     physics : Physics;
@@ -48,7 +49,7 @@ export class Board {
         this.tiles = new Map();
         for (let tileData of tileDataArray) {
             let boardID = tileData["board_id"];
-            let tileID = tileData["tile_id"];
+            //let tileID = tileData["tile_id"];
             let typeID = tileData["type_id"];
             let x = tileData["x"];
             let y = tileData["y"];
@@ -59,7 +60,7 @@ export class Board {
             let creatorID = tileData["creator_id"];
             let lastModifiedID = tileData["last_modified_id"];
 
-            let tile = new Tile(boardID, tileID, typeID, x, y ,r, g, b, a, creatorID, lastModifiedID);
+            let tile = new Tile(boardID, typeID, x, y ,r, g, b, a, creatorID, lastModifiedID);
             if (!this.tiles.has(x)) {
                 this.tiles.set(x, new Map());
             }
@@ -131,7 +132,7 @@ export class Board {
         }
         let tile = this.getTile(x, y);
         if (tile === null) {
-            tile = new Tile(-1, this.boardID, tileType, x, y, r, g, b, a,
+            tile = new Tile(this.boardID, tileType, x, y, r, g, b, a,
                 player.getAccountData().getPlayerID(), player.getAccountData().getPlayerID());
             this.tiles.get(x).set(y, tile);
         } else {
@@ -139,10 +140,15 @@ export class Board {
             tile.setLastModifiedID(player.getAccountData().getPlayerID());
             tile.setTypeID(tileType);
         }
+
+        TileUpdateQueue.AddTileUpdateToQueue(this.boardID, x, y, r, g, b, a,
+            player.getAccountData().getPlayerID(), tileType);
+
+        /*
         Query.UpdateOrInsertTile(this.boardID, x, y, r, g, b, a,
                 player.getAccountData().getPlayerID(), tileType).then((tileID)=>{
             tile.setTileID(tileID);
-        });
+        });*/
 
         //Send updates to players
         this.sendToAllPlayersInBoard(GameMessageCreator.UpdateTile(tile));
