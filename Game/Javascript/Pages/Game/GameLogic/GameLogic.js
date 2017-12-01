@@ -201,9 +201,6 @@ export class GameLogic {
                     }
                     this.facingIndex = 9 + Idiot_Frame_Table[this.frameNumber];
                 }
-                //console.log(this.frameNumber, this.frameNextNumber);
-                //this.physicsLogic.applyForceToPlayer(focusPlayer, -10, 0);
-                //focusPlayer.setX(focusPlayer.getX() - 0.1);
             } else {
                 focusPlayer.movingLeft = false;
             }
