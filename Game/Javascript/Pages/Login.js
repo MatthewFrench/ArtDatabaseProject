@@ -73,10 +73,12 @@ export class Login {
         if (success) {
             this.switchToGamePage();
         }
-        alert('Invalid username or password');
-        this.usernameTxt.value = '';
-        this.passwordTxt.value = '';
-        this.loginButton.classList.remove('Disabled');
+        else{
+            alert('Invalid username or password');
+            this.usernameTxt.value = '';
+            this.passwordTxt.value = '';
+            this.loginButton.classList.remove('Disabled');
+        }
     };
 
     getDiv = () => {
