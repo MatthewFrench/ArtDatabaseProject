@@ -49,6 +49,7 @@ export class TileUpdateQueue {
                 console.log('Failed to push tiles');
                 await Utility.Sleep(1000);
             }
+            tryCount++;
         }
 
         console.log(`Ended tile update push, took ${Math.round(pushStopwatch.getMilliseconds())}ms`);
