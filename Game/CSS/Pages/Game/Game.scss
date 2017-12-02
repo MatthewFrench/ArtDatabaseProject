@@ -338,5 +338,24 @@
         box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
       }
     }
+    .SpriteButton {
+      background-color: white;
+      font-size: 15px;
+      padding: 5px;
+      border-radius: 5px;
+      transition: all 1s;
+      cursor: pointer;
+      border: solid 2px #b5b5b5;
+      position: relative;
+      width: 100px;
+      text-align: center;
+      align-self: flex-end;
+      display: inline-block;
+      float:right;
+
+      &:hover {
+        box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+      }
+    }
   }
 }
