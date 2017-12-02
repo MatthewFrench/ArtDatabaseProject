@@ -30,7 +30,9 @@ export const Controllers = {
         //Send Jumping
         Jumping: 5,
         //Set tile
-        SetTile: 6
+        SetTile: 6,
+        //Change Sprite
+        SpriteChange: 7
     }
   }
 };
