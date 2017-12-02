@@ -37,6 +37,7 @@ export class GameMessageCreator {
         message.addUint8(GameID);
         message.addUint8(Messages.AddPlayer);
         message.addUint32(player.getAccountData().getPlayerID());
+        message.addUint32(player.getAccountData().getSpriteID());
         message.addString(player.getAccountData().getDisplayName());
         message.addDouble(player.getGameData().getX());
         message.addDouble(player.getGameData().getY());
@@ -61,6 +62,7 @@ export class GameMessageCreator {
         message.addUint8(GameID);
         message.addUint8(Messages.UpdatePlayer);
         message.addUint32(player.getAccountData().getPlayerID());
+        message.addUint32(player.getAccountData().getSpriteID());
         message.addDouble(player.getGameData().getX());
         message.addDouble(player.getGameData().getY());
         message.addDouble(player.getGameData().getSpeedX());

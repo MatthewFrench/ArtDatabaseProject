@@ -17,7 +17,17 @@
       flex: 1;
       display: flex;
 
-      .RedSlider{
+    .ColorSelector {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      transition: top 1s linear;
+      height: 219px;
+      border: solid 1px black;
+      width: 108px;
+      background-color: white;
+
+      .RedSlider {
         width: 10px;
         height: 100px;
         padding: 0 5px;
@@ -26,7 +36,7 @@
         left: 0px;
       }
 
-      .GreenSlider{
+      .GreenSlider {
         width: 10px;
         height: 100px;
         padding: 0 5px;
@@ -35,7 +45,7 @@
         left: 20px;
       }
 
-      .BlueSlider{
+      .BlueSlider {
         width: 10px;
         height: 100px;
         padding: 0 5px;
@@ -44,7 +54,7 @@
         left: 40px;
       }
 
-      .AlphaSlider{
+      .AlphaSlider {
         width: 10px;
         height: 100px;
         padding: 0 5px;
@@ -53,7 +63,7 @@
         left: 60px;
       }
 
-      .EyeDropButton{
+      .EyeDropButton {
         background-color: white;
         font-size: 8px;
         padding: 2px;
@@ -74,7 +84,7 @@
         }
       }
 
-      .PreviewSquare{
+      .PreviewSquare {
         background-color: white;
         width: 21px;
         height: 39px;
@@ -85,7 +95,21 @@
         border: solid 1px #000000;
       }
 
-      .TileSelector{
+
+      .ToggleSelector {
+        background-color: white;
+        padding: 3px;
+        border-radius: 2px;
+        border: solid 2px #b5b5b5;
+        position: absolute;
+        cursor: pointer;
+        text-align: center;
+        vertical-align: middle;
+        bottom: -35px;
+        height: 25px;
+      }
+
+      .TileSelector {
         background-color: white;
         padding: 2px;
         border-radius: 2px;
@@ -96,7 +120,7 @@
         left: 1px;
         top: 104px;
 
-        .RGBALabel{
+        .RGBALabel {
           position: absolute;
           left: 4px;
           top: 1px;
@@ -104,7 +128,7 @@
           height: 30px;
           font-size: 10px;
 
-          .RedLabel{
+          .RedLabel {
             color: red;
             position: absolute;
             left: 2px;
@@ -112,7 +136,7 @@
             width: 5px;
           }
 
-          .GreenLabel{
+          .GreenLabel {
             color: green;
             position: absolute;
             left: 22px;
@@ -120,7 +144,7 @@
             width: 5px;
           }
 
-          .BlueLabel{
+          .BlueLabel {
             color: blue;
             position: absolute;
             left: 42px;
@@ -128,7 +152,7 @@
             width: 5px;
           }
 
-          .AlphaLabel{
+          .AlphaLabel {
             color: black;
             position: absolute;
             left: 62px;
@@ -136,7 +160,7 @@
             width: 5px;
           }
 
-          .RedValue{
+          .RedValue {
             color: red;
             position: absolute;
             left: 2px;
@@ -144,7 +168,7 @@
             width: 5px;
           }
 
-          .GreenValue{
+          .GreenValue {
             color: green;
             position: absolute;
             left: 22px;
@@ -152,7 +176,7 @@
             width: 5px;
           }
 
-          .BlueValue{
+          .BlueValue {
             color: blue;
             position: absolute;
             left: 42px;
@@ -160,7 +184,7 @@
             width: 5px;
           }
 
-          .AlphaValue{
+          .AlphaValue {
             color: black;
             position: absolute;
             left: 62px;
@@ -169,7 +193,7 @@
           }
         }
 
-        .TileLabel{
+        .TileLabel {
           font-size: 10px;
           position: absolute;
           width: 60px;
@@ -182,7 +206,7 @@
           background-color: lightblue;
         }
 
-        .DeleteButton{
+        .DeleteButton {
           font-size: 12px;
           padding: 1px;
           border-radius: 1px;
@@ -195,7 +219,7 @@
           cursor: pointer;
         }
 
-        .BackgroundButton{
+        .BackgroundButton {
           font-size: 12px;
           padding: 1px;
           border-radius: 1px;
@@ -208,7 +232,7 @@
           cursor: pointer;
         }
 
-        .SolidButton{
+        .SolidButton {
           font-size: 12px;
           padding: 1px;
           border-radius: 1px;
@@ -221,7 +245,7 @@
           cursor: pointer;
         }
 
-        .ForegroundButton{
+        .ForegroundButton {
           font-size: 12px;
           padding: 1px;
           border-radius: 1px;
@@ -233,7 +257,9 @@
           height: 15px;
           cursor: pointer;
         }
+
       }
+    }
 
       .GameArea {
         border: solid 1px black;
@@ -294,6 +320,25 @@
       }
     }
     .ScoreButton {
+      background-color: white;
+      font-size: 15px;
+      padding: 5px;
+      border-radius: 5px;
+      transition: all 1s;
+      cursor: pointer;
+      border: solid 2px #b5b5b5;
+      position: relative;
+      width: 100px;
+      text-align: center;
+      align-self: flex-end;
+      display: inline-block;
+      float:right;
+
+      &:hover {
+        box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+      }
+    }
+    .SpriteButton {
       background-color: white;
       font-size: 15px;
       padding: 5px;

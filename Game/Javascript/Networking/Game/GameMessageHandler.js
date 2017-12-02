@@ -113,6 +113,13 @@ export class GameMessageHandler {
         }
         let playerID = message.getUint32();
 
+        if (!message.hasUint32()) {
+            console.error('Invalid Message');
+            console.trace();
+            return;
+        }
+        let spriteID = message.getUint32();
+
         if (!message.hasString()) {
             console.error('Invalid Message');
             console.trace();
@@ -213,11 +220,20 @@ export class GameMessageHandler {
         }
         let playerID = message.getUint32();
 
+        if (!message.hasUint32()) {
+            console.error('Invalid Message');
+            console.trace();
+            return;
+        }
+
+        let spriteID = message.getUint32();
+
         if (!message.hasDouble()) {
             console.error('Invalid Message');
             console.trace();
             return;
         }
+
         let x = message.getDouble();
 
         if (!message.hasDouble()) {
