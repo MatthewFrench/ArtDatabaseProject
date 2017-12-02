@@ -12,17 +12,21 @@ import {GameMessageCreator} from "../../Networking/Game/GameMessageCreator";
 export class Game{
     constructor(switchToLoginPage){
         this.gameLogic = new GameLogic();
+        this.isDown = true;
         this.mainDiv = Interface.Create({type:'div', className: 'GamePage', elements:[
             {type: 'div', className: 'GameContainer', elements: [
                 {type: 'div', className: 'WorldWrapper', elements: [
-                    this.gameLogic.getRedSlider(),
-                    this.gameLogic.getGreenSlider(),
-                    this.gameLogic.getBlueSlider(),
-                    this.gameLogic.getAlphaSlider(),
+                    this.selector = Interface.Create({type: 'div', className: 'ColorSelector', id: 'ColorSelector', elements:[
+                        this.gameLogic.getRedSlider(),
+                        this.gameLogic.getGreenSlider(),
+                        this.gameLogic.getBlueSlider(),
+                        this.gameLogic.getAlphaSlider(),
+                        this.gameLogic.getEyeDropButton(),
+                        this.gameLogic.getTileSelector(),
+                        this.gameLogic.getPreviewSquare(),
+                        this.toggleSelector = Interface.Create({type: 'div', className: 'ToggleSelector', text: 'Minimize', onClick: this.slideToggle}),
+                    ]}),
                     this.gameLogic.getCanvas(),
-                    this.gameLogic.getEyeDropButton(),
-                    this.gameLogic.getTileSelector(),
-                    this.gameLogic.getPreviewSquare(),
                     (this.boardSelector = new BoardSelector(this)).getDiv()
 
                 ]},
@@ -105,6 +109,19 @@ export class Game{
             this.focusOnGameCanvas();
         }
     };
+
+    slideToggle = () => {
+        if(this.isDown){
+            this.selector.style.top = `-${this.selector.clientHeight}px`;
+            this.toggleSelector.innerHTML = 'Maximize';
+            this.isDown = false;
+        }
+        else{
+            this.selector.style.top = '';
+            this.toggleSelector.innerHTML = 'Minimize';
+            this.isDown = true;
+        }
+    }
 
     openCreateWorldPopover = () => {
         this.mainDiv.appendChild(this.newWorldPopover.getDiv());
