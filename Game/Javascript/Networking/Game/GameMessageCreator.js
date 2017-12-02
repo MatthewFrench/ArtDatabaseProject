@@ -19,6 +19,14 @@ export class GameMessageCreator {
         return message.toBuffer();
     }
 
+    static SpriteChange(spriteID) {
+        let message = new MessageWriter();
+        message.addUint8(GameID);
+        message.addUint8(Messages.SpriteChange);
+        message.addUint32(spriteID);
+        return message.toBuffer();
+    }
+
     static MovingLeft(moving) {
         let message = new MessageWriter();
         message.addUint8(GameID);

@@ -7,6 +7,7 @@ import {Query} from "../Database/Query";
 import {Board} from "./Game/Board";
 import {Stopwatch} from "../Utility/Stopwatch";
 import {TileUpdateQueue} from "./Game/TileUpdateQueue";
+import {Network} from "../Networking/Network";
 const MsgHandler = require("./../Networking/Game/GameMessageHandler").GameMessageHandler;
 
 export class GameLogic {
@@ -21,6 +22,7 @@ export class GameLogic {
         MsgHandler.AddNewCreateWorldListener(this.handleNewCreateWorldMessage);
         MsgHandler.AddMovingLeftListener(this.handleMovingLeftMessage);
         MsgHandler.AddRequestBoardSwitchListener(this.handleRequestBoardSwitchMessage);
+        MsgHandler.AddSpriteChangeListener(this.handleSpriteChangeMessage);
         MsgHandler.AddSetTileListener(this.handleSetTileMessage);
         MsgHandler.AddMovingRightListener(this.handleMovingRightMessage);
         MsgHandler.AddJumpingListener(this.handleJumpingMessage);
@@ -43,10 +45,19 @@ export class GameLogic {
             TileUpdateQueue.FlushTileUpdateQueue();
             this.flushDBTilesStopwatch.reset();
         }
+        //Flush networking for all players
+        for (let [_, player] of NetworkHandler.GetPlayers()) {
+            player.flushSendQueue();
+        }
     };
     handleRequestBoardSwitchMessage = async(player: Player, boardID: number) => {
         this.switchPlayerToBoard(player, boardID);
     };
+
+    handleSpriteChangeMessage = async(player: Player, spriteID: number) => {
+        player.getAccountData().setSpriteID(spriteID);
+    };
+
     handleSetTileMessage = async(player: Player, x: number, y: number, typeID: number,
                                  r: number, g: number, b: number, a: number) => {
         let board = player.getGameData().getCurrentBoard();

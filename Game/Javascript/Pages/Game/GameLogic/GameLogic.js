@@ -144,8 +144,8 @@ export class GameLogic {
         this.board.setTile(x, y, typeID, r, g, b, a);
     };
 
-    addPlayer = (playerID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
-        /*let player = */this.board.addPlayer(playerID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping);
+    addPlayer = (playerID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping, spriteID) => {
+        /*let player = */this.board.addPlayer(playerID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping, spriteID);
         //this.physicsLogic.addPlayerBody(player);
     };
 
@@ -153,8 +153,8 @@ export class GameLogic {
         this.board.removePlayer(playerID);
     };
 
-    updatePlayer = (playerID, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
-        this.board.updatePlayer(playerID, x, y, speedX, speedY, movingLeft, movingRight, jumping);
+    updatePlayer = (playerID, x, y, speedX, speedY, movingLeft, movingRight, jumping, spriteID) => {
+        this.board.updatePlayer(playerID, x, y, speedX, speedY, movingLeft, movingRight, jumping, spriteID);
     };
 
     setPlayerFocusID = (cameraFocusPlayerID) => {

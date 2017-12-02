@@ -34,5 +34,12 @@ export const Controllers = {
             //The tells the client to focus on this ID, likely self
             FocusPlayerID: 7,
         }
+    },
+    Network: {
+        ID: 4,
+        Messages: {
+            //Combined message
+            CombinedMessage: 1
+        }
     }
 };
