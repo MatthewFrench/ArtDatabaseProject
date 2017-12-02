@@ -503,10 +503,30 @@ export class GameLogic {
             }
 
         } else {
+            
             //get mouse coordinates
             let mousePosition = this.getMousePosition(event);
             //get information about pixel at mouse coordinates from canvas
             let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
+            let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
+            let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
+
+            //Set current tile type to eyedrop
+            let tile = this.board.getTile(tileX, tileY);
+            if(tile != null){
+                switch (tile.getTypeID()){
+                    case 3: this.backgroundTileTypeClicked();
+                        break;
+                    case 4: this.solidTileTypeClicked();
+                        break;
+                    case 5: this.foregroundTileTypeClicked();
+                        break;
+                    case 6: this.deleteTileTypeClicked();
+                        break;
+                }
+            }
+
+
 
             //pull red data
             let pixelRed = pixelInfo.data[0];
