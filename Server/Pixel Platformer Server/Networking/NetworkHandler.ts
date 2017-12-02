@@ -69,4 +69,8 @@ export class NetworkHandler {
     static SetHandleDisconnectCallback(callback : (player)=>Promise<void>) {
         HandleDisconnectCallback = callback;
     }
+
+    static GetPlayers() : Map<Player, any> {
+        return Players;
+    }
 }
