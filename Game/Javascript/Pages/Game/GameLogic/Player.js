@@ -1,7 +1,7 @@
 
 
 export class Player {
-    constructor(playerID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping) {
+    constructor(playerID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping, spriteID) {
         this.playerID = playerID;
         this.name = name;
         this.x = x;
@@ -11,6 +11,7 @@ export class Player {
         this.jumping = jumping;
         this.speedX = speedX;
         this.speedY = speedY;
+        this.spriteID = spriteID;
     }
     getX = () => {
         return this.x;
