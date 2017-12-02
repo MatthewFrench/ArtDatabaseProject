@@ -13,7 +13,7 @@ import {SpritePopover} from "./SpritePopover";
 export class Game{
     constructor(switchToLoginPage){
         this.gameLogic = new GameLogic();
-        this.isDown = true;
+        this.isSelectorOpen = true;
         this.mainDiv = Interface.Create({type:'div', className: 'GamePage', elements:[
             {type: 'div', className: 'GameContainer', elements: [
                 {type: 'div', className: 'WorldWrapper', elements: [
@@ -114,17 +114,18 @@ export class Game{
     };
 
     slideToggle = () => {
-        if(this.isDown){
+        if(this.isSelectorOpen){
             this.selector.style.top = `-${this.selector.clientHeight}px`;
             this.toggleSelector.innerHTML = 'Maximize';
-            this.isDown = false;
+            this.isSelectorOpen = false;
         }
         else{
             this.selector.style.top = '';
             this.toggleSelector.innerHTML = 'Minimize';
-            this.isDown = true;
+            this.isSelectorOpen = true;
         }
-    }
+        this.focusOnGameCanvas();
+    };
 
     openCreateWorldPopover = () => {
         this.mainDiv.appendChild(this.newWorldPopover.getDiv());
