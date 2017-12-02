@@ -8,6 +8,8 @@ let CreateWorldListeners :
     ((player: Player, worldName: string) =>Promise<void>)[] = [];
 let RequestBoardSwitchListeners :
     ((player: Player, boardID: number) =>Promise<void>)[] = [];
+let SpriteChangeListeners :
+    ((player: Player, spriteID: number) => Promise<void>) [] = [];
 let MovingLeftListeners :
     ((player: Player, moving: boolean) =>Promise<void>)[] = [];
 let MovingRightListeners :
@@ -27,6 +29,9 @@ export class GameMessageHandler {
             } break;
             case Messages.RequestBoardSwitch: {
                 GameMessageHandler.RequestBoardSwitch(player, message);
+            } break;
+            case Messages.SpriteChange: {
+                GameMessageHandler.SpriteChange(player, message);
             } break;
             case Messages.MovingLeft: {
                 GameMessageHandler.MovingLeft(player, message);
@@ -74,6 +79,23 @@ export class GameMessageHandler {
         //Send to all listeners
         for (let callback of RequestBoardSwitchListeners) {
             callback(player, boardID).then();
+        }
+    }
+
+    static SpriteChange(player, message){
+        //Parse message with validation
+        if (!message.hasUint32()) {
+            console.log('Invalid Try Sprite Change Message');
+            return;
+        }
+        let spriteID = message.getUint32();
+        if (!message.isAtEndOfData()) {
+            console.log('Invalid Try Sprite Change Message');
+            return;
+        }
+        //Send to all listeners
+        for (let callback of SpriteChangeListeners) {
+            callback(player, spriteID).then();
         }
     }
 
@@ -187,6 +209,9 @@ export class GameMessageHandler {
     }
     static AddRequestBoardSwitchListener(callback : (player: Player, boardID: number) =>Promise<void>) {
         RequestBoardSwitchListeners.push(callback);
+    }
+    static AddSpriteChangeListener(callback: (player: Player, spriteID: number) => Promise<void>){
+        SpriteChangeListeners.push(callback);
     }
     static AddMovingLeftListener(callback: (player: Player, moving: boolean) => Promise<void>) {
         MovingLeftListeners.push(callback);
