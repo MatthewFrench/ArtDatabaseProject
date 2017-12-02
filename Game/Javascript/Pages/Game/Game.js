@@ -8,6 +8,7 @@ import {GameLogic} from "./GameLogic/GameLogic";
 import {GameMessageHandler} from "../../Networking/Game/GameMessageHandler";
 import {BoardSelector} from "./BoardSelector";
 import {GameMessageCreator} from "../../Networking/Game/GameMessageCreator";
+import {SpritePopover} from "./SpritePopover";
 
 export class Game{
     constructor(switchToLoginPage){
@@ -36,10 +37,12 @@ export class Game{
                 ]},
                 {type: 'div', elements: [
                     {type: 'div', text: 'Logout', className: 'LogoutBtn', onClick: () => {switchToLoginPage();}},
-                    {type: 'div', text: 'Score', className: 'ScoreButton', onClick: this.scoreButtonClicked}
+                    {type: 'div', text: 'Score', className: 'ScoreButton', onClick: this.scoreButtonClicked},
+                    {type: 'div', text: 'Sprite Select', className: 'SpriteButton', onClick: this.spriteButtonClicked}
                 ]}
             ]}
         ]});
+        this.spritePopover = new SpritePopover();
         this.scorePopover = new ScorePopover();
         this.newWorldPopover = new NewWorldPopover();
         this.visible = false;
@@ -130,6 +133,10 @@ export class Game{
     scoreButtonClicked = () => {
         this.mainDiv.appendChild(this.scorePopover.getDiv());
     };
+
+    spriteButtonClicked = () =>{
+        this.mainDiv.appendChild(this.spritePopover.getDiv());
+    }
 
     getDiv = () => {
         return this.mainDiv;
