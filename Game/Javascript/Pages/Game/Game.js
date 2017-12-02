@@ -8,21 +8,26 @@ import {GameLogic} from "./GameLogic/GameLogic";
 import {GameMessageHandler} from "../../Networking/Game/GameMessageHandler";
 import {BoardSelector} from "./BoardSelector";
 import {GameMessageCreator} from "../../Networking/Game/GameMessageCreator";
+import {SpritePopover} from "./SpritePopover";
 
 export class Game{
     constructor(switchToLoginPage){
         this.gameLogic = new GameLogic();
+        this.isDown = true;
         this.mainDiv = Interface.Create({type:'div', className: 'GamePage', elements:[
             {type: 'div', className: 'GameContainer', elements: [
                 {type: 'div', className: 'WorldWrapper', elements: [
-                    this.gameLogic.getRedSlider(),
-                    this.gameLogic.getGreenSlider(),
-                    this.gameLogic.getBlueSlider(),
-                    this.gameLogic.getAlphaSlider(),
+                    this.selector = Interface.Create({type: 'div', className: 'ColorSelector', id: 'ColorSelector', elements:[
+                        this.gameLogic.getRedSlider(),
+                        this.gameLogic.getGreenSlider(),
+                        this.gameLogic.getBlueSlider(),
+                        this.gameLogic.getAlphaSlider(),
+                        this.gameLogic.getEyeDropButton(),
+                        this.gameLogic.getTileSelector(),
+                        this.gameLogic.getPreviewSquare(),
+                        this.toggleSelector = Interface.Create({type: 'div', className: 'ToggleSelector', text: 'Minimize', onClick: this.slideToggle}),
+                    ]}),
                     this.gameLogic.getCanvas(),
-                    this.gameLogic.getEyeDropButton(),
-                    this.gameLogic.getTileSelector(),
-                    this.gameLogic.getPreviewSquare(),
                     (this.boardSelector = new BoardSelector(this)).getDiv()
 
                 ]},
@@ -32,10 +37,12 @@ export class Game{
                 ]},
                 {type: 'div', elements: [
                     {type: 'div', text: 'Logout', className: 'LogoutBtn', onClick: () => {switchToLoginPage();}},
-                    {type: 'div', text: 'Score', className: 'ScoreButton', onClick: this.scoreButtonClicked}
+                    {type: 'div', text: 'Score', className: 'ScoreButton', onClick: this.scoreButtonClicked},
+                    {type: 'div', text: 'Sprite Select', className: 'SpriteButton', onClick: this.spriteButtonClicked}
                 ]}
             ]}
         ]});
+        this.spritePopover = new SpritePopover();
         this.scorePopover = new ScorePopover();
         this.newWorldPopover = new NewWorldPopover();
         this.visible = false;
@@ -106,6 +113,19 @@ export class Game{
         }
     };
 
+    slideToggle = () => {
+        if(this.isDown){
+            this.selector.style.top = `-${this.selector.clientHeight}px`;
+            this.toggleSelector.innerHTML = 'Maximize';
+            this.isDown = false;
+        }
+        else{
+            this.selector.style.top = '';
+            this.toggleSelector.innerHTML = 'Minimize';
+            this.isDown = true;
+        }
+    }
+
     openCreateWorldPopover = () => {
         this.mainDiv.appendChild(this.newWorldPopover.getDiv());
     };
@@ -113,6 +133,10 @@ export class Game{
     scoreButtonClicked = () => {
         this.mainDiv.appendChild(this.scorePopover.getDiv());
     };
+
+    spriteButtonClicked = () =>{
+        this.mainDiv.appendChild(this.spritePopover.getDiv());
+    }
 
     getDiv = () => {
         return this.mainDiv;
