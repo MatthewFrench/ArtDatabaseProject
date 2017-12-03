@@ -73,8 +73,8 @@ export class Board {
     };
 
     //Run from logic loop
-    logic = () => {
-        this.physics.logic();
+    logic = (delta) => {
+        this.physics.logic(delta);
         //Send moving player locations
         if (this.updatePlayerStopwatch.getMilliseconds() >= 30) {
             this.updatePlayerStopwatch.reset();

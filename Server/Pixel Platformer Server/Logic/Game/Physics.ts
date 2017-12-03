@@ -14,21 +14,21 @@ const Solid_Tile_Type = 4;
 export class Physics {
     board: Board;
     constructor(board) {this.board = board;}
-    logic = () => {
+    logic = (delta) => {
         let players = this.board.getPlayers();
         //Loop through all players
         players.forEach((player)=>{
             let playerGameData = player.getGameData();
-            let speedX = playerGameData.getSpeedX();
-            let speedY = playerGameData.getSpeedY();
+            let speedX = playerGameData.getSpeedX() * delta;
+            let speedY = playerGameData.getSpeedY() * delta;
             let x = playerGameData.getX();
             let y = playerGameData.getY();
             let movingLeft = playerGameData.getMovingLeft();
             let movingRight = playerGameData.getMovingRight();
             let jumping = playerGameData.getJumping();
             //Add gravity and friction
-            speedY -= Gravity;
-            speedX *= Ground_Friction;
+            speedY -= Gravity * delta;
+            speedX *= Ground_Friction * delta;
             //Cut off horizontal speed after a point
             if (Math.abs(speedX) <= Cut_Off) {
                 speedX = 0;
@@ -78,19 +78,19 @@ export class Physics {
             if (movingLeft) {
                 //Apply a massive slowdown to allow easy mid-air moving
                 if (speedX > 0) {
-                    speedX *= 0.9;
+                    speedX *= 0.9 * delta;
                 }
-                speedX -= Player_Move_Speed;
+                speedX -= Player_Move_Speed * delta;
             }
             if (movingRight) {
                 //Apply a massive slowdown to allow easy mid-air moving
                 if (speedX < 0) {
-                    speedX *= 0.9;
+                    speedX *= 0.9 * delta;
                 }
-                speedX += Player_Move_Speed;
+                speedX += Player_Move_Speed * delta;
             }
             if (jumping && onGround && speedY < Player_Jump_Speed) {
-                speedY += Player_Jump_Speed;
+                speedY += Player_Jump_Speed * delta;
             }
 
             //Do side collisions
@@ -124,8 +124,8 @@ export class Physics {
             y += speedY;
             playerGameData.setX(x);
             playerGameData.setY(y);
-            playerGameData.setSpeedX(speedX);
-            playerGameData.setSpeedY(speedY);
+            playerGameData.setSpeedX(speedX / delta);
+            playerGameData.setSpeedY(speedY / delta);
         });
     };
 
