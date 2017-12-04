@@ -19,6 +19,7 @@ export class NanoTimer {
         this.isLooping = true;
 
         let elapsed = this.lastRunStopwatch.getMilliseconds();
+        console.log('Elapsed: ' + elapsed);
         let timeUntilNextCallback = this.milliseconds - elapsed;
         if (timeUntilNextCallback <= 0) {
             console.log('Overdone: ' + timeUntilNextCallback);
