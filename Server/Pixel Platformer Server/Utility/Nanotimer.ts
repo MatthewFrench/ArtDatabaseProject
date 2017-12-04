@@ -46,8 +46,12 @@ export class NanoTimer {
         if (timeUntilNextCallback  <= 10) {
             if (timeUntilNextCallback <= 5) {
                 if (timeUntilNextCallback <= 0.0) {
-                    console.log('Immediate loop');
-                    setImmediate(this.loop);
+                    if (timeUntilNextCallback <= -this.milliseconds) {
+                        console.log('Super Immediate loop');
+                        this.loop();
+                    } else {
+                        setImmediate(this.loop);
+                    }
                 } else {
                     setTimeout(this.loop,0);
                 }
