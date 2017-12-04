@@ -50,6 +50,7 @@ export class NanoTimer {
                         console.log('Super Immediate loop');
                         this.loop();
                     } else {
+                        console.log('Normal immediate loop');
                         setImmediate(this.loop);
                     }
                 } else {
