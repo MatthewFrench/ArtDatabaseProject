@@ -63,13 +63,13 @@ export class Benchmark {
             snapshotAverageTime += entry[1] / snapshotEntries.length;
         }
 
-        console.log(this.name + ' Benchmark');
+        console.log(this.name + ' Benchmark : ' + (new Date()).toLocaleString());
         console.log('\tMinimum Time: ' + minimumTime.toFixed(2) + 'ms' +
-            ' | Snapshot Minimum Time: ' + snapshotMinimumTime.toFixed(2) + 'ms');
+            ' | Snapshot '+ lastSecondsSnapshot +' Minimum Time: ' + snapshotMinimumTime.toFixed(2) + 'ms');
         console.log('\tMaximum Time: ' + maximumTime.toFixed(2) + 'ms' +
-            ' | Snapshot Maximum Time: ' + snapshotMaximumTime.toFixed(2) + 'ms');
+            ' | Snapshot '+ lastSecondsSnapshot +' Maximum Time: ' + snapshotMaximumTime.toFixed(2) + 'ms');
         console.log('\tAverage Time: ' + averageTime.toFixed(2) + 'ms' +
-            ' | Snapshot Average Time: ' + snapshotAverageTime.toFixed(2) + 'ms');
+            ' | Snapshot '+ lastSecondsSnapshot +' Average Time: ' + snapshotAverageTime.toFixed(2) + 'ms');
     }
 
     getTimeEntriesInSnapshot(seconds) {
@@ -84,6 +84,11 @@ export class Benchmark {
         }
 
         return entries;
+    }
+
+    clearHistoryAfterDuration(seconds) {
+        let currentTime = Benchmark.GetCurrentTimeInMilliseconds();
+        this.timeArray = this.timeArray.filter(entry => (currentTime - entry[0]) <= seconds * 1000);
     }
 
     static GetCurrentTimeInMilliseconds() {

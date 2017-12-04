@@ -20,7 +20,6 @@ export class NanoTimer {
         let timeUntilNextCallback = this.milliseconds - elapsed;
         if (timeUntilNextCallback <= 0) {
             let delta = elapsed / this.milliseconds;
-            //this.lastRunStopwatch.reset((elapsed - this.milliseconds) / 1000.0);
             this.lastRunStopwatch.start();
             this.callback(delta);
             elapsed = this.lastRunStopwatch.getMilliseconds();
