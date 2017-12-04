@@ -150,8 +150,8 @@ export class GameLogic {
         this.board.setTile(x, y, typeID, r, g, b, a);
     };
 
-    addPlayer = (playerID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping, spriteID) => {
-        /*let player = */this.board.addPlayer(playerID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping, spriteID);
+    addPlayer = (playerID, spriteID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
+        /*let player = */this.board.addPlayer(playerID, spriteID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping);
         //this.physicsLogic.addPlayerBody(player);
     };
 
@@ -159,8 +159,8 @@ export class GameLogic {
         this.board.removePlayer(playerID);
     };
 
-    updatePlayer = (playerID, x, y, speedX, speedY, movingLeft, movingRight, jumping, spriteID) => {
-        this.board.updatePlayer(playerID, x, y, speedX, speedY, movingLeft, movingRight, jumping, spriteID);
+    updatePlayer = (playerID, spriteID, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
+        this.board.updatePlayer(playerID, spriteID, x, y, speedX, speedY, movingLeft, movingRight, jumping);
     };
 
     setPlayerFocusID = (cameraFocusPlayerID) => {
@@ -275,7 +275,8 @@ export class GameLogic {
             let rightX = focusPlayer.getX() + 0.5 + Player_Width_Tiles/2;
             let bottomY = focusPlayer.getY();
             let topY = focusPlayer.getY() + Player_Height_Tiles;
-            this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * this.facingIndex, 0, Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
+            let spriteID = focusPlayer.getSpriteID();
+            this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * this.facingIndex, Sprite_Vertical_Table[spriteID], Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
             //console.log(focusPlayer.getSpriteID());
             //Sprite_Vertical_Table[focusPlayer.getSpriteID()]
             this.ctx.fillStyle = 'red';
