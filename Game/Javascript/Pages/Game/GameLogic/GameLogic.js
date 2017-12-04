@@ -34,7 +34,7 @@ export class GameLogic {
         this.greenSlider = Interface.Create({type: 'input', className: 'GreenSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
         this.blueSlider = Interface.Create({type: 'input', className: 'BlueSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
         this.alphaSlider = Interface.Create({type: 'input', className: 'AlphaSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 255, onChange: this.changePreviewColor});
-        this.eyeDropButton = Interface.Create({type: 'div', text: '\r\neye\r\n\r\ndrop', className: 'EyeDropButton', onClick: this.eyeDropButtonClicked});
+        
         this.volumeSlider = Interface.Create({type: 'input', className:'VolumeSlider', inputType: 'range', min: 0, max: 100, step: 1, value: 15, onChange: this.updateVolume});
 
         this.bgAudio = new Audio(bgAudio);
@@ -56,7 +56,13 @@ export class GameLogic {
             this.deleteTypeButton = Interface.Create({type: 'div', text: 'Delete', className: 'DeleteButton', onClick: this.deleteTileTypeClicked}),
             this.backgroundTypeButton = Interface.Create({type: 'div', text: 'Background', className: 'BackgroundButton', onClick: this.backgroundTileTypeClicked}),
             this.solidTypeButton = Interface.Create({type: 'div', text: 'Solid', className: 'SolidButton Selected', onClick: this.solidTileTypeClicked}),
-            this.foregroundTypeButton = Interface.Create({type: 'div', text: 'Foreground', className: 'ForegroundButton', onClick: this.foregroundTileTypeClicked})
+            this.foregroundTypeButton = Interface.Create({type: 'div', text: 'Foreground', className: 'ForegroundButton', onClick: this.foregroundTileTypeClicked}),
+            this.toolSelector = Interface.Create({type: 'div', className: 'toolSelector', elements: [
+                {type: 'span', text: 'Tools', className: 'toolLabel'},
+                {type: 'div', text: 'Draw', className: 'drawTool'},
+                {type: 'div', text: 'Set Layer', className: 'layerTool'},
+                this.eyeDropButton = Interface.Create({type: 'div', text: 'Eye Drop', className: 'EyeDropButton', onClick: this.eyeDropButtonClicked})
+            ]})
         ]});
         //holds the value of the color to be used for a tile
         this.previewSquare = Interface.Create({type: 'div', className: 'PreviewSquare'});
@@ -153,8 +159,8 @@ export class GameLogic {
         this.board.setTile(x, y, typeID, r, g, b, a);
     };
 
-    addPlayer = (playerID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping, spriteID) => {
-        /*let player = */this.board.addPlayer(playerID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping, spriteID);
+    addPlayer = (playerID, spriteID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
+        /*let player = */this.board.addPlayer(playerID, spriteID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping);
         //this.physicsLogic.addPlayerBody(player);
     };
 
@@ -162,8 +168,8 @@ export class GameLogic {
         this.board.removePlayer(playerID);
     };
 
-    updatePlayer = (playerID, x, y, speedX, speedY, movingLeft, movingRight, jumping, spriteID) => {
-        this.board.updatePlayer(playerID, x, y, speedX, speedY, movingLeft, movingRight, jumping, spriteID);
+    updatePlayer = (playerID, spriteID, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
+        this.board.updatePlayer(playerID, spriteID, x, y, speedX, speedY, movingLeft, movingRight, jumping);
     };
 
     setPlayerFocusID = (cameraFocusPlayerID) => {
@@ -283,7 +289,8 @@ export class GameLogic {
             let rightX = focusPlayer.getX() + 0.5 + Player_Width_Tiles/2;
             let bottomY = focusPlayer.getY();
             let topY = focusPlayer.getY() + Player_Height_Tiles;
-            this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * this.facingIndex, 0, Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
+            let spriteID = focusPlayer.getSpriteID();
+            this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * this.facingIndex, Sprite_Vertical_Table[spriteID], Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
             //console.log(focusPlayer.getSpriteID());
             //Sprite_Vertical_Table[focusPlayer.getSpriteID()]
             this.ctx.fillStyle = 'red';
@@ -676,6 +683,10 @@ export class GameLogic {
 
     getEyeDropButton = () => {
         return this.eyeDropButton;
+    };
+
+    getToolSelector = () => {
+        return this.toolSelector;
     };
 
     getTileSelector = () => {

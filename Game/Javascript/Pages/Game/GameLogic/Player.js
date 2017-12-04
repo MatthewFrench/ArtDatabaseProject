@@ -1,7 +1,7 @@
 
 
 export class Player {
-    constructor(playerID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping, spriteID) {
+    constructor(playerID, spriteID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping) {
         this.playerID = playerID;
         this.name = name;
         this.x = x;
