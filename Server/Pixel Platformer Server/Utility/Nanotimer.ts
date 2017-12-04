@@ -21,6 +21,8 @@ export class NanoTimer {
         let elapsed = this.lastRunStopwatch.getMilliseconds();
         let timeUntilNextCallback = this.milliseconds - elapsed;
         if (timeUntilNextCallback <= 0) {
+            console.log('Overdone: ' + timeUntilNextCallback);
+
             let delta = elapsed / this.milliseconds;
 
             this.lastRunStopwatch.reset();
@@ -30,6 +32,7 @@ export class NanoTimer {
             elapsed = this.lastRunStopwatch.getMilliseconds();
             timeUntilNextCallback = this.milliseconds - elapsed;
 
+            console.log('Next callback: ' + timeUntilNextCallback);
             //console.log('Ran callback: ' + timeUntilNextCallback);
         }// else {
         //    console.log('No callback: ' + timeUntilNextCallback);
