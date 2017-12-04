@@ -25,6 +25,7 @@ export class Game{
                         this.gameLogic.getEyeDropButton(),
                         this.gameLogic.getTileSelector(),
                         this.gameLogic.getPreviewSquare(),
+                        this.gameLogic.getToolSelector(),
                         this.toggleSelector = Interface.Create({type: 'div', className: 'ToggleSelector', text: 'Minimize', onClick: this.slideToggle}),
                     ]}),
                     this.gameLogic.getCanvas(),

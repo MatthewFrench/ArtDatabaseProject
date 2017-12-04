@@ -22,9 +22,9 @@
       top: 0px;
       left: 0px;
       transition: top 1s linear;
-      height: 219px;
+      height: 190px;
       border: solid 1px black;
-      width: 108px;
+      width: 175px;
       background-color: white;
 
       .RedSlider {
@@ -72,12 +72,13 @@
         cursor: pointer;
         border: solid 2px #b5b5b5;
         position: absolute;
-        width: 15px;
-        height: 50px;
+        width: 56px;
+        height: 20px;
         text-align: center;
         vertical-align: middle;
-        left: 85px;
-        top: 2px;
+        left: 110px;
+        top: 62px;
+        line-height: 20px;
 
         &:hover {
           box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
@@ -87,9 +88,9 @@
       .PreviewSquare {
         background-color: white;
         width: 21px;
-        height: 39px;
+        height: 95px;
         position: absolute;
-        top: 62px;
+        top: 3px;
         left: 85px;
         border-radius: 1px;
         border: solid 1px #000000;
@@ -115,8 +116,8 @@
         border-radius: 2px;
         border: solid 2px #b5b5b5;
         position: absolute;
-        width: 100px;
-        height: 108px;
+        width: 167px;
+        height: 80px;
         left: 1px;
         top: 104px;
 
@@ -200,6 +201,7 @@
           text-align: center;
           left: 18px;
           top: 24px;
+          left: 58px;
         }
 
         .Selected {
@@ -226,8 +228,8 @@
           border: solid 1px #b5b5b5;
           position: absolute;
           width: 60px;
-          left: 18px;
-          top: 54px;
+          left: 90px;
+          top: 36px;
           height: 12px;
           cursor: pointer;
         }
@@ -240,7 +242,7 @@
           position: absolute;
           width: 60px;
           left: 18px;
-          top: 72px;
+          top: 55px;
           height: 12px;
           cursor: pointer;
         }
@@ -252,12 +254,41 @@
           border: solid 1px #b5b5b5;
           position: absolute;
           width: 60px;
-          left: 18px;
-          top: 90px;
+          left: 90px;
+          top: 55px;
           height: 15px;
           cursor: pointer;
         }
-
+      }
+      .toolSelector {
+        position:absolute;
+        text-align: center;
+        left: 110px;
+        .toolLabel{
+          position: relative;
+          left: 13px;
+        }
+        .drawTool{
+          font-size: 12px;
+          padding: 1px;
+          border-radius: 1px;
+          border: solid 1px #b5b5b5;
+          position: absolute;
+          width: 60px;
+          height: 15px;
+          cursor: pointer;
+        }
+        .layerTool{
+          font-size: 12px;
+          padding: 1px;
+          border-radius: 1px;
+          border: solid 1px #b5b5b5;
+          position: absolute;
+          width: 60px;
+          height: 15px;
+          cursor: pointer;
+          top: 40px;
+        }
       }
     }
 
