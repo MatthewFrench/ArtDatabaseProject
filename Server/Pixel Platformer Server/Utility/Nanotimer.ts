@@ -29,13 +29,13 @@ export class NanoTimer {
         this.isLooping = false;
 
         if (timeUntilNextCallback  <= 5) {
-            if (timeUntilNextCallback <= 3) {
-                setImmediate(this.loop);
-            } else {
+            //if (timeUntilNextCallback <= 3) {
+            //    setImmediate(this.loop);
+            //} else {
                 setTimeout(this.loop,0);
-            }
+            //}
         } else {
-            setTimeout(this.loop,1);
+            setTimeout(this.loop,2);
         }
     };
     start = () => {
