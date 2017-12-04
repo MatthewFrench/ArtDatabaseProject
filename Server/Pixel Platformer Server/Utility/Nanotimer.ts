@@ -19,14 +19,9 @@ export class NanoTimer {
         this.isLooping = true;
 
         let elapsed = this.lastRunStopwatch.getMilliseconds();
-        console.log('Elapsed: ' + elapsed);
         let timeUntilNextCallback = this.milliseconds - elapsed;
         if (timeUntilNextCallback <= 0) {
-            console.log('Overdone: ' + timeUntilNextCallback);
-
             let delta = elapsed / this.milliseconds;
-
-            console.log('Delta: ' + delta);
 
             this.lastRunStopwatch.reset();
             this.lastRunStopwatch.addSeconds(Math.abs(timeUntilNextCallback) / 1000.0);
@@ -34,12 +29,7 @@ export class NanoTimer {
             this.callback(delta);
             elapsed = this.lastRunStopwatch.getMilliseconds();
             timeUntilNextCallback = this.milliseconds - elapsed;
-
-            console.log('Next callback: ' + timeUntilNextCallback);
-            //console.log('Ran callback: ' + timeUntilNextCallback);
-        }// else {
-        //    console.log('No callback: ' + timeUntilNextCallback);
-        //}
+        }
 
         this.isLooping = false;
 
@@ -47,10 +37,8 @@ export class NanoTimer {
             if (timeUntilNextCallback <= 5) {
                 if (timeUntilNextCallback <= 0.0) {
                     if (timeUntilNextCallback <= -this.milliseconds) {
-                        console.log('Super Immediate loop');
                         this.loop();
                     } else {
-                        console.log('Normal immediate loop');
                         setImmediate(this.loop);
                     }
                 } else {
