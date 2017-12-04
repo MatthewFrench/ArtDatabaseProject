@@ -185,7 +185,7 @@ export class GameMessageHandler {
 
         //Send to all listeners
         for (let callback of AddPlayerListeners) {
-            callback(playerID, displayName, x, y, speedX, speedY, movingLeft, movingRight, jumping).then();
+            callback(playerID, spriteID, displayName, x, y, speedX, speedY, movingLeft, movingRight, jumping).then();
         }
     }
 
@@ -287,7 +287,7 @@ export class GameMessageHandler {
 
         //Send to all listeners
         for (let callback of UpdatePlayerListeners) {
-            callback(playerID, x, y, speedX, speedY, movingLeft, movingRight, jumping).then();
+            callback(playerID, spriteID, x, y, speedX, speedY, movingLeft, movingRight, jumping).then();
         }
     }
 

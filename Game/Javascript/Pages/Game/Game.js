@@ -25,6 +25,7 @@ export class Game{
                         this.gameLogic.getEyeDropButton(),
                         this.gameLogic.getTileSelector(),
                         this.gameLogic.getPreviewSquare(),
+                        this.gameLogic.getToolSelector(),
                         this.toggleSelector = Interface.Create({type: 'div', className: 'ToggleSelector', text: 'Minimize', onClick: this.slideToggle}),
                     ]}),
                     this.gameLogic.getVolumeSlider(),
@@ -81,8 +82,8 @@ export class Game{
         this.addMessageToChatArea(chatPrefix + ' : ' + chatMessage);
     };
 
-    gotPlayedAddedMessage = async (playerID, displayName, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
-        this.gameLogic.addPlayer(playerID, displayName, x, y, speedX, speedY, movingLeft, movingRight, jumping);
+    gotPlayedAddedMessage = async (playerID, spriteID, displayName, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
+        this.gameLogic.addPlayer(playerID, spriteID, displayName, x, y, speedX, speedY, movingLeft, movingRight, jumping);
     };
     gotTileUpdateMessage = async (x, y, typeID, r, g, b, a) => {
         this.gameLogic.updateTile(x, y, typeID, r, g, b, a);
@@ -92,8 +93,8 @@ export class Game{
         this.boardSelector.sortBoards();
         this.gameLogic.resetBoardToNewBoard(boardID);
     };
-    gotPlayerUpdatedMessage = async (playerID, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
-        this.gameLogic.updatePlayer(playerID, x, y, speedX, speedY, movingLeft, movingRight, jumping);
+    gotPlayerUpdatedMessage = async (playerID, spriteID, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
+        this.gameLogic.updatePlayer(playerID, spriteID, x, y, speedX, speedY, movingLeft, movingRight, jumping);
     };
     gotPlayerRemovedMessage = async (playerID) => {
         this.gameLogic.removePlayer(playerID);

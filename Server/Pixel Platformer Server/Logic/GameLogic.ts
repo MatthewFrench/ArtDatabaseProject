@@ -82,6 +82,7 @@ export class GameLogic {
 
     handleSpriteChangeMessage = async(player: Player, spriteID: number) => {
         player.getAccountData().setSpriteID(spriteID);
+        Query.SetPlayerSprite(player.getAccountData().getPlayerID(), spriteID).then();
     };
 
     handleSetTileMessage = async(player: Player, x: number, y: number, typeID: number,
