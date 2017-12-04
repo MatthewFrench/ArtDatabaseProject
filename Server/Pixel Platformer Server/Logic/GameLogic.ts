@@ -16,8 +16,8 @@ export class GameLogic {
     boards: Map<number, Board>;
     flushDBTilesStopwatch: Stopwatch;
 
-    logicLoopBenchmark: Benchmark;
-    logicLoopRestartBenchmark: Benchmark;
+    //logicLoopBenchmark: Benchmark;
+    //logicLoopRestartBenchmark: Benchmark;
 
     logicLoopTimer: NanoTimer;
 
@@ -44,16 +44,20 @@ export class GameLogic {
         this.logicLoopTimer = new NanoTimer(this.logic, 1000.0/60.0);
         this.logicLoopTimer.start();
 
+        /*
         this.logicLoopBenchmark = new Benchmark('Logic Processing');
         this.logicLoopRestartBenchmark = new Benchmark('Logic Loop Consistency');
         this.logicLoopRestartBenchmark.start();
+        */
     }
     logic = (delta) => {
+        /*
         this.logicLoopRestartBenchmark.stop();
         this.logicLoopRestartBenchmark.start();
         this.logicLoopRestartBenchmark.prettyPrintAtInterval(5, 5);
 
         this.logicLoopBenchmark.start();
+        */
 
         for (let [boardID, board] of this.boards) {
             board.logic(delta);
@@ -67,8 +71,8 @@ export class GameLogic {
             player.flushSendQueue();
         }
 
-        this.logicLoopBenchmark.stop();
-        this.logicLoopBenchmark.prettyPrintAtInterval(5, 5);
+        //this.logicLoopBenchmark.stop();
+        //this.logicLoopBenchmark.prettyPrintAtInterval(5, 5);
     };
     handleRequestBoardSwitchMessage = async(player: Player, boardID: number) => {
         this.switchPlayerToBoard(player, boardID);
