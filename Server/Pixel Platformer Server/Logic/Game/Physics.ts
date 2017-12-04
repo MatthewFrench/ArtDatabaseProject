@@ -15,12 +15,21 @@ export class Physics {
     board: Board;
     constructor(board) {this.board = board;}
     logic = (delta) => {
+        console.log('Delta: ' + delta);
+        while (delta >= 1.75) {
+            this.runPhysics(1.0);
+            delta -= 1.0;
+        }
+        this.runPhysics(delta);
+    };
+
+    runPhysics = (delta) => {
         let players = this.board.getPlayers();
         //Loop through all players
         players.forEach((player)=>{
             let playerGameData = player.getGameData();
-            let speedX = playerGameData.getSpeedX() * delta;
-            let speedY = playerGameData.getSpeedY() * delta;
+            let speedX = playerGameData.getSpeedX();
+            let speedY = playerGameData.getSpeedY();
             let x = playerGameData.getX();
             let y = playerGameData.getY();
             let movingLeft = playerGameData.getMovingLeft();
@@ -78,19 +87,19 @@ export class Physics {
             if (movingLeft) {
                 //Apply a massive slowdown to allow easy mid-air moving
                 if (speedX > 0) {
-                    speedX *= 0.9 * delta;
+                    speedX *= 0.9;
                 }
-                speedX -= Player_Move_Speed * delta;
+                speedX -= Player_Move_Speed;
             }
             if (movingRight) {
                 //Apply a massive slowdown to allow easy mid-air moving
                 if (speedX < 0) {
-                    speedX *= 0.9 * delta;
+                    speedX *= 0.9;
                 }
-                speedX += Player_Move_Speed * delta;
+                speedX += Player_Move_Speed;
             }
             if (jumping && onGround && speedY < Player_Jump_Speed) {
-                speedY += Player_Jump_Speed * delta;
+                speedY += Player_Jump_Speed;
             }
 
             //Do side collisions
@@ -120,12 +129,12 @@ export class Physics {
                 }
             }
             //Add player speed to position
-            x += speedX;
-            y += speedY;
+            x += speedX * delta;
+            y += speedY * delta;
             playerGameData.setX(x);
             playerGameData.setY(y);
-            playerGameData.setSpeedX(speedX / delta);
-            playerGameData.setSpeedY(speedY / delta);
+            playerGameData.setSpeedX(speedX);
+            playerGameData.setSpeedY(speedY);
         });
     };
 
