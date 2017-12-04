@@ -14,7 +14,15 @@ const Solid_Tile_Type = 4;
 export class Physics {
     board: Board;
     constructor(board) {this.board = board;}
-    logic = () => {
+    logic = (delta) => {
+        while (delta >= 1.75) {
+            this.runPhysics(1.0);
+            delta -= 1.0;
+        }
+        this.runPhysics(delta);
+    };
+
+    runPhysics = (delta) => {
         let players = this.board.getPlayers();
         //Loop through all players
         players.forEach((player)=>{
@@ -27,8 +35,8 @@ export class Physics {
             let movingRight = playerGameData.getMovingRight();
             let jumping = playerGameData.getJumping();
             //Add gravity and friction
-            speedY -= Gravity;
-            speedX *= Ground_Friction;
+            speedY -= Gravity * delta;
+            speedX *= Ground_Friction * delta;
             //Cut off horizontal speed after a point
             if (Math.abs(speedX) <= Cut_Off) {
                 speedX = 0;
@@ -120,8 +128,8 @@ export class Physics {
                 }
             }
             //Add player speed to position
-            x += speedX;
-            y += speedY;
+            x += speedX * delta;
+            y += speedY * delta;
             playerGameData.setX(x);
             playerGameData.setY(y);
             playerGameData.setSpeedX(speedX);

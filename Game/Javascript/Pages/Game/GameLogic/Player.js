@@ -28,4 +28,7 @@ export class Player {
     getName = () => {
         return this.name;
     }
+    getSpriteID = () => {
+        return this.spriteID;
+    }
 }

@@ -17,6 +17,12 @@
       flex: 1;
       display: flex;
 
+      .VolumeSlider {
+        position: absolute;
+        top: calc(100% - 40px);
+        left: calc(100% - 450px);
+      }
+
     .ColorSelector {
       position: absolute;
       top: 0px;

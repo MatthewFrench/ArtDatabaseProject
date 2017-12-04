@@ -47,7 +47,6 @@ export class Player {
             this.socket.send(combinedMessage.toBuffer());
         }
 
-
         this.messageBufferQueue = [];
         this.messageTotalRawBinarySize = 0;
     }

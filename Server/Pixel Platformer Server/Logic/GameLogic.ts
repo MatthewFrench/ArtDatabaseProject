@@ -1,19 +1,23 @@
 import {Player} from "../Player/Player";
-import {GameMessageCreator, GameMessageCreator as MsgCreator} from "../Networking/Game/GameMessageCreator";
-import {MessageWriter} from "../Utility/MessageWriter";
-import {Utility} from "../Utility/Utility";
+import {GameMessageCreator} from "../Networking/Game/GameMessageCreator";
 import {NetworkHandler} from "../Networking/NetworkHandler";
 import {Query} from "../Database/Query";
 import {Board} from "./Game/Board";
 import {Stopwatch} from "../Utility/Stopwatch";
 import {TileUpdateQueue} from "./Game/TileUpdateQueue";
-import {Network} from "../Networking/Network";
+import {Benchmark} from "../Utility/Benchmark";
+import {NanoTimer} from "../Utility/Nanotimer";
 const MsgHandler = require("./../Networking/Game/GameMessageHandler").GameMessageHandler;
 
 export class GameLogic {
     server: any;
     boards: Map<number, Board>;
     flushDBTilesStopwatch: Stopwatch;
+
+    //logicLoopBenchmark: Benchmark;
+    //logicLoopRestartBenchmark: Benchmark;
+
+    logicLoopTimer: NanoTimer;
 
     constructor(server) {
         this.server = server;
@@ -34,21 +38,43 @@ export class GameLogic {
                 this.boards.set(boardID, new Board(boardID, () => {}));
             }
         });
-        //Setup the logic loop
-        setInterval(this.logic, 1000/60); //60 fps
+
+        /*
+        this.logicLoopBenchmark = new Benchmark('Processing');
+        this.logicLoopRestartBenchmark = new Benchmark('Loop Consistency');
+        this.logicLoopRestartBenchmark.start();
+        */
+
+        this.logicLoopTimer = new NanoTimer(this.logic, 1000.0/60.0);
+        this.logicLoopTimer.start();
     }
-    logic = () => {
+    logic = (delta) => {
+        /*
+        this.logicLoopRestartBenchmark.stop();
+        this.logicLoopRestartBenchmark.start();
+        this.logicLoopRestartBenchmark.clearHistoryAfterDuration(60 * 60);
+        this.logicLoopRestartBenchmark.prettyPrintAtInterval(10, 10);
+
+        this.logicLoopBenchmark.start();
+        */
+
         for (let [boardID, board] of this.boards) {
-            board.logic();
+            board.logic(delta);
         }
         if (this.flushDBTilesStopwatch.getMinutes() >= 2) {
-            TileUpdateQueue.FlushTileUpdateQueue();
+            TileUpdateQueue.FlushTileUpdateQueue().then();
             this.flushDBTilesStopwatch.reset();
         }
         //Flush networking for all players
         for (let [_, player] of NetworkHandler.GetPlayers()) {
             player.flushSendQueue();
         }
+
+        /*
+        this.logicLoopBenchmark.stop();
+        this.logicLoopBenchmark.clearHistoryAfterDuration(60 * 60);
+        this.logicLoopBenchmark.prettyPrintAtInterval(10, 10);
+        */
     };
     handleRequestBoardSwitchMessage = async(player: Player, boardID: number) => {
         this.switchPlayerToBoard(player, boardID);

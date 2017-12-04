@@ -48,7 +48,7 @@ export class Interface {
                   onMouseUp = null, onMouseOver = null, onMouseOut = null, elements = [], placeholder = null, href = null,
                   target = null, onKeyUp = null, onKeyDown = null, colspan = null, onChange = null, onInput = null,
                   attributes = null, style = null, onFocus = null, outFocus = null, onBlur = null, width = null, height = null,
-                  min = null, max = null, step = null
+                  min = null, max = null, step = null, backgroundImage = null
                 }) {
     //type : Element type to create
     //class : Class name of element
@@ -100,6 +100,7 @@ export class Interface {
     if (min !== null) element.min = min;
     if (max !== null) element.max = max;
     if (step !== null) element.step = step;
+    if (backgroundImage !== null) element.backgroundImage = backgroundImage;
     if (attributes !== null) {
       Object.keys(attributes).forEach((key) => {
         element.setAttribute(key, attributes[key]);
