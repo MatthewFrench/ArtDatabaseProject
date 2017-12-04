@@ -6,6 +6,7 @@ import {PhysicsLogic} from "./PhysicsLogic";
 import {GameMessageCreator} from "../../../Networking/Game/GameMessageCreator";
 import {Network} from "../../../Networking/Network";
 import spriteSheet from "../../../../Images/walkcyclevarious.png";
+import bgAudio from "../../../../Audio/PatakasWorld.wav";
 
 const Tile_Height = 10;
 const Tile_Width = 10;
@@ -15,7 +16,7 @@ const Sprite_Width = 26;
 const Sprite_Horizontal_Distance = 64;
 const Sprite_Total_Width = 768;
 const Sprite_Total_Height = 474;
-const Sprite_Vertical_Table = [0, 62, 58, 61, 61, 61, 61, 64];
+const Sprite_Vertical_Table = [0, 0, 59, 123, 185, 61, 61, 64];
 const Sprite_X_Start = 18;
 const Frame_Next_Max = 4;
 const Frame_Total_Max = 2;
@@ -32,6 +33,12 @@ export class GameLogic {
         this.greenSlider = Interface.Create({type: 'input', className: 'GreenSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
         this.blueSlider = Interface.Create({type: 'input', className: 'BlueSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
         this.alphaSlider = Interface.Create({type: 'input', className: 'AlphaSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 255, onChange: this.changePreviewColor});
+        
+        this.volumeSlider = Interface.Create({type: 'input', className:'VolumeSlider', inputType: 'range', min: 0, max: 100, step: 1, value: 15, onChange: this.updateVolume});
+
+        this.bgAudio = new Audio(bgAudio);
+        this.bgAudio.volume = 0.15;
+        this.bgAudio.loop = true;
 
         this.tileSelector = Interface.Create({type: 'div', className: 'TileSelector', elements: [
             this.rgbaLabel = Interface.Create({type: 'div', className: 'RGBALabel', elements: [
@@ -275,7 +282,8 @@ export class GameLogic {
             let bottomY = focusPlayer.getY();
             let topY = focusPlayer.getY() + Player_Height_Tiles;
             this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * this.facingIndex, 0, Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
-
+            //console.log(focusPlayer.getSpriteID());
+            //Sprite_Vertical_Table[focusPlayer.getSpriteID()]
             this.ctx.fillStyle = 'red';
             this.ctx.font = '20px Helvetica';
             this.ctx.textAlign="center";
@@ -508,10 +516,30 @@ export class GameLogic {
             }
 
         } else {
+            
             //get mouse coordinates
             let mousePosition = this.getMousePosition(event);
             //get information about pixel at mouse coordinates from canvas
             let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
+            let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
+            let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
+
+            //Set current tile type to eyedrop
+            let tile = this.board.getTile(tileX, tileY);
+            if(tile != null){
+                switch (tile.getTypeID()){
+                    case 3: this.backgroundTileTypeClicked();
+                        break;
+                    case 4: this.solidTileTypeClicked();
+                        break;
+                    case 5: this.foregroundTileTypeClicked();
+                        break;
+                    case 6: this.deleteTileTypeClicked();
+                        break;
+                }
+            }
+
+
 
             //pull red data
             let pixelRed = pixelInfo.data[0];
@@ -616,6 +644,12 @@ export class GameLogic {
     setVisibility = (visible) => {
         this.visible = visible;
         this.canvas.focus();
+        if(visible){
+            this.startMusic();
+        }
+        else{
+            this.stopMusic();
+        }
     };
 
     getCanvas = () => {
@@ -654,6 +688,10 @@ export class GameLogic {
         return this.previewSquare;
     };
 
+    getVolumeSlider = () => {
+        return this.volumeSlider;
+    };
+
     changePreviewColor = () => {
         let rh = parseInt(this.redSlider.value, 10);
         let gh = parseInt(this.greenSlider.value, 10);
@@ -664,6 +702,19 @@ export class GameLogic {
         this.updateSliderLabels();
 
         this.focusOnGameCanvas();
+    };
+
+    updateVolume = () => {
+        let volume = parseInt(this.volumeSlider.value, 10);
+        this.bgAudio.volume = volume / 100;
+    };
+
+    startMusic = () => {
+        this.bgAudio.play();
+    };
+
+    stopMusic = () => {
+        this.bgAudio.pause();
     };
 
     eyeDropButtonClicked = () => {
