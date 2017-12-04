@@ -194,9 +194,9 @@ export class GameLogic {
         */
     //};
 
-    logicLoop = () => {
+    logicLoop = (delta) => {
         if (this.visible) {
-            this.logic();
+            this.logic(delta);
         }
     };
 
@@ -207,7 +207,7 @@ export class GameLogic {
         }
     };
 
-    logic = () => {
+    logic = (delta) => {
         let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
         if (focusPlayer !== null) {
             if (this.leftPressed) {
@@ -254,7 +254,11 @@ export class GameLogic {
                 //focusPlayer.setY(focusPlayer.getY() - 0.1);
             }
         }
-        this.physicsLogic.logic(this.board);
+        this.physicsLogic.logic(this.board, delta);
+    };
+
+    draw = () => {
+        let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
         if (focusPlayer !== null) {
             this.cameraFocusTileX = focusPlayer.getX();
             this.cameraFocusTileY = focusPlayer.getY();
@@ -262,9 +266,7 @@ export class GameLogic {
         this.backgroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
         this.solidTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
         this.foregroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
-    };
 
-    draw = () => {
         this.resize();
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -283,7 +285,6 @@ export class GameLogic {
         this.ctx.save();
 
         //Draw players
-        let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
         if (focusPlayer !== null) {
             let leftX = focusPlayer.getX() + 0.5 - Player_Width_Tiles/2;
             let rightX = focusPlayer.getX() + 0.5 + Player_Width_Tiles/2;
