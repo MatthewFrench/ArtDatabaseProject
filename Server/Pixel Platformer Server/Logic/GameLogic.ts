@@ -41,24 +41,21 @@ export class GameLogic {
             }
         });
 
-        this.logicLoopTimer = new NanoTimer(this.logic, 1000.0/60.0);
-        this.logicLoopTimer.start();
-
-
         this.logicLoopBenchmark = new Benchmark('Processing');
         this.logicLoopRestartBenchmark = new Benchmark('Loop Consistency');
         this.logicLoopRestartBenchmark.start();
 
+        this.logicLoopTimer = new NanoTimer(this.logic, 1000.0/60.0);
+        this.logicLoopTimer.start();
+
     }
     logic = (delta) => {
-
         this.logicLoopRestartBenchmark.stop();
         this.logicLoopRestartBenchmark.clearHistoryAfterDuration(60 * 60);
         this.logicLoopRestartBenchmark.prettyPrintAtInterval(60, 10);
         this.logicLoopRestartBenchmark.start();
 
         this.logicLoopBenchmark.start();
-
 
         for (let [boardID, board] of this.boards) {
             board.logic(delta);
