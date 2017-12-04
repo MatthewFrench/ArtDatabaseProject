@@ -32,7 +32,6 @@ export class GameLogic {
         this.greenSlider = Interface.Create({type: 'input', className: 'GreenSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
         this.blueSlider = Interface.Create({type: 'input', className: 'BlueSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
         this.alphaSlider = Interface.Create({type: 'input', className: 'AlphaSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 255, onChange: this.changePreviewColor});
-        this.eyeDropButton = Interface.Create({type: 'div', text: '\r\neye\r\n\r\ndrop', className: 'EyeDropButton', onClick: this.eyeDropButtonClicked});
 
         this.tileSelector = Interface.Create({type: 'div', className: 'TileSelector', elements: [
             this.rgbaLabel = Interface.Create({type: 'div', className: 'RGBALabel', elements: [
@@ -49,7 +48,13 @@ export class GameLogic {
             this.deleteTypeButton = Interface.Create({type: 'div', text: 'Delete', className: 'DeleteButton', onClick: this.deleteTileTypeClicked}),
             this.backgroundTypeButton = Interface.Create({type: 'div', text: 'Background', className: 'BackgroundButton', onClick: this.backgroundTileTypeClicked}),
             this.solidTypeButton = Interface.Create({type: 'div', text: 'Solid', className: 'SolidButton Selected', onClick: this.solidTileTypeClicked}),
-            this.foregroundTypeButton = Interface.Create({type: 'div', text: 'Foreground', className: 'ForegroundButton', onClick: this.foregroundTileTypeClicked})
+            this.foregroundTypeButton = Interface.Create({type: 'div', text: 'Foreground', className: 'ForegroundButton', onClick: this.foregroundTileTypeClicked}),
+            this.toolSelector = Interface.Create({type: 'div', className: 'toolSelector', elements: [
+                {type: 'span', text: 'Tools', className: 'toolLabel'},
+                {type: 'div', text: 'Draw', className: 'drawTool'},
+                {type: 'div', text: 'Set Layer', className: 'layerTool'},
+                this.eyeDropButton = Interface.Create({type: 'div', text: 'Eye Drop', className: 'EyeDropButton', onClick: this.eyeDropButtonClicked})
+            ]})
         ]});
         //holds the value of the color to be used for a tile
         this.previewSquare = Interface.Create({type: 'div', className: 'PreviewSquare'});
@@ -635,6 +640,10 @@ export class GameLogic {
 
     getEyeDropButton = () => {
         return this.eyeDropButton;
+    };
+
+    getToolSelector = () => {
+        return this.toolSelector;
     };
 
     getTileSelector = () => {
