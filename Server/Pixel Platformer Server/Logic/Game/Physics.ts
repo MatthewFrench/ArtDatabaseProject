@@ -15,7 +15,6 @@ export class Physics {
     board: Board;
     constructor(board) {this.board = board;}
     logic = (delta) => {
-        console.log('Delta: ' + delta);
         while (delta >= 1.75) {
             this.runPhysics(1.0);
             delta -= 1.0;
