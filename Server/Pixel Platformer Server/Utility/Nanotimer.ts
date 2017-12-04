@@ -5,12 +5,15 @@ export class NanoTimer {
     isLooping = false;
     callback;
     milliseconds;
-    lastRunStopwatch = new Stopwatch();
+    consistencyStopwatch = new Stopwatch();
+    timeSinceLastStopwatch = new Stopwatch();
     constructor(callback, milliseconds) {
         this.callback = callback;
         this.milliseconds = milliseconds;
-        this.lastRunStopwatch.reset();
-        this.lastRunStopwatch.start();
+        this.consistencyStopwatch.reset();
+        this.consistencyStopwatch.start();
+        this.timeSinceLastStopwatch.reset();
+        this.timeSinceLastStopwatch.start();
     }
     private loop = () => {
         if (this.isLooping || !this.isRunning) {
@@ -18,16 +21,19 @@ export class NanoTimer {
         }
         this.isLooping = true;
 
-        let elapsed = this.lastRunStopwatch.getMilliseconds();
+        let elapsed = this.consistencyStopwatch.getMilliseconds();
         let timeUntilNextCallback = this.milliseconds - elapsed;
         if (timeUntilNextCallback <= 0) {
-            let delta = elapsed / this.milliseconds;
+            let timeSinceLast = this.timeSinceLastStopwatch.getMilliseconds();
+            this.timeSinceLastStopwatch.reset();
+            this.timeSinceLastStopwatch.start();
+            let delta = timeSinceLast / this.milliseconds;
 
-            this.lastRunStopwatch.reset();
-            this.lastRunStopwatch.addSeconds(Math.abs(timeUntilNextCallback) / 1000.0);
-            this.lastRunStopwatch.start();
+            this.consistencyStopwatch.reset();
+            this.consistencyStopwatch.addSeconds(Math.abs(timeUntilNextCallback) / 1000.0);
+            this.consistencyStopwatch.start();
             this.callback(delta);
-            elapsed = this.lastRunStopwatch.getMilliseconds();
+            elapsed = this.consistencyStopwatch.getMilliseconds();
             timeUntilNextCallback = this.milliseconds - elapsed;
         }
 
@@ -35,7 +41,7 @@ export class NanoTimer {
 
         if (timeUntilNextCallback  <= 10) {
             if (timeUntilNextCallback <= 5) {
-                if (timeUntilNextCallback <= 0.0) {
+                if (timeUntilNextCallback <= 0.5) {
                     if (timeUntilNextCallback <= -this.milliseconds) {
                         this.loop();
                     } else {
@@ -56,8 +62,8 @@ export class NanoTimer {
             return;
         }
         this.isRunning = true;
-        this.lastRunStopwatch.reset();
-        this.lastRunStopwatch.start();
+        this.consistencyStopwatch.reset();
+        this.consistencyStopwatch.start();
         this.loop();
     };
     stop = () => {
