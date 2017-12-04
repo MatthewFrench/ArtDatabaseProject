@@ -7,6 +7,7 @@ import {GameMessageCreator} from "../../../Networking/Game/GameMessageCreator";
 import {Network} from "../../../Networking/Network";
 import spriteSheet from "../../../../Images/walkcyclevarious.png";
 import bgAudio from "../../../../Audio/PatakasWorld.wav";
+import {NanoTimer} from "../../../Utility/Nanotimer";
 
 const Tile_Height = 10;
 const Tile_Width = 10;
@@ -102,7 +103,9 @@ export class GameLogic {
         this.changePreviewColor();
         //this.updateSliderLabels();
 
-        this.logicLoop();
+        this.logicTimer = new NanoTimer(this.logicLoop, 1000.0/60.0);
+        this.logicTimer.start();
+        this.drawLoop();
     }
 
     focusOnGameCanvas = () => {
@@ -186,9 +189,14 @@ export class GameLogic {
     //};
 
     logicLoop = () => {
-        window.requestAnimationFrame(this.logicLoop);
         if (this.visible) {
             this.logic();
+        }
+    };
+
+    drawLoop = () => {
+        window.requestAnimationFrame(this.drawLoop);
+        if (this.visible) {
             this.draw();
         }
     };
@@ -327,7 +335,7 @@ export class GameLogic {
             this.ctx.fillStyle = 'red';
             this.ctx.font = '20px Helvetica';
             this.ctx.textAlign="center";
-            this.ctx.fillText(player.getName(), this.convertTileXCoordinateToScreen(player.getX() + 0.5), this.convertTileYCoordinateToScreen(topY + 0.5));
+            this.ctx.fillText(player.getName(), Math.round(this.convertTileXCoordinateToScreen(player.getX() + 0.5)), Math.round(this.convertTileYCoordinateToScreen(topY + 0.5)));
         });
 
         this.ctx.restore();
