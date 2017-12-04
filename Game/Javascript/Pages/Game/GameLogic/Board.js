@@ -13,12 +13,12 @@ export class Board {
         //Tile format: [x][y] = Tile
         this.tiles = new Map();
     }
-    addPlayer = (playerID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping, spriteID) => {
-        let player = new Player(playerID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping, spriteID);
+    addPlayer = (playerID, spriteID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
+        let player = new Player(playerID, spriteID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping);
         this.players.set(playerID, player);
         return player;
     };
-    updatePlayer = (playerID, x, y, speedX, speedY, movingLeft, movingRight, jumping, spriteID) => {
+    updatePlayer = (playerID, spriteID, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
         let player = this.getPlayer(playerID);
         if (player === null) {
             return;
