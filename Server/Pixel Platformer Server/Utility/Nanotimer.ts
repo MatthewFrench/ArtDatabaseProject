@@ -26,6 +26,8 @@ export class NanoTimer {
 
             let delta = elapsed / this.milliseconds;
 
+            console.log('Delta: ' + delta);
+
             this.lastRunStopwatch.reset();
             this.lastRunStopwatch.addSeconds(Math.abs(timeUntilNextCallback) / 1000.0);
             this.lastRunStopwatch.start();
@@ -43,7 +45,11 @@ export class NanoTimer {
 
         if (timeUntilNextCallback  <= 10) {
             if (timeUntilNextCallback <= 5) {
-                setTimeout(this.loop,0);
+                if (timeUntilNextCallback <= 0.0) {
+                    setImmediate(this.loop);
+                } else {
+                    setTimeout(this.loop,0);
+                }
             } else {
                 setTimeout(this.loop,1);
             }
