@@ -27,6 +27,7 @@ export class Game{
                         this.gameLogic.getPreviewSquare(),
                         this.toggleSelector = Interface.Create({type: 'div', className: 'ToggleSelector', text: 'Minimize', onClick: this.slideToggle}),
                     ]}),
+                    this.gameLogic.getVolumeSlider(),
                     this.gameLogic.getCanvas(),
                     (this.boardSelector = new BoardSelector(this)).getDiv()
 
@@ -137,7 +138,7 @@ export class Game{
 
     spriteButtonClicked = () =>{
         this.mainDiv.appendChild(this.spritePopover.getDiv());
-    }
+    };
 
     getDiv = () => {
         return this.mainDiv;

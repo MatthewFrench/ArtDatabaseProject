@@ -13,6 +13,69 @@
   padding: 20px;
   opacity: 0.8;
 
+  .Selected {
+    background-color: lightblue;
+  }
+
+  .Sprite1{
+    position: absolute;
+    top: 130px;
+    left: 100px;
+    width: 32px;
+    height: 50px;
+
+    .Clip1{
+      position: absolute;
+      clip: rect(0px, 466px, 45px, 402px);
+      left: -402px;
+    }
+  }
+
+  .Sprite2{
+    position: absolute;
+    top: 130px;
+    left: 168px;
+    width: 32px;
+    height: 50px;
+
+    .Clip2{
+      position: absolute;
+      clip: rect(59px, 466px, 108px, 402px);
+      left: -402px;
+      top: -59px;
+    }
+  }
+
+  .Sprite3{
+    position: absolute;
+    top: 130px;
+    left: 237px;
+    width: 32px;
+    height: 50px;
+
+    .Clip3{
+      position: absolute;
+      clip: rect(123px, 466px, 166px, 402px);
+      left: -402px;
+      top: -123px;
+    }
+  }
+
+  .Sprite4{
+    position: absolute;
+    top: 130px;
+    left: 305px;
+    width: 32px;
+    height: 50px;
+
+    .Clip4 {
+      position: absolute;
+      clip: rect(185px, 466px, 227px, 402px);
+      left: -402px;
+      top: -185px;
+    }
+  }
+
   .SaveSprite {
     background-color: white;
     font-size: 15px;
