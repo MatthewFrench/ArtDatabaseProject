@@ -94,12 +94,24 @@ export class GameLogic {
     };
     handleMovingLeftMessage = async (player: Player, moving: boolean) => {
         player.getGameData().setMovingLeft(moving);
+        if (player.getGameData().getCurrentBoard() != null) {
+            let board = player.getGameData().getCurrentBoard();
+            board.sendToAllPlayersInBoard(GameMessageCreator.UpdatePlayer(player));
+        }
     };
     handleMovingRightMessage = async(player: Player, moving: boolean) => {
         player.getGameData().setMovingRight(moving);
+        if (player.getGameData().getCurrentBoard() != null) {
+            let board = player.getGameData().getCurrentBoard();
+            board.sendToAllPlayersInBoard(GameMessageCreator.UpdatePlayer(player));
+        }
     };
     handleJumpingMessage = async(player: Player, moving: boolean) => {
         player.getGameData().setJumping(moving);
+        if (player.getGameData().getCurrentBoard() != null) {
+            let board = player.getGameData().getCurrentBoard();
+            board.sendToAllPlayersInBoard(GameMessageCreator.UpdatePlayer(player));
+        }
     };
 
     playerLoggedIn = async (player : Player) => {

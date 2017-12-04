@@ -25,10 +25,31 @@ export class Player {
     setY = (y) => {
         this.y = y;
     };
+    getSpeedX = () => {
+        return this.speedX;
+    };
+    getSpeedY = () => {
+        return this.speedY;
+    };
+    setSpeedX = (x) => {
+        this.speedX = x;
+    };
+    setSpeedY = (y) => {
+        this.speedY = y;
+    };
     getName = () => {
         return this.name;
-    }
+    };
     getSpriteID = () => {
         return this.spriteID;
-    }
+    };
+    getMovingLeft = () => {
+        return this.movingLeft;
+    };
+    getMovingRight = () => {
+        return this.movingRight
+    };
+    getJumping = () => {
+        return this.jumping;
+    };
 }
