@@ -9,6 +9,8 @@ export class NanoTimer {
     constructor(callback, milliseconds) {
         this.callback = callback;
         this.milliseconds = milliseconds;
+        this.lastRunStopwatch.reset();
+        this.lastRunStopwatch.start();
     }
     private loop = () => {
         if (this.isLooping || !this.isRunning) {
@@ -20,20 +22,27 @@ export class NanoTimer {
         let timeUntilNextCallback = this.milliseconds - elapsed;
         if (timeUntilNextCallback <= 0) {
             let delta = elapsed / this.milliseconds;
+
+            this.lastRunStopwatch.reset();
+            this.lastRunStopwatch.addSeconds(Math.abs(timeUntilNextCallback) / 1000.0);
             this.lastRunStopwatch.start();
             this.callback(delta);
             elapsed = this.lastRunStopwatch.getMilliseconds();
             timeUntilNextCallback = this.milliseconds - elapsed;
-        }
+
+            //console.log('Ran callback: ' + timeUntilNextCallback);
+        }// else {
+        //    console.log('No callback: ' + timeUntilNextCallback);
+        //}
 
         this.isLooping = false;
 
-        if (timeUntilNextCallback  <= 5) {
-            //if (timeUntilNextCallback <= 3) {
-            //    setImmediate(this.loop);
-            //} else {
+        if (timeUntilNextCallback  <= 10) {
+            if (timeUntilNextCallback <= 5) {
                 setTimeout(this.loop,0);
-            //}
+            } else {
+                setTimeout(this.loop,1);
+            }
         } else {
             setTimeout(this.loop,2);
         }

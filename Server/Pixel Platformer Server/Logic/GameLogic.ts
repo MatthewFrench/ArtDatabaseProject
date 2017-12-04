@@ -1,7 +1,5 @@
 import {Player} from "../Player/Player";
-import {GameMessageCreator, GameMessageCreator as MsgCreator} from "../Networking/Game/GameMessageCreator";
-import {MessageWriter} from "../Utility/MessageWriter";
-import {Utility} from "../Utility/Utility";
+import {GameMessageCreator} from "../Networking/Game/GameMessageCreator";
 import {NetworkHandler} from "../Networking/NetworkHandler";
 import {Query} from "../Database/Query";
 import {Board} from "./Game/Board";
@@ -47,13 +45,12 @@ export class GameLogic {
 
         this.logicLoopTimer = new NanoTimer(this.logic, 1000.0/60.0);
         this.logicLoopTimer.start();
-
     }
     logic = (delta) => {
         this.logicLoopRestartBenchmark.stop();
-        this.logicLoopRestartBenchmark.clearHistoryAfterDuration(60 * 60);
-        this.logicLoopRestartBenchmark.prettyPrintAtInterval(60, 10);
         this.logicLoopRestartBenchmark.start();
+        this.logicLoopRestartBenchmark.clearHistoryAfterDuration(60 * 60);
+        this.logicLoopRestartBenchmark.prettyPrintAtInterval(10, 10);
 
         this.logicLoopBenchmark.start();
 
@@ -71,7 +68,7 @@ export class GameLogic {
 
         this.logicLoopBenchmark.stop();
         this.logicLoopBenchmark.clearHistoryAfterDuration(60 * 60);
-        this.logicLoopBenchmark.prettyPrintAtInterval(60, 10);
+        this.logicLoopBenchmark.prettyPrintAtInterval(10, 10);
     };
     handleRequestBoardSwitchMessage = async(player: Player, boardID: number) => {
         this.switchPlayerToBoard(player, boardID);
