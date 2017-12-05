@@ -36,7 +36,6 @@ export class Physics {
             let jumping = playerGameData.getJumping();
             //Add gravity and friction
             speedY -= Gravity * delta;
-            speedX *= Ground_Friction * delta;
             //Cut off horizontal speed after a point
             if (Math.abs(speedX) <= Cut_Off) {
                 speedX = 0;
@@ -80,6 +79,12 @@ export class Physics {
 
                 bottom = Math.floor(y);
                 top = Math.floor(y + Player_Height_Tiles);
+            }
+
+            //Apply ground friction
+            if (onGround) {
+                //Is this correct? Do calculations to make sure
+                speedX *= Ground_Friction * delta;
             }
 
             //Apply movement
