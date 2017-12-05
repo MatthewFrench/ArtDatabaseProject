@@ -10,121 +10,139 @@ const Cut_Off = 0.0001;
 const Solid_Tile_Type = 4;
 
 export class PhysicsLogic {
-    constructor() {}
-    logic = (board) => {
-        this.unhighlightAllTiles(board);
+    constructor() {
+        this.board = null;
+    }
+    logic = (board, delta) => {
+        this.board = board;
+        this.unhighlightAllTiles();
         let players = board.getPlayers();
         //Loop through all players
         players.forEach((player)=>{
+            let speedX = player.getSpeedX();
+            let speedY = player.getSpeedY();
+            let x = player.getX();
+            let y = player.getY();
+            let movingLeft = player.getMovingLeft();
+            let movingRight = player.getMovingRight();
+            let jumping = player.getJumping();
             //Add gravity and friction
-            player.speedY -= Gravity;
-            player.speedX *= Ground_Friction;
+            speedY -= Gravity * delta;
             //Cut off horizontal speed after a point
-            if (Math.abs(player.speedX) <= Cut_Off) {
-                player.speedX = 0;
+            if (Math.abs(speedX) <= Cut_Off) {
+                speedX = 0;
             }
 
             //Check for collision
-            let left = Math.floor(player.x - Player_Width_Tiles/2 + 0.5);
-            let right = Math.floor(player.x + Player_Width_Tiles/2);
-            let bottom = Math.floor(player.y);
-            let top = Math.floor(player.y + Player_Height_Tiles);
+            let left = Math.floor(x - Player_Width_Tiles/2 + 0.5);
+            let right = Math.floor(x + Player_Width_Tiles/2);
+            let bottom = Math.floor(y);
+            let top = Math.floor(y + Player_Height_Tiles);
 
-            let onGround = this.isHorizontalCollision(board, left, right, bottom);
-            let bottomNextStep = Math.floor(player. y + player.speedY);
-            let nextStepOnGround = this.isHorizontalCollision(board, left, right, bottomNextStep);
+            let onGround = this.isHorizontalCollision(left, right, bottom);
+            let bottomNextStep = Math.floor( y + speedY);
+            let nextStepOnGround = this.isHorizontalCollision(left, right, bottomNextStep);
 
             //Check if on ground
-            if ((onGround || nextStepOnGround) && player.speedY < 0) {
-                player.speedY = 0;
+            if ((onGround || nextStepOnGround) && speedY < 0) {
+                speedY = 0;
                 //Set the tile to be above the ground tile
                 if (onGround) {
-                    this.highlightTiles(this.getTilesInHorizontalCollision(board, left, right, bottom));
-                    player.y = bottom + 1;
+                    y = bottom + 1;
+                    this.highlightTiles(this.getTilesInHorizontalCollision(left, right, bottom));
                 } else {
-                    this.highlightTiles(this.getTilesInHorizontalCollision(board, left, right, bottomNextStep));
-                    player.y = bottomNextStep + 1;
+                    y = bottomNextStep + 1;
+                    this.highlightTiles(this.getTilesInHorizontalCollision(left, right, bottomNextStep));
                 }
-                bottom = Math.floor(player.y);
-                top = Math.floor(player.y + Player_Height_Tiles);
+                bottom = Math.floor(y);
+                top = Math.floor(y + Player_Height_Tiles);
             }
             onGround = onGround || nextStepOnGround;
 
             //Check to see if we're hitting a tile from above
-            let topNextStep = Math.floor(player.y + Player_Height_Tiles + player.speedY);
-            let topSideHit = this.isHorizontalCollision(board, left, right, top);
-            let nextStepTopSideHit = this.isHorizontalCollision(board, left, right, topNextStep);
-            if ((topSideHit || nextStepTopSideHit) && player.speedY > 0) {
-                player.speedY = 0;
+            let topNextStep = Math.floor(y + Player_Height_Tiles + speedY);
+            let topSideHit = this.isHorizontalCollision(left, right, top);
+            let nextStepTopSideHit = this.isHorizontalCollision(left, right, topNextStep);
+            if ((topSideHit || nextStepTopSideHit) && speedY > 0) {
+                speedY = 0;
                 if (topSideHit) {
-                    this.highlightTiles(this.getTilesInHorizontalCollision(board, left, right, top));
-                    player.y = top - Player_Height_Tiles;
+                    y = top - Player_Height_Tiles;
+                    this.highlightTiles(this.getTilesInHorizontalCollision(left, right, top));
                 } else {
-                    this.highlightTiles(this.getTilesInHorizontalCollision(board, left, right, topNextStep));
-                    player.y = topNextStep - Player_Height_Tiles;
+                    y = topNextStep - Player_Height_Tiles;
+                    this.highlightTiles(this.getTilesInHorizontalCollision(left, right, topNextStep));
                 }
 
-                bottom = Math.floor(player.y);
-                top = Math.floor(player.y + Player_Height_Tiles);
+                bottom = Math.floor(y);
+                top = Math.floor(y + Player_Height_Tiles);
+            }
+
+            //Apply ground friction
+            if (onGround) {
+                speedX *= Ground_Friction * delta;
             }
 
             //Apply movement
-            if (player.movingLeft) {
+            if (movingLeft) {
                 //Apply a massive slowdown to allow easy mid-air moving
-                if (player.speedX > 0) {
-                    player.speedX *= 0.9;
+                if (speedX > 0) {
+                    speedX *= 0.9;
                 }
-                player.speedX -= Player_Move_Speed;
+                speedX -= Player_Move_Speed * delta;
             }
-            if (player.movingRight) {
+            if (movingRight) {
                 //Apply a massive slowdown to allow easy mid-air moving
-                if (player.speedX < 0) {
-                    player.speedX *= 0.9;
+                if (speedX < 0) {
+                    speedX *= 0.9;
                 }
-                player.speedX += Player_Move_Speed;
+                speedX += Player_Move_Speed * delta;
             }
-            if (player.jumping && onGround && player.speedY < Player_Jump_Speed) {
-                player.speedY += Player_Jump_Speed;
+            if (jumping && onGround && speedY < Player_Jump_Speed) {
+                speedY += Player_Jump_Speed;
             }
 
             //Do side collisions
-            let leftNextStep = Math.floor(player.x - Player_Width_Tiles/2 + 0.5 + player.speedX);
-            let leftSideHit = this.isVerticalCollision(board, left, bottom, top);
+            let leftNextStep = Math.floor(x - Player_Width_Tiles/2 + 0.5 + speedX);
+            let leftSideHit = this.isVerticalCollision(left, bottom, top);
             //Ignore the first step so it can climb stairs automatically (bottom + 1)
-            let nextStepLeftSideHit = this.isVerticalCollision(board, leftNextStep, bottom + 1, top);
-            if ((leftSideHit || nextStepLeftSideHit) && player.speedX < 0) {
-                player.speedX = 0;
+            let nextStepLeftSideHit = this.isVerticalCollision(leftNextStep, bottom + 1, top);
+            if ((leftSideHit || nextStepLeftSideHit) && speedX < 0) {
+                speedX = 0;
                 if (leftSideHit) {
-                    this.highlightTiles(this.getTilesInVerticalCollision(board, left, bottom, top));
-                    player.x = left + 1 + 0.5;
+                    x = left + 1 + 0.5;
+                    this.highlightTiles(this.getTilesInVerticalCollision(left, bottom, top));
                 } else {
-                    this.highlightTiles(this.getTilesInVerticalCollision(board, leftNextStep, bottom, top));
-                    player.x = leftNextStep + 1 + 0.5;
+                    x = leftNextStep + 1 + 0.5;
+                    this.highlightTiles(this.getTilesInVerticalCollision(leftNextStep, bottom, top));
                 }
             }
             //Check right side collisions
-            let rightNextStep = Math.floor(player.x + Player_Width_Tiles/2 + 0.5 + player.speedX);
-            let rightSideHit = this.isVerticalCollision(board, right, bottom, top);
+            let rightNextStep = Math.floor(x + Player_Width_Tiles/2 + 0.5 + speedX);
+            let rightSideHit = this.isVerticalCollision(right, bottom, top);
             //Ignore the first step so it can climb stairs automatically (bottom + 1)
-            let nextStepRightSideHit = this.isVerticalCollision(board, rightNextStep, bottom + 1, top);
-            if ((rightSideHit || nextStepRightSideHit) && player.speedX > 0) {
-                player.speedX = 0;
+            let nextStepRightSideHit = this.isVerticalCollision(rightNextStep, bottom + 1, top);
+            if ((rightSideHit || nextStepRightSideHit) && speedX > 0) {
+                speedX = 0;
                 if (rightSideHit) {
-                    this.highlightTiles(this.getTilesInVerticalCollision(board, right, bottom, top));
-                    player.x = right - 1 - 0.5;
+                    x = right - 1 - 0.5;
+                    this.highlightTiles(this.getTilesInVerticalCollision(right, bottom, top));
                 } else {
-                    this.highlightTiles(this.getTilesInVerticalCollision(board, rightNextStep, bottom, top));
-                    player.x = rightNextStep - 1 - 0.5;
+                    x = rightNextStep - 1 - 0.5;
+                    this.highlightTiles(this.getTilesInVerticalCollision(rightNextStep, bottom, top));
                 }
             }
             //Add player speed to position
-            player.x += player.speedX;
-            player.y += player.speedY;
+            x += speedX * delta;
+            y += speedY * delta;
+            player.setX(x);
+            player.setY(y);
+            player.setSpeedX(speedX);
+            player.setSpeedY(speedY);
         });
     };
 
-    unhighlightAllTiles = (board) => {
-        board.tiles.forEach((x) => {
+    unhighlightAllTiles = () => {
+        this.board.tiles.forEach((x) => {
             x.forEach((tile)=>{
                 if (tile.highlighted) {
                     tile.highlighted = false;
@@ -153,10 +171,10 @@ export class PhysicsLogic {
         }
     };
 
-    getTilesInHorizontalCollision = (board, x1, x2, y) => {
+    getTilesInHorizontalCollision = (x1, x2, y) => {
         let tiles = [];
         for (let x = x1; x <= x2; x++) {
-            let tile = board.getTile(x, y);
+            let tile = this.board.getTile(x, y);
             if (tile !== null && tile.getTypeID() === Solid_Tile_Type) {
                 tiles.push(tile);
             }
@@ -164,9 +182,9 @@ export class PhysicsLogic {
         return tiles;
     };
 
-    isHorizontalCollision = (board, x1, x2, y) => {
+    isHorizontalCollision = (x1, x2, y) => {
         for (let x = x1; x <= x2; x++) {
-            let tile = board.getTile(x, y);
+            let tile = this.board.getTile(x, y);
             if (tile !== null && tile.getTypeID() === Solid_Tile_Type) {
                 return true;
             }
@@ -175,10 +193,10 @@ export class PhysicsLogic {
     };
 
 
-    getTilesInVerticalCollision = (board, x, y1, y2) => {
+    getTilesInVerticalCollision = (x, y1, y2) => {
         let tiles = [];
         for (let y = y1; y <= y2; y++) {
-            let tile = board.getTile(x, y);
+            let tile = this.board.getTile(x, y);
             if (tile !== null && tile.getTypeID() === Solid_Tile_Type) {
                 tiles.push(tile);
             }
@@ -186,9 +204,9 @@ export class PhysicsLogic {
         return tiles;
     };
 
-    isVerticalCollision = (board, x, y1, y2) => {
+    isVerticalCollision = (x, y1, y2) => {
         for (let y = y1; y <= y2; y++) {
-            let tile = board.getTile(x, y);
+            let tile = this.board.getTile(x, y);
             if (tile !== null && tile.getTypeID() === Solid_Tile_Type) {
                 return true;
             }

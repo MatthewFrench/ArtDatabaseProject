@@ -76,7 +76,7 @@ export class Board {
     logic = (delta) => {
         this.physics.logic(delta);
         //Send moving player locations
-        if (this.updatePlayerStopwatch.getMilliseconds() >= 30) {
+        if (this.updatePlayerStopwatch.getMilliseconds() >= 1000.0/20.0) { //30
             this.updatePlayerStopwatch.reset();
             for (let [playerID, player] of this.players) {
                 this.sendToAllPlayersInBoard(GameMessageCreator.UpdatePlayer(player));

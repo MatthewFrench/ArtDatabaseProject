@@ -19,6 +19,9 @@ export class GameLogic {
 
     logicLoopTimer: NanoTimer;
 
+    //deltaStopwatch = new Stopwatch();
+    //deltaCounter = 0;
+
     constructor(server) {
         this.server = server;
         this.boards = new Map();
@@ -49,6 +52,17 @@ export class GameLogic {
         this.logicLoopTimer.start();
     }
     logic = (delta) => {
+        /*
+        //This chunk of code is for making sure that delta is correct
+        this.deltaCounter+= delta;
+        if (this.deltaStopwatch.getSeconds() >= 1.0) {
+            console.log('Delta total: ' + this.deltaCounter);
+            console.log('Seconds: ' + this.deltaStopwatch.getSeconds());
+            console.log('Per second: ' + (this.deltaCounter / this.deltaStopwatch.getSeconds()));
+            this.deltaCounter = 0;
+            this.deltaStopwatch.reset();
+        }
+        */
         /*
         this.logicLoopRestartBenchmark.stop();
         this.logicLoopRestartBenchmark.start();
@@ -94,12 +108,24 @@ export class GameLogic {
     };
     handleMovingLeftMessage = async (player: Player, moving: boolean) => {
         player.getGameData().setMovingLeft(moving);
+        if (player.getGameData().getCurrentBoard() != null) {
+            let board = player.getGameData().getCurrentBoard();
+            board.sendToAllPlayersInBoard(GameMessageCreator.UpdatePlayer(player));
+        }
     };
     handleMovingRightMessage = async(player: Player, moving: boolean) => {
         player.getGameData().setMovingRight(moving);
+        if (player.getGameData().getCurrentBoard() != null) {
+            let board = player.getGameData().getCurrentBoard();
+            board.sendToAllPlayersInBoard(GameMessageCreator.UpdatePlayer(player));
+        }
     };
     handleJumpingMessage = async(player: Player, moving: boolean) => {
         player.getGameData().setJumping(moving);
+        if (player.getGameData().getCurrentBoard() != null) {
+            let board = player.getGameData().getCurrentBoard();
+            board.sendToAllPlayersInBoard(GameMessageCreator.UpdatePlayer(player));
+        }
     };
 
     playerLoggedIn = async (player : Player) => {
