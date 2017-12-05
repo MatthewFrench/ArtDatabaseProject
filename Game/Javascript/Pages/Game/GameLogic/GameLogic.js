@@ -7,6 +7,7 @@ import {GameMessageCreator} from "../../../Networking/Game/GameMessageCreator";
 import {Network} from "../../../Networking/Network";
 import spriteSheet from "../../../../Images/walkcyclevarious.png";
 import bgAudio from "../../../../Audio/PatakasWorld.wav";
+import {NanoTimer} from "../../../Utility/Nanotimer";
 
 const Tile_Height = 10;
 const Tile_Width = 10;
@@ -108,7 +109,9 @@ export class GameLogic {
         this.changePreviewColor();
         //this.updateSliderLabels();
 
-        this.logicLoop();
+        this.logicTimer = new NanoTimer(this.logicLoop, 1000.0/60.0);
+        this.logicTimer.start();
+        this.drawLoop();
     }
 
     focusOnGameCanvas = () => {
@@ -191,15 +194,20 @@ export class GameLogic {
         */
     //};
 
-    logicLoop = () => {
-        window.requestAnimationFrame(this.logicLoop);
+    logicLoop = (delta) => {
         if (this.visible) {
-            this.logic();
+            this.logic(delta);
+        }
+    };
+
+    drawLoop = () => {
+        window.requestAnimationFrame(this.drawLoop);
+        if (this.visible) {
             this.draw();
         }
     };
 
-    logic = () => {
+    logic = (delta) => {
         let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
         if (focusPlayer !== null) {
             if (this.leftPressed) {
@@ -246,7 +254,11 @@ export class GameLogic {
                 //focusPlayer.setY(focusPlayer.getY() - 0.1);
             }
         }
-        this.physicsLogic.logic(this.board);
+        this.physicsLogic.logic(this.board, delta);
+    };
+
+    draw = () => {
+        let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
         if (focusPlayer !== null) {
             this.cameraFocusTileX = focusPlayer.getX();
             this.cameraFocusTileY = focusPlayer.getY();
@@ -254,9 +266,7 @@ export class GameLogic {
         this.backgroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
         this.solidTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
         this.foregroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
-    };
 
-    draw = () => {
         this.resize();
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -275,7 +285,6 @@ export class GameLogic {
         this.ctx.save();
 
         //Draw players
-        let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
         if (focusPlayer !== null) {
             let leftX = focusPlayer.getX() + 0.5 - Player_Width_Tiles/2;
             let rightX = focusPlayer.getX() + 0.5 + Player_Width_Tiles/2;
@@ -336,7 +345,7 @@ export class GameLogic {
             this.ctx.fillStyle = 'red';
             this.ctx.font = '20px Helvetica';
             this.ctx.textAlign="center";
-            this.ctx.fillText(player.getName(), this.convertTileXCoordinateToScreen(player.getX() + 0.5), this.convertTileYCoordinateToScreen(topY + 0.5));
+            this.ctx.fillText(player.getName(), Math.round(this.convertTileXCoordinateToScreen(player.getX() + 0.5)), Math.round(this.convertTileYCoordinateToScreen(topY + 0.5)));
         });
 
         this.ctx.restore();
