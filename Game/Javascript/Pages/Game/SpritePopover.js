@@ -4,7 +4,8 @@ import {Network} from "../../Networking/Network";
 import spriteSheet from "../../../Images/walkcyclevarious.png";
 
 export class SpritePopover {
-    constructor() {
+    constructor(gameLogic) {
+        this.gameLogic = gameLogic;
         this.spriteID = 1;
         this.mainDiv = Interface.Create({type: 'div', className: 'SpritePopover', elements: [
             {type: 'div', elements: [
@@ -21,6 +22,18 @@ export class SpritePopover {
                 this.sprite4 = Interface.Create({type: 'div', className: "Sprite4", onClick: this.sprite4Clicked, elements: [
                     {type: 'img', src: spriteSheet, className: 'Clip4'}
                 ]}),
+                this.sprite5 = Interface.Create({type: 'div', className: "Sprite5", onClick: this.sprite5Clicked, elements: [
+                    {type: 'img', src: spriteSheet, className: 'Clip5'}
+                ]}),
+                this.sprite6 = Interface.Create({type: 'div', className: "Sprite6", onClick: this.sprite6Clicked, elements: [
+                    {type: 'img', src: spriteSheet, className: 'Clip6'}
+                ]}),
+                this.sprite7 = Interface.Create({type: 'div', className: "Sprite7", onClick: this.sprite7Clicked, elements: [
+                    {type: 'img', src: spriteSheet, className: 'Clip7'}
+                ]}),
+                this.sprite8 = Interface.Create({type: 'div', className: "Sprite8", onClick: this.sprite8Clicked, elements: [
+                    {type: 'img', src: spriteSheet, className: 'Clip8'}
+                ]}),
                 {type: 'div', text: 'Save', className: 'SaveSprite', onClick: this.saveSprite},
                 {type: 'div', text: 'Close', className: 'CloseButton', onClick: this.closeSelf}
             ]}
@@ -28,6 +41,7 @@ export class SpritePopover {
     }
 
     closeSelf = () =>{
+        this.gameLogic.focusOnGameCanvas();
         this.mainDiv.remove();
     };
 
@@ -40,6 +54,10 @@ export class SpritePopover {
         this.sprite2.classList.remove('Selected');
         this.sprite3.classList.remove('Selected');
         this.sprite4.classList.remove('Selected');
+        this.sprite5.classList.remove('Selected');
+        this.sprite6.classList.remove('Selected');
+        this.sprite7.classList.remove('Selected');
+        this.sprite8.classList.remove('Selected');
         this.spriteID = 1;
     };
 
@@ -48,6 +66,10 @@ export class SpritePopover {
         this.sprite2.classList.add('Selected');
         this.sprite3.classList.remove('Selected');
         this.sprite4.classList.remove('Selected');
+        this.sprite5.classList.remove('Selected');
+        this.sprite6.classList.remove('Selected');
+        this.sprite7.classList.remove('Selected');
+        this.sprite8.classList.remove('Selected');
         this.spriteID = 2;
     };
 
@@ -56,6 +78,10 @@ export class SpritePopover {
         this.sprite2.classList.remove('Selected');
         this.sprite3.classList.add('Selected');
         this.sprite4.classList.remove('Selected');
+        this.sprite5.classList.remove('Selected');
+        this.sprite6.classList.remove('Selected');
+        this.sprite7.classList.remove('Selected');
+        this.sprite8.classList.remove('Selected');
         this.spriteID = 3;
     };
 
@@ -64,7 +90,59 @@ export class SpritePopover {
         this.sprite2.classList.remove('Selected');
         this.sprite3.classList.remove('Selected');
         this.sprite4.classList.add('Selected');
+        this.sprite5.classList.remove('Selected');
+        this.sprite6.classList.remove('Selected');
+        this.sprite7.classList.remove('Selected');
+        this.sprite8.classList.remove('Selected');
         this.spriteID = 4;
+    };
+
+    sprite5Clicked = () => {
+        this.sprite1.classList.remove('Selected');
+        this.sprite2.classList.remove('Selected');
+        this.sprite3.classList.remove('Selected');
+        this.sprite4.classList.remove('Selected');
+        this.sprite5.classList.add('Selected');
+        this.sprite6.classList.remove('Selected');
+        this.sprite7.classList.remove('Selected');
+        this.sprite8.classList.remove('Selected');
+        this.spriteID = 5;
+    };
+
+    sprite6Clicked = () => {
+        this.sprite1.classList.remove('Selected');
+        this.sprite2.classList.remove('Selected');
+        this.sprite3.classList.remove('Selected');
+        this.sprite4.classList.remove('Selected');
+        this.sprite5.classList.remove('Selected');
+        this.sprite6.classList.add('Selected');
+        this.sprite7.classList.remove('Selected');
+        this.sprite8.classList.remove('Selected');
+        this.spriteID = 6;
+    };
+
+    sprite7Clicked = () => {
+        this.sprite1.classList.remove('Selected');
+        this.sprite2.classList.remove('Selected');
+        this.sprite3.classList.remove('Selected');
+        this.sprite4.classList.remove('Selected');
+        this.sprite5.classList.remove('Selected');
+        this.sprite6.classList.remove('Selected');
+        this.sprite7.classList.add('Selected');
+        this.sprite8.classList.remove('Selected');
+        this.spriteID = 7;
+    };
+
+    sprite8Clicked = () => {
+        this.sprite1.classList.remove('Selected');
+        this.sprite2.classList.remove('Selected');
+        this.sprite3.classList.remove('Selected');
+        this.sprite4.classList.remove('Selected');
+        this.sprite5.classList.remove('Selected');
+        this.sprite6.classList.remove('Selected');
+        this.sprite7.classList.remove('Selected');
+        this.sprite8.classList.add('Selected');
+        this.spriteID = 8;
     };
 
     saveSprite = () => {

@@ -16,7 +16,7 @@ const Sprite_Width = 26;
 const Sprite_Horizontal_Distance = 64;
 const Sprite_Total_Width = 768;
 const Sprite_Total_Height = 474;
-const Sprite_Vertical_Table = [0, 0, 59, 123, 185, 61, 61, 64];
+const Sprite_Vertical_Table = [0, 0, 59, 123, 185, 246, 307, 368, 432];
 const Sprite_X_Start = 18;
 const Frame_Next_Max = 4;
 const Frame_Total_Max = 2;
@@ -319,7 +319,9 @@ export class GameLogic {
                 facing = 7;
             }
 
-            this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * facing, 0, Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
+            let spriteID = player.getSpriteID();
+
+            this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * facing, Sprite_Vertical_Table[spriteID], Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
 
 
             /*this.ctx.moveTo(this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(bottomY));
