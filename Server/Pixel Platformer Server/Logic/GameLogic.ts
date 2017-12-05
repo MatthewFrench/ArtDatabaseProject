@@ -19,6 +19,9 @@ export class GameLogic {
 
     logicLoopTimer: NanoTimer;
 
+    deltaStopwatch = new Stopwatch();
+    deltaCounter = 0;
+
     constructor(server) {
         this.server = server;
         this.boards = new Map();
@@ -49,6 +52,14 @@ export class GameLogic {
         this.logicLoopTimer.start();
     }
     logic = (delta) => {
+        this.deltaCounter+= delta;
+        if (this.deltaStopwatch.getSeconds() >= 1.0) {
+            console.log('Delta total: ' + this.deltaCounter);
+            console.log('Seconds: ' + this.deltaStopwatch.getSeconds());
+            console.log('Per second: ' + (this.deltaCounter / this.deltaStopwatch.getSeconds()));
+            this.deltaCounter = 0;
+            this.deltaStopwatch.reset();
+        }
         /*
         this.logicLoopRestartBenchmark.stop();
         this.logicLoopRestartBenchmark.start();
