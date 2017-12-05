@@ -28,7 +28,6 @@ export class PhysicsLogic {
             let jumping = player.getJumping();
             //Add gravity and friction
             speedY -= Gravity * delta;
-            speedX *= Ground_Friction * delta;
             //Cut off horizontal speed after a point
             if (Math.abs(speedX) <= Cut_Off) {
                 speedX = 0;
@@ -78,20 +77,25 @@ export class PhysicsLogic {
                 top = Math.floor(y + Player_Height_Tiles);
             }
 
+            //Apply ground friction
+            if (onGround) {
+                speedX *= Ground_Friction * delta;
+            }
+
             //Apply movement
             if (movingLeft) {
                 //Apply a massive slowdown to allow easy mid-air moving
                 if (speedX > 0) {
                     speedX *= 0.9;
                 }
-                speedX -= Player_Move_Speed;
+                speedX -= Player_Move_Speed * delta;
             }
             if (movingRight) {
                 //Apply a massive slowdown to allow easy mid-air moving
                 if (speedX < 0) {
                     speedX *= 0.9;
                 }
-                speedX += Player_Move_Speed;
+                speedX += Player_Move_Speed * delta;
             }
             if (jumping && onGround && speedY < Player_Jump_Speed) {
                 speedY += Player_Jump_Speed;
