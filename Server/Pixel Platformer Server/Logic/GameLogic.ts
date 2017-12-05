@@ -19,8 +19,8 @@ export class GameLogic {
 
     logicLoopTimer: NanoTimer;
 
-    deltaStopwatch = new Stopwatch();
-    deltaCounter = 0;
+    //deltaStopwatch = new Stopwatch();
+    //deltaCounter = 0;
 
     constructor(server) {
         this.server = server;
@@ -52,6 +52,8 @@ export class GameLogic {
         this.logicLoopTimer.start();
     }
     logic = (delta) => {
+        /*
+        //This chunk of code is for making sure that delta is correct
         this.deltaCounter+= delta;
         if (this.deltaStopwatch.getSeconds() >= 1.0) {
             console.log('Delta total: ' + this.deltaCounter);
@@ -60,6 +62,7 @@ export class GameLogic {
             this.deltaCounter = 0;
             this.deltaStopwatch.reset();
         }
+        */
         /*
         this.logicLoopRestartBenchmark.stop();
         this.logicLoopRestartBenchmark.start();
