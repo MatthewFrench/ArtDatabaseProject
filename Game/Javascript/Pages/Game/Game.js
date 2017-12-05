@@ -44,7 +44,7 @@ export class Game{
                 ]}
             ]}
         ]});
-        this.spritePopover = new SpritePopover();
+        this.spritePopover = new SpritePopover(this.gameLogic);
         this.scorePopover = new ScorePopover();
         this.newWorldPopover = new NewWorldPopover();
         this.visible = false;
