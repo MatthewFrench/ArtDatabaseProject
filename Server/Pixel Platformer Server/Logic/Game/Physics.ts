@@ -88,14 +88,14 @@ export class Physics {
                 if (speedX > 0) {
                     speedX *= 0.9;
                 }
-                speedX -= Player_Move_Speed;
+                speedX -= Player_Move_Speed * delta;
             }
             if (movingRight) {
                 //Apply a massive slowdown to allow easy mid-air moving
                 if (speedX < 0) {
                     speedX *= 0.9;
                 }
-                speedX += Player_Move_Speed;
+                speedX += Player_Move_Speed * delta;
             }
             if (jumping && onGround && speedY < Player_Jump_Speed) {
                 speedY += Player_Jump_Speed;
