@@ -76,6 +76,66 @@
     }
   }
 
+  .Sprite5{
+    position: absolute;
+    top: 185px;
+    left: 100px;
+    width: 32px;
+    height: 50px;
+
+    .Clip5 {
+      position: absolute;
+      clip: rect(246px, 466px, 288px, 402px);
+      left: -402px;
+      top: -246px;
+    }
+  }
+
+  .Sprite6{
+    position: absolute;
+    top: 185px;
+    left: 168px;
+    width: 32px;
+    height: 50px;
+
+    .Clip6 {
+      position: absolute;
+      clip: rect(307px, 466px, 352px, 402px);
+      left: -402px;
+      top: -307px;
+    }
+  }
+
+  .Sprite7{
+    position: absolute;
+    top: 185px;
+    left: 237px;
+    width: 32px;
+    height: 50px;
+
+    .Clip7 {
+      position: absolute;
+      clip: rect(368px, 466px, 413px, 402px);
+      left: -402px;
+      top: -368px;
+    }
+  }
+
+  .Sprite8{
+    position: absolute;
+    top: 185px;
+    left: 305px;
+    width: 32px;
+    height: 50px;
+
+    .Clip8 {
+      position: absolute;
+      clip: rect(432px, 466px, 474px, 402px);
+      left: -402px;
+      top: -432px;
+    }
+  }
+
   .SaveSprite {
     background-color: white;
     font-size: 15px;
