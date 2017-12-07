@@ -28,6 +28,8 @@ const Solid_Tile_Type = 4;
 const Foreground_Tile_Type = 5;
 const Deleted_Tile_Type = 6;
 
+const Target_FPS = 60.0;
+
 export class GameLogic {
     constructor() {
         this.redSlider = Interface.Create({type: 'input', className: 'RedSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
@@ -109,7 +111,7 @@ export class GameLogic {
         this.changePreviewColor();
         //this.updateSliderLabels();
 
-        this.logicTimer = new NanoTimer(this.logicLoop, 1000.0/60.0);
+        this.logicTimer = new NanoTimer(this.logicLoop, 1000.0/Target_FPS);
         this.logicTimer.start();
         this.drawLoop();
     }
@@ -171,7 +173,12 @@ export class GameLogic {
     updatePlayer = (playerID, spriteID, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
         this.board.updatePlayer(playerID, spriteID, x, y, speedX, speedY, movingLeft, movingRight, jumping);
         //Fast forward the player by the ping
-        this.physicsLogic.runPlayerPhysicsLogic(this.board.getPlayer(playerID), Network.GetPing());
+        let fastForwardDelta = (Network.GetPing() / 2.0) / (1000.0 / Target_FPS);
+        while (fastForwardDelta > 1.0) {
+            this.physicsLogic.runPlayerPhysicsLogic(this.board.getPlayer(playerID), 1.0);
+            fastForwardDelta -= 1.0;
+        }
+        this.physicsLogic.runPlayerPhysicsLogic(this.board.getPlayer(playerID), fastForwardDelta);
     };
 
     setPlayerFocusID = (cameraFocusPlayerID) => {
