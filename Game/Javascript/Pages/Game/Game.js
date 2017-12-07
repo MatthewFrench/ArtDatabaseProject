@@ -17,7 +17,7 @@ export class Game{
         this.mainDiv = Interface.Create({type:'div', className: 'GamePage', elements:[
             {type: 'div', className: 'GameContainer', elements: [
                 {type: 'div', className: 'WorldWrapper', elements: [
-                    this.selector = Interface.Create({type: 'div', className: 'ColorSelector', id: 'ColorSelector', elements:[
+                    this.selector = Interface.Create({type: 'div', className: 'ColorSelector', elements:[
                         this.gameLogic.getRedSlider(),
                         this.gameLogic.getGreenSlider(),
                         this.gameLogic.getBlueSlider(),
@@ -28,6 +28,7 @@ export class Game{
                         this.gameLogic.getToolSelector(),
                         this.toggleSelector = Interface.Create({type: 'div', className: 'ToggleSelector', text: 'Minimize', onClick: this.slideToggle}),
                     ]}),
+                    {type: 'label', className: 'volumeSliderLabel', text: 'Volume: '},
                     this.gameLogic.getVolumeSlider(),
                     this.gameLogic.getCanvas(),
                     (this.boardSelector = new BoardSelector(this)).getDiv()
