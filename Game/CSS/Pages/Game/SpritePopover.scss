@@ -1,8 +1,9 @@
 .SpritePopover {
 
   position: absolute;
-  top: 5px;
-  left: 5px;
+  top: 35%;
+  left: 35%;
+  z-index: 15;
   width: 394px;
   height: 200px;
   text-align: center;
@@ -11,7 +12,8 @@
   box-shadow: 1px 1px 5px 2px gray;
   background-color: white;
   padding: 20px;
-  opacity: 0.8;
+  opacity: 0.95;
+  margin: -100px 0 0 -150px;
 
   .Selected {
     background-color: lightblue;
