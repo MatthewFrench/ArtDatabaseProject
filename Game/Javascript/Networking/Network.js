@@ -10,6 +10,8 @@ let ip = 'localhost';
 let server = `http://${ip}:${port}`;
 let connection = null;
 let connected = false;
+let pingTime = 0;
+let pingTimeArray = [];
 
 export class Network {
     static Initialize() {
@@ -18,6 +20,14 @@ export class Network {
         connection.on('connect', Network.Connected);
         connection.on('message', Network.GotMessage);
         connection.on('disconnect', Network.Disconnected);
+
+        connection.on('pong', function(ms) {
+            pingTime = ms;
+            pingTimeArray.push(pingTime);
+            if (pingTimeArray.length > 5) {
+                pingTimeArray.shift();
+            }
+        });
     }
 
     static ConnectFailed() {
@@ -39,6 +49,18 @@ export class Network {
 
     static IsConnected() {
         return connected;
+    }
+
+    static GetPing() {
+        if (pingTimeArray.length === 0) {
+            return pingTime;
+        }
+        let average = 0;
+        for (let ping of pingTimeArray) {
+            average += ping;
+        }
+        average = average / pingTimeArray.length;
+        return Math.max(pingTime, average);
     }
 
     static GotMessage(message) {
