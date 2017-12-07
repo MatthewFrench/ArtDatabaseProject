@@ -10,6 +10,9 @@ let ip = 'localhost';
 let server = `http://${ip}:${port}`;
 let connection = null;
 let connected = false;
+let pingTime = 0;
+let totalPing = 0;
+let pingCount = 0;
 
 export class Network {
     static Initialize() {
@@ -18,6 +21,16 @@ export class Network {
         connection.on('connect', Network.Connected);
         connection.on('message', Network.GotMessage);
         connection.on('disconnect', Network.Disconnected);
+
+        connection.on('pong', function(ms) {
+            if (pingCount > 10) {
+                pingCount = 0;
+                totalPing = 0;
+            }
+            pingTime = ms;
+            pingCount++;
+            totalPing += pingTime;
+        });
     }
 
     static ConnectFailed() {
@@ -39,6 +52,13 @@ export class Network {
 
     static IsConnected() {
         return connected;
+    }
+
+    static GetPing() {
+        if (pingCount === 0) {
+            return pingTime;
+        }
+        return Math.max(pingTime, totalPing/pingCount);
     }
 
     static GotMessage(message) {

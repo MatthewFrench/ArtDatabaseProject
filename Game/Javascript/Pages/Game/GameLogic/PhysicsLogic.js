@@ -14,11 +14,18 @@ export class PhysicsLogic {
     constructor() {
         this.board = null;
     }
-    logic = (board, physicsDelta) => {
+    logic = (board, delta) => {
         this.board = board;
         this.unhighlightAllTiles();
+        while (delta > 1.0) {
+            this.runPhysics(board, 1.0);
+            delta -= 1.0;
+        }
+        this.runPhysics(board, delta);
+    };
+
+    runPhysics = (board, physicsDelta) => {
         let players = board.getPlayers();
-        //Loop through all players
         //Loop through all players
         players.forEach((player)=>{
             let totalDelta = 0;
