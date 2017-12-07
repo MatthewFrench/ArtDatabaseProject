@@ -11,8 +11,7 @@ let server = `http://${ip}:${port}`;
 let connection = null;
 let connected = false;
 let pingTime = 0;
-let totalPing = 0;
-let pingCount = 0;
+let pingTimeArray = [];
 
 export class Network {
     static Initialize() {
@@ -23,13 +22,11 @@ export class Network {
         connection.on('disconnect', Network.Disconnected);
 
         connection.on('pong', function(ms) {
-            if (pingCount > 10) {
-                pingCount = 0;
-                totalPing = 0;
-            }
             pingTime = ms;
-            pingCount++;
-            totalPing += pingTime;
+            pingTimeArray.push(pingTime);
+            if (pingTimeArray.length > 5) {
+                pingTimeArray.shift();
+            }
         });
     }
 
@@ -55,10 +52,15 @@ export class Network {
     }
 
     static GetPing() {
-        if (pingCount === 0) {
+        if (pingTimeArray.length === 0) {
             return pingTime;
         }
-        return Math.max(pingTime, totalPing/pingCount);
+        let average = 0;
+        for (let ping of pingTimeArray) {
+            average += ping;
+        }
+        average = average / pingTimeArray.length;
+        return Math.max(pingTime, average);
     }
 
     static GotMessage(message) {
