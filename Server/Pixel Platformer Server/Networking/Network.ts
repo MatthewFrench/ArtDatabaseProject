@@ -7,7 +7,7 @@ let server = null;
 
 export class Network {
     static Initialize() {
-        server = socketIO(port);
+        server = socketIO(port, {pingInterval: 5000});
         console.log(`Websocket server is online at ${port}!`);
 
         server.on('connection', function (socket) {

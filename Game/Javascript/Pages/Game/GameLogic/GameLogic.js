@@ -170,6 +170,8 @@ export class GameLogic {
 
     updatePlayer = (playerID, spriteID, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
         this.board.updatePlayer(playerID, spriteID, x, y, speedX, speedY, movingLeft, movingRight, jumping);
+        //Fast forward the player by the ping
+        this.physicsLogic.runPlayerPhysicsLogic(this.board.getPlayer(playerID), Network.GetPing());
     };
 
     setPlayerFocusID = (cameraFocusPlayerID) => {
@@ -317,6 +319,13 @@ export class GameLogic {
         this.ctx.strokeRect(this.previewSquare.getX(), this.previewSquare.getY(), this.previewSquare.getWidth(), this.previewSquare.getHeight());
         this.ctx.fillRect(this.previewSquare.getX(), this.previewSquare.getY(), this.previewSquare.getWidth(), this.previewSquare.getHeight());
         this.ctx.stroke();*/
+
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        this.ctx.fillRect(0, this.canvas.height - 20, 55, 30);
+        this.ctx.fillStyle = 'rgb(0, 255, 0)';
+        this.ctx.font = '15px Helvetica';
+        this.ctx.textAlign="center";
+        this.ctx.fillText(`${Math.floor(Network.GetPing())} ms`, 25, this.canvas.height - 4);
     };
 
     enterTileDrawingCoordinateSystem = () => {
