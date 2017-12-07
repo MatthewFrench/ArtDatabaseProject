@@ -79,7 +79,7 @@ export class Game{
     };
 
     gotChatMessage = async (boardID, playerID, chatPrefix, chatMessage, time) => {
-        this.addMessageToChatArea(chatPrefix + ' : ' + chatMessage);
+        this.addMessageToChatArea(chatPrefix.bold() + ' : ' + chatMessage);
     };
 
     gotPlayedAddedMessage = async (playerID, spriteID, displayName, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
