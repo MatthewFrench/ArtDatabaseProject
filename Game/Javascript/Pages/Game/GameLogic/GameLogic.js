@@ -70,6 +70,9 @@ export class GameLogic {
         //holds the value of the color to be used for a tile
         this.previewSquare = Interface.Create({type: 'div', className: 'PreviewSquare'});
         this.eyeDropperOn = false;
+        this.layerOn = false;
+        this.drawOn = true;
+        this.fillOn = false;
         this.playerSpriteSheet = new Image();
         this.playerSpriteSheet.src = spriteSheet;
         //this.frameNumber = 0;
@@ -158,6 +161,9 @@ export class GameLogic {
         this.drawToolButton.classList.add('Selected');
         this.layerToolButton.classList.remove('Selected');
         this.fillToolButton.classList.remove('Selected');
+        this.layerOn = false;
+        this.drawOn = true;
+        this.canvas.style.cursor = "";
         //add tool type
         this.focusOnGameCanvas();
     }
@@ -166,6 +172,10 @@ export class GameLogic {
         this.layerToolButton.classList.add('Selected');
         this.drawToolButton.classList.remove('Selected');
         this.fillToolButton.classList.remove('Selected');
+        this.layerOn = true;
+        this.drawOn = false;
+        this.fillOn = false;
+        this.canvas.style.cursor = "alias";
         //add tool type
         this.focusOnGameCanvas();
     }
@@ -174,6 +184,10 @@ export class GameLogic {
         this.fillToolButton.classList.add('Selected');
         this.layerToolButton.classList.remove('Selected');
         this.layerToolButton.classList.remove('Selected');
+        this.layerOn = false;
+        this.drawOn = false;
+        this.fillOn = true;
+        this.canvas.style.cursor = "";
         //add tool type
         this.focusOnGameCanvas();
     }
@@ -215,6 +229,10 @@ export class GameLogic {
         Network.Send(GameMessageCreator.SetTile(x, y, this.currentTileType, parseInt(this.redSlider.value),
             parseInt(this.greenSlider.value), parseInt(this.blueSlider.value), parseInt(this.alphaSlider.value)));
     };
+    placeLayer = (x, y, tileType, r, g, b, a) => {
+        Network.Send(GameMessageCreator.SetTile(x, y, this.currentTileType, parseInt(this.redSlider.value),
+            parseInt(this.greenSlider.value), parseInt(this.blueSlider.value), parseInt(this.alphaSlider.value)));
+    }
 
     //addOrUpdateTile = (x, y, r, g, b, a) => {
     //    this.board.setTileColor(x, y, r, g, b, a);
@@ -458,7 +476,7 @@ export class GameLogic {
 
     onMouseDown = (event) => {
         //check if eyedropper enabled
-        if(!this.eyeDropperOn){
+        if(!this.eyeDropperOn && !this.layerOn){
             //Handle tile placement
             this.previouslyPlacedTileX = null;
             this.previouslyPlacedTileY = null;
@@ -469,7 +487,8 @@ export class GameLogic {
             this.previouslyPlacedTileY = this.convertScreenYCoordinateToTile(mousePosition.y);
             this.placeTile(this.previouslyPlacedTileX, this.previouslyPlacedTileY);
 
-        } else {
+        }
+        else if (this.eyeDropperOn) {
             //get mouse coordinates
             let mousePosition = this.getMousePosition(event);
             //get information about pixel at mouse coordinates from canvas
@@ -500,11 +519,57 @@ export class GameLogic {
             //turn off the eyedropper
             this.eyeDropperOn = false;
         }
+
+        else if(this.layerOn){
+                //get mouse coordinates
+                let mousePosition = this.getMousePosition(event);
+                //get information about pixel at mouse coordinates from canvas
+                let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
+                let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
+                let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
+
+                //pull red data
+                let pixelRed = pixelInfo.data[0];
+                //pull green data
+                let pixelGreen = pixelInfo.data[1];
+                //pull blue data
+                let pixelBlue = pixelInfo.data[2];
+                //pull alpha data
+                let pixelAlpha = pixelInfo.data[3];
+
+                //set background color to a hex representation of the value pulled from canvas
+                //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
+                //set background color to a rgba representation of the value pulled from canvas
+                //this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha + ")";
+
+                this.previewSquare.style.backgroundColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha/255 + ")";
+
+                //set slider values to color selected
+                this.redSlider.value = pixelRed;
+                this.greenSlider.value = pixelGreen;
+                this.blueSlider.value = pixelBlue;
+                this.alphaSlider.value = pixelAlpha;
+
+                //turn off the eyedropper
+                //this.eyeDropperOn = false;
+
+                this.updateSliderLabels();
+                //Handle tile placement
+                this.previouslyPlacedTileX = null;
+                this.previouslyPlacedTileY = null;
+                this.mouseDown = true;
+                //Get tile position
+                this.previouslyPlacedTileX = this.convertScreenXCoordinateToTile(mousePosition.x);
+                this.previouslyPlacedTileY = this.convertScreenYCoordinateToTile(mousePosition.y);
+                this.placeLayer(tileX, tileY, this.currentTileType, this.redSlider.value, this.greenSlider.value, this.blueSlider.value, this.alphaSlider.value );
+                //this.layerOn = false;
+                this.canvas.cursor = '';
+            }
     };
 
     onMouseMove = (event) => {
         //possible preview window for eyedropper color picking goes here
-        if(!this.eyeDropperOn){
+        if(!this.eyeDropperOn && !this.layerOn){
             //Handle tile placement
             if (this.mouseDown) {
                 //Get tile position
@@ -528,20 +593,24 @@ export class GameLogic {
             let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
             let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
 
-            //Set current tile type to eyedrop
-            let tile = this.board.getTile(tileX, tileY);
-            if(tile != null){
-                switch (tile.getTypeID()){
-                    case 3: this.backgroundTileTypeClicked();
-                        break;
-                    case 4: this.solidTileTypeClicked();
-                        break;
-                    case 5: this.foregroundTileTypeClicked();
-                        break;
-                    case 6: this.deleteTileTypeClicked();
-                        break;
+            if(this.eyeDropperOn){
+                //Set current tile type to eyedrop
+                let tile = this.board.getTile(tileX, tileY);
+                if(tile != null){
+                    switch (tile.getTypeID()){
+                        case 3: this.backgroundTileTypeClicked();
+                            break;
+                        case 4: this.solidTileTypeClicked();
+                            break;
+                        case 5: this.foregroundTileTypeClicked();
+                            break;
+                        case 6: this.deleteTileTypeClicked();
+                            break;
+                    }
                 }
             }
+
+
 
 
 
@@ -569,9 +638,14 @@ export class GameLogic {
 
             //turn off the eyedropper
             //this.eyeDropperOn = false;
+            if(this.mouseDown){
+                this.placeLayer(tileX, tileY, this.currentTileType, this.redSlider.value, this.greenSlider.value, this.blueSlider.value, this.alphaSlider.value );
+
+            }
 
             this.updateSliderLabels();
         }
+
     };
 
     onMouseUp = (event) => {
