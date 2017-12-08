@@ -20,7 +20,7 @@ export class BoardRow{
                         ]},
                     {type: 'div', elements: [
                     this.lastModifiedDiv = Interface.Create({type: 'div', text: "Last Modified: ", className: 'LastModifiedTag'}),
-                    this.lastModifiedDiv = Interface.Create({type: 'div', text: lastModified, className: 'LastModified'}),
+                    this.lastModifiedDiv = Interface.Create({type: 'div', text: new Date(lastModified).toLocaleString(), className: 'LastModified'}),
                         ]},
                     {type: 'div', elements: [
                     this.tileCountDiv = Interface.Create({type: 'div', text: "Number of tiles: ", className: 'TileCountTag'}),
@@ -39,12 +39,12 @@ export class BoardRow{
         this.boardName = boardName;
         this.boardID = boardID;
         this.numberInBoard = numberInBoard;
-        this.lastModified = lastModified;
+        this.lastModified = new Date(lastModified).toLocaleString();
         this.tileCount = tileCount;
 
         this.boardNameDiv.innerText = boardName;
         this.numberInBoardDiv.innerText = numberInBoard;
-        this.lastModifiedDiv.innerText = lastModified;
+        this.lastModifiedDiv.innerText = new Date(lastModified).toLocaleString();
         this.tileCountDiv.innerText = tileCount;
     };
 
