@@ -34,10 +34,11 @@
       top: 0px;
       left: 0px;
       transition: top 1s linear;
-      height: 190px;
+      height: 200px;
       border: solid 1px black;
       width: 175px;
       background-color: white;
+      border: solid 2px #b5b5b5;
 
       .RedSlider {
         width: 10px;
@@ -89,7 +90,7 @@
         text-align: center;
         vertical-align: middle;
         left: 110px;
-        top: 62px;
+        top: 84px;
         line-height: 20px;
 
         &:hover {
@@ -100,7 +101,7 @@
       .PreviewSquare {
         background-color: white;
         width: 21px;
-        height: 95px;
+        height: 107px;
         position: absolute;
         top: 3px;
         left: 85px;
@@ -126,12 +127,11 @@
         background-color: white;
         padding: 2px;
         border-radius: 2px;
-        border: solid 2px #b5b5b5;
         position: absolute;
         width: 167px;
         height: 80px;
         left: 1px;
-        top: 104px;
+        top: 115px;
 
         .RGBALabel {
           position: absolute;
@@ -145,7 +145,7 @@
             color: red;
             position: absolute;
             left: 2px;
-            top: 1px;
+            top: -5px;
             width: 5px;
           }
 
@@ -153,7 +153,7 @@
             color: green;
             position: absolute;
             left: 22px;
-            top: 1px;
+            top: -5px;
             width: 5px;
           }
 
@@ -161,7 +161,7 @@
             color: blue;
             position: absolute;
             left: 42px;
-            top: 1px;
+            top: -5px;
             width: 5px;
           }
 
@@ -169,7 +169,7 @@
             color: black;
             position: absolute;
             left: 62px;
-            top: 1px;
+            top: -5px;
             width: 5px;
           }
 
@@ -177,7 +177,7 @@
             color: red;
             position: absolute;
             left: 2px;
-            top: 10px;
+            top: 4px;
             width: 5px;
           }
 
@@ -185,7 +185,7 @@
             color: green;
             position: absolute;
             left: 22px;
-            top: 10px;
+            top: 4px;
             width: 5px;
           }
 
@@ -193,7 +193,7 @@
             color: blue;
             position: absolute;
             left: 42px;
-            top: 10px;
+            top: 4px;
             width: 5px;
           }
 
@@ -201,7 +201,7 @@
             color: black;
             position: absolute;
             left: 62px;
-            top: 10px;
+            top: 4px;
             width: 5px;
           }
         }
@@ -300,6 +300,17 @@
           height: 15px;
           cursor: pointer;
           top: 40px;
+        }
+        .fillTool{
+          font-size: 12px;
+          padding: 1px;
+          border-radius: 1px;
+          border: solid 1px #b5b5b5;
+          position: absolute;
+          width: 60px;
+          height: 15px;
+          cursor: pointer;
+          top: 62px;
         }
       }
     }
