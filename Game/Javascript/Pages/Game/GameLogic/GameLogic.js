@@ -15,13 +15,8 @@ const Player_Width_Tiles = 2;
 const Player_Height_Tiles = 5;
 const Sprite_Width = 26;
 const Sprite_Horizontal_Distance = 64;
-const Sprite_Total_Width = 768;
-const Sprite_Total_Height = 474;
 const Sprite_Vertical_Table = [0, 0, 59, 123, 185, 246, 307, 368, 432];
 const Sprite_X_Start = 18;
-const Frame_Next_Max = 4;
-const Frame_Total_Max = 2;
-const Idiot_Frame_Table = [1, 0, 2];
 
 const Background_Tile_Type = 3;
 const Solid_Tile_Type = 4;
@@ -335,7 +330,7 @@ export class GameLogic {
             //if(player.playerID === this.cameraFocusPlayerID){
             //    return;
             //}
-            player.updateSpriteFrame();
+            //player.updateSpriteFrame();
 
             //Player X and Y is in the bottom center of the player rectangle
             let leftX = player.getX() + 0.5 - Player_Width_Tiles/2;
@@ -381,22 +376,6 @@ export class GameLogic {
 
         this.foregroundTileLayerRenderer.draw(this.board);
         this.ctx.drawImage(this.foregroundTileLayerRenderer.getCanvas(), 0, 0);
-
-
-        //Draw color selector
-        /*this.ctx.strokeStyle = 'black';
-        for (let square of this.colorSquareOptions) {
-            this.ctx.fillStyle = square.getColor();
-            this.ctx.strokeRect(square.getX(), square.getY(), square.getWidth(), square.getHeight());
-            this.ctx.fillRect(square.getX(), square.getY(), square.getWidth(), square.getHeight());
-            this.ctx.stroke();
-        }*/
-
-        //Draw preview square for color selection using slider/picker system
-        /*this.ctx.fillStyle = this.previewSquare.getColor();
-        this.ctx.strokeRect(this.previewSquare.getX(), this.previewSquare.getY(), this.previewSquare.getWidth(), this.previewSquare.getHeight());
-        this.ctx.fillRect(this.previewSquare.getX(), this.previewSquare.getY(), this.previewSquare.getWidth(), this.previewSquare.getHeight());
-        this.ctx.stroke();*/
 
         this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         this.ctx.fillRect(0, this.canvas.height - 20, 55, 30);
@@ -528,10 +507,6 @@ export class GameLogic {
             let pixelBlue = pixelInfo.data[2];
             //pull alpha data
             let pixelAlpha = pixelInfo.data[3];
-
-            //set background color to a hex representation of the value pulled from canvas
-            //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
-            //set background color to a rgba representation of the value pulled from canvas
             this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha/255 + ")";
 
             //set slider values to color selected
@@ -648,11 +623,6 @@ export class GameLogic {
             let pixelBlue = pixelInfo.data[2];
             //pull alpha data
             let pixelAlpha = pixelInfo.data[3];
-
-            //set background color to a hex representation of the value pulled from canvas
-            //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
-            //set background color to a rgba representation of the value pulled from canvas
-            //this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha + ")";
 
             this.previewSquare.style.backgroundColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha/255 + ")";
 
