@@ -63,6 +63,7 @@ export class GameLogic {
                 {type: 'span', text: 'Tools', className: 'toolLabel'},
                 {type: 'div', text: 'Draw', className: 'drawTool'},
                 {type: 'div', text: 'Set Layer', className: 'layerTool'},
+                {type: 'div', text: 'Fill', className: 'fillTool'},
                 this.eyeDropButton = Interface.Create({type: 'div', text: 'Eye Drop', className: 'EyeDropButton', onClick: this.eyeDropButtonClicked})
             ]})
         ]});
