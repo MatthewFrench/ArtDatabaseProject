@@ -144,10 +144,10 @@ export class PhysicsLogic {
             speedX = 0;
             if (leftSideHit) {
                 x = left + 1 + 0.5;
-                this.highlightTiles(this.getTilesInVerticalCollision(left, bottom, top));
+                this.highlightTiles(this.getTilesInVerticalCollision(left, bottom, top - 1));
             } else {
                 x = leftNextStep + 1 + 0.5;
-                this.highlightTiles(this.getTilesInVerticalCollision(leftNextStep, bottom, top));
+                this.highlightTiles(this.getTilesInVerticalCollision(leftNextStep, bottom, top - 1));
             }
         }
         //Check right side collisions
@@ -159,10 +159,10 @@ export class PhysicsLogic {
             speedX = 0;
             if (rightSideHit) {
                 x = right - 1 - 0.5;
-                this.highlightTiles(this.getTilesInVerticalCollision(right, bottom, top));
+                this.highlightTiles(this.getTilesInVerticalCollision(right, bottom, top - 1));
             } else {
                 x = rightNextStep - 1 - 0.5;
-                this.highlightTiles(this.getTilesInVerticalCollision(rightNextStep, bottom, top));
+                this.highlightTiles(this.getTilesInVerticalCollision(rightNextStep, bottom, top - 1));
             }
         }
         //Add player speed to position
