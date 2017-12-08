@@ -16,7 +16,7 @@ const Player_Height_Tiles = 5;
 const Sprite_Width = 26;
 const Sprite_Horizontal_Distance = 64;
 const Sprite_Vertical_Table = [0, 0, 59, 123, 185, 246, 307, 368, 432];
-const Sprite_X_Start = 18;
+const Sprite_X_Start = 22;
 
 const Background_Tile_Type = 3;
 const Solid_Tile_Type = 4;
@@ -161,7 +161,7 @@ export class GameLogic {
         this.canvas.style.cursor = "";
         //add tool type
         this.focusOnGameCanvas();
-    }
+    };
 
     layerToolClicked = () => {
         this.layerToolButton.classList.add('Selected');
@@ -173,7 +173,7 @@ export class GameLogic {
         this.canvas.style.cursor = "alias";
         //add tool type
         this.focusOnGameCanvas();
-    }
+    };
 
     fillToolClicked = () => {
         this.fillToolButton.classList.add('Selected');
@@ -185,7 +185,7 @@ export class GameLogic {
         this.canvas.style.cursor = "";
         //add tool type
         this.focusOnGameCanvas();
-    }
+    };
 
     resetBoardToNewBoard = (boardID) => {
         this.board = new Board(boardID);
@@ -227,7 +227,7 @@ export class GameLogic {
     placeLayer = (x, y, tileType, r, g, b, a) => {
         Network.Send(GameMessageCreator.SetTile(x, y, this.currentTileType, parseInt(this.redSlider.value),
             parseInt(this.greenSlider.value), parseInt(this.blueSlider.value), parseInt(this.alphaSlider.value)));
-    }
+    };
 
     //addOrUpdateTile = (x, y, r, g, b, a) => {
     //    this.board.setTileColor(x, y, r, g, b, a);
@@ -330,7 +330,7 @@ export class GameLogic {
             //if(player.playerID === this.cameraFocusPlayerID){
             //    return;
             //}
-            //player.updateSpriteFrame();
+            player.updateSpriteFrame();
 
             //Player X and Y is in the bottom center of the player rectangle
             let leftX = player.getX() + 0.5 - Player_Width_Tiles/2;
@@ -339,7 +339,7 @@ export class GameLogic {
             let topY = player.getY() + Player_Height_Tiles;
 
             this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * player.getSpriteFrame(),
-                0, Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
+                Sprite_Vertical_Table[player.getSpriteID()], Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
 
             this.ctx.fillStyle = 'blue';
             this.ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
