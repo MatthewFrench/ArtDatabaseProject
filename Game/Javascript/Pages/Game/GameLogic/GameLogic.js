@@ -61,9 +61,9 @@ export class GameLogic {
             this.foregroundTypeButton = Interface.Create({type: 'div', text: 'Foreground', className: 'ForegroundButton', onClick: this.foregroundTileTypeClicked}),
             this.toolSelector = Interface.Create({type: 'div', className: 'toolSelector', elements: [
                 {type: 'span', text: 'Tools', className: 'toolLabel'},
-                {type: 'div', text: 'Draw', className: 'drawTool'},
-                {type: 'div', text: 'Set Layer', className: 'layerTool'},
-                {type: 'div', text: 'Fill', className: 'fillTool'},
+                this.drawToolButton = Interface.Create({type: 'div', text: 'Draw', className: 'drawTool Selected', onClick: this.drawToolClicked}),
+                this.layerToolButton = Interface.Create({type: 'div', text: 'Set Layer', className: 'layerTool', onClick: this.layerToolClicked}),
+                this.fillToolButton = Interface.Create({type: 'div', text: 'Fill', className: 'fillTool', onClick: this.fillToolClicked}),
                 this.eyeDropButton = Interface.Create({type: 'div', text: 'Eye Drop', className: 'EyeDropButton', onClick: this.eyeDropButtonClicked})
             ]})
         ]});
@@ -153,6 +153,30 @@ export class GameLogic {
         this.currentTileType = Deleted_Tile_Type;
         this.focusOnGameCanvas();
     };
+
+    drawToolClicked = () => {
+        this.drawToolButton.classList.add('Selected');
+        this.layerToolButton.classList.remove('Selected');
+        this.fillToolButton.classList.remove('Selected');
+        //add tool type
+        this.focusOnGameCanvas();
+    }
+
+    layerToolClicked = () => {
+        this.layerToolButton.classList.add('Selected');
+        this.drawToolButton.classList.remove('Selected');
+        this.fillToolButton.classList.remove('Selected');
+        //add tool type
+        this.focusOnGameCanvas();
+    }
+
+    fillToolClicked = () => {
+        this.fillToolButton.classList.add('Selected');
+        this.layerToolButton.classList.remove('Selected');
+        this.layerToolButton.classList.remove('Selected');
+        //add tool type
+        this.focusOnGameCanvas();
+    }
 
     resetBoardToNewBoard = (boardID) => {
         this.board = new Board(boardID);
