@@ -127,6 +127,7 @@ export class Board {
     };
 
     addOrUpdateTile = (x, y, r, g, b, a, tileType, player: Player) => {
+        this.lastModifiedDate = new Date();
         if (!this.tiles.has(x)) {
             this.tiles.set(x, new Map());
         }
