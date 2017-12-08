@@ -175,7 +175,7 @@ export class GameLogic {
         this.layerOn = true;
         this.drawOn = false;
         this.fillOn = false;
-        this.canvas.style.cursor = "alias";
+        this.canvas.style.cursor = "";
         //add tool type
         this.focusOnGameCanvas();
     }
@@ -550,10 +550,20 @@ export class GameLogic {
                 //get mouse coordinates
                 let mousePosition = this.getMousePosition(event);
                 //get information about pixel at mouse coordinates from canvas
-                let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
+                //let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
                 let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
                 let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
 
+                let tile = this.board.getTile(tileX, tileY);
+                if (tile === null) {
+                    return;
+                }
+                let pixelRed = tile.getR();
+            let pixelGreen = tile.getG();
+            let pixelBlue = tile.getB();
+            let pixelAlpha = tile.getA();
+
+                /*
                 //pull red data
                 let pixelRed = pixelInfo.data[0];
                 //pull green data
@@ -562,6 +572,7 @@ export class GameLogic {
                 let pixelBlue = pixelInfo.data[2];
                 //pull alpha data
                 let pixelAlpha = pixelInfo.data[3];
+                */
 
                 //set background color to a hex representation of the value pulled from canvas
                 //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
@@ -615,14 +626,14 @@ export class GameLogic {
             //get mouse coordinates
             let mousePosition = this.getMousePosition(event);
             //get information about pixel at mouse coordinates from canvas
-            let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
+            //let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
             let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
             let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
 
             if(this.eyeDropperOn){
                 //Set current tile type to eyedrop
                 let tile = this.board.getTile(tileX, tileY);
-                if(tile != null){
+                if(tile !== null){
                     switch (tile.getTypeID()){
                         case 3: this.backgroundTileTypeClicked();
                             break;
@@ -638,7 +649,15 @@ export class GameLogic {
 
 
 
-
+            let tile = this.board.getTile(tileX, tileY);
+            if (tile === null) {
+                return;
+            }
+            let pixelRed = tile.getR();
+            let pixelGreen = tile.getG();
+            let pixelBlue = tile.getB();
+            let pixelAlpha = tile.getA();
+/*
 
             //pull red data
             let pixelRed = pixelInfo.data[0];
@@ -648,6 +667,7 @@ export class GameLogic {
             let pixelBlue = pixelInfo.data[2];
             //pull alpha data
             let pixelAlpha = pixelInfo.data[3];
+            */
 
             //set background color to a hex representation of the value pulled from canvas
             //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
