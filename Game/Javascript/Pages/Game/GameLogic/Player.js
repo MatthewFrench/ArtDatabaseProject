@@ -32,7 +32,7 @@ export class Player {
                 this.facingIndex = 9 + Idiot_Frame_Table[this.frameNumber];
             }
         }
-        if (this.movingRight === true) {
+        else if (this.movingRight === true) {
             this.frameNextNumber += 1;
             if (this.frameNextNumber > Frame_Next_Max) {
                 this.frameNextNumber = 0;
@@ -43,26 +43,19 @@ export class Player {
                 this.facingIndex = 3 + Idiot_Frame_Table[this.frameNumber];
             }
         }
-        if (this.jumping === true) {
+        else if (this.jumping === true) {
             this.facingIndex = 8;
+        }
+
+        else{
+            this.facingIndex = 7;
+            this.frameNumber = 0;
+            this.frameNextNumber = 0;
         }
 
     };
     getSpriteFrame = () => {
-        let facing = 0;
-        if (this.movingLeft) {
-            facing = 9;
-        }
-        else if (this.movingRight) {
-            facing = 5;
-        }
-        else if (this.jumping) {
-            facing = 8;
-        }
-        else {
-            facing = 7;
-        }
-        return facing;
+        return this.facingIndex;
     };
     getX = () => {
         return this.x;
