@@ -43,8 +43,8 @@ export class NanoTimer {
                     if (timeUntilNextCallback <= -this.milliseconds) {
                         this.loop();
                     } else {
-                        //setImmediate(this.loop);
-                        setTimeout(this.loop,0);
+                        setImmediate(this.loop);
+                        //setTimeout(this.loop,0);
                     }
                 } else {
                     setTimeout(this.loop,0);

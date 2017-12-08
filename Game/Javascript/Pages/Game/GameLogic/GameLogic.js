@@ -166,7 +166,7 @@ export class GameLogic {
         this.canvas.style.cursor = "";
         //add tool type
         this.focusOnGameCanvas();
-    }
+    };
 
     layerToolClicked = () => {
         this.layerToolButton.classList.add('Selected');
@@ -178,7 +178,7 @@ export class GameLogic {
         this.canvas.style.cursor = "alias";
         //add tool type
         this.focusOnGameCanvas();
-    }
+    };
 
     fillToolClicked = () => {
         this.fillToolButton.classList.add('Selected');
@@ -291,46 +291,6 @@ export class GameLogic {
         this.ctx.save();
 
         //Draw players
-        /*
-        if (focusPlayer !== null) {
-            focusPlayer.updateSpriteFrame();
-            let leftX = focusPlayer.getX() + 0.5 - Player_Width_Tiles/2;
-            let rightX = focusPlayer.getX() + 0.5 + Player_Width_Tiles/2;
-            let bottomY = focusPlayer.getY();
-            let topY = focusPlayer.getY() + Player_Height_Tiles;
-            let spriteID = focusPlayer.getSpriteID();
-            this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * focusPlayer.getSpriteFrame(),
-                Sprite_Vertical_Table[spriteID], Sprite_Width, 44,
-                this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
-            this.ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
-            this.ctx.font = '20px Helvetica';
-            this.ctx.textAlign="center";
-            this.ctx.fillText(focusPlayer.getName(), this.convertTileXCoordinateToScreen(focusPlayer.getX() + 0.5), this.convertTileYCoordinateToScreen(topY + 0.5));
-
-            this.ctx.beginPath();
-            this.ctx.moveTo(this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(bottomY));
-            this.ctx.lineTo(this.convertTileXCoordinateToScreen(rightX), this.convertTileYCoordinateToScreen(bottomY));
-            this.ctx.lineTo(this.convertTileXCoordinateToScreen(rightX), this.convertTileYCoordinateToScreen(topY));
-            this.ctx.lineTo(this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY));
-
-            this.ctx.closePath();
-            this.ctx.fill();
-            this.ctx.stroke();
-
-            //Draw center tile of the player
-            this.ctx.strokeColor = 'black';
-            this.ctx.fillColor = 'blue';
-            this.ctx.beginPath();
-            this.ctx.moveTo(this.convertTileXCoordinateToScreen(focusPlayer.getX()), this.convertTileYCoordinateToScreen(focusPlayer.getY()));
-            this.ctx.lineTo(this.convertTileXCoordinateToScreen(focusPlayer.getX() + 1.0), this.convertTileYCoordinateToScreen(focusPlayer.getY()));
-            this.ctx.lineTo(this.convertTileXCoordinateToScreen(focusPlayer.getX() + 1.0), this.convertTileYCoordinateToScreen(focusPlayer.getY() + 1.0));
-            this.ctx.lineTo(this.convertTileXCoordinateToScreen(focusPlayer.getX()), this.convertTileYCoordinateToScreen(focusPlayer.getY() + 1.0));
-
-            this.ctx.closePath();
-            this.ctx.fill();
-            this.ctx.stroke();
-        }*/
-
         this.board.getPlayers().forEach((player)=>{
             //if(player.playerID === this.cameraFocusPlayerID){
             //    return;
