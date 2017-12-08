@@ -119,12 +119,12 @@ export class Game{
     slideToggle = () => {
         if(this.isSelectorOpen){
             this.selector.style.top = `-${this.selector.clientHeight}px`;
-            this.toggleSelector.innerHTML = 'Maximize';
+            this.toggleSelector.innerText = 'Maximize';
             this.isSelectorOpen = false;
         }
         else{
             this.selector.style.top = '';
-            this.toggleSelector.innerHTML = 'Minimize';
+            this.toggleSelector.innerText = 'Minimize';
             this.isSelectorOpen = true;
         }
         this.focusOnGameCanvas();
