@@ -207,12 +207,13 @@
         }
 
         .TileLabel {
-          font-size: 10px;
+          font-size: 12px;
+          font-weight: bold;
           position: absolute;
           width: 60px;
           text-align: center;
           left: 18px;
-          top: 24px;
+          top: 20px;
           left: 58px;
         }
 
@@ -279,6 +280,7 @@
         .toolLabel{
           position: relative;
           left: 13px;
+          font-weight: bold;
         }
         .drawTool{
           font-size: 12px;
