@@ -15,13 +15,8 @@ const Player_Width_Tiles = 2;
 const Player_Height_Tiles = 5;
 const Sprite_Width = 26;
 const Sprite_Horizontal_Distance = 64;
-const Sprite_Total_Width = 768;
-const Sprite_Total_Height = 474;
 const Sprite_Vertical_Table = [0, 0, 59, 123, 185, 246, 307, 368, 432];
 const Sprite_X_Start = 18;
-const Frame_Next_Max = 4;
-const Frame_Total_Max = 2;
-const Idiot_Frame_Table = [1, 0, 2];
 
 const Background_Tile_Type = 3;
 const Solid_Tile_Type = 4;
@@ -175,7 +170,7 @@ export class GameLogic {
         this.layerOn = true;
         this.drawOn = false;
         this.fillOn = false;
-        this.canvas.style.cursor = "alias";
+        this.canvas.style.cursor = "";
         //add tool type
         this.focusOnGameCanvas();
     };
@@ -295,7 +290,7 @@ export class GameLogic {
             //if(player.playerID === this.cameraFocusPlayerID){
             //    return;
             //}
-            player.updateSpriteFrame();
+            //player.updateSpriteFrame();
 
             //Player X and Y is in the bottom center of the player rectangle
             let leftX = player.getX() + 0.5 - Player_Width_Tiles/2;
@@ -341,22 +336,6 @@ export class GameLogic {
 
         this.foregroundTileLayerRenderer.draw(this.board);
         this.ctx.drawImage(this.foregroundTileLayerRenderer.getCanvas(), 0, 0);
-
-
-        //Draw color selector
-        /*this.ctx.strokeStyle = 'black';
-        for (let square of this.colorSquareOptions) {
-            this.ctx.fillStyle = square.getColor();
-            this.ctx.strokeRect(square.getX(), square.getY(), square.getWidth(), square.getHeight());
-            this.ctx.fillRect(square.getX(), square.getY(), square.getWidth(), square.getHeight());
-            this.ctx.stroke();
-        }*/
-
-        //Draw preview square for color selection using slider/picker system
-        /*this.ctx.fillStyle = this.previewSquare.getColor();
-        this.ctx.strokeRect(this.previewSquare.getX(), this.previewSquare.getY(), this.previewSquare.getWidth(), this.previewSquare.getHeight());
-        this.ctx.fillRect(this.previewSquare.getX(), this.previewSquare.getY(), this.previewSquare.getWidth(), this.previewSquare.getHeight());
-        this.ctx.stroke();*/
 
         this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         this.ctx.fillRect(0, this.canvas.height - 20, 55, 30);
@@ -488,10 +467,6 @@ export class GameLogic {
             let pixelBlue = pixelInfo.data[2];
             //pull alpha data
             let pixelAlpha = pixelInfo.data[3];
-
-            //set background color to a hex representation of the value pulled from canvas
-            //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
-            //set background color to a rgba representation of the value pulled from canvas
             this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha/255 + ")";
 
             //set slider values to color selected
@@ -510,10 +485,20 @@ export class GameLogic {
                 //get mouse coordinates
                 let mousePosition = this.getMousePosition(event);
                 //get information about pixel at mouse coordinates from canvas
-                let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
+                //let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
                 let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
                 let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
 
+                let tile = this.board.getTile(tileX, tileY);
+                if (tile === null) {
+                    return;
+                }
+                let pixelRed = tile.getR();
+            let pixelGreen = tile.getG();
+            let pixelBlue = tile.getB();
+            let pixelAlpha = tile.getA();
+
+                /*
                 //pull red data
                 let pixelRed = pixelInfo.data[0];
                 //pull green data
@@ -522,6 +507,7 @@ export class GameLogic {
                 let pixelBlue = pixelInfo.data[2];
                 //pull alpha data
                 let pixelAlpha = pixelInfo.data[3];
+                */
 
                 //set background color to a hex representation of the value pulled from canvas
                 //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
@@ -575,14 +561,14 @@ export class GameLogic {
             //get mouse coordinates
             let mousePosition = this.getMousePosition(event);
             //get information about pixel at mouse coordinates from canvas
-            let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
+            //let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
             let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
             let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
 
             if(this.eyeDropperOn){
                 //Set current tile type to eyedrop
                 let tile = this.board.getTile(tileX, tileY);
-                if(tile != null){
+                if(tile !== null){
                     switch (tile.getTypeID()){
                         case 3: this.backgroundTileTypeClicked();
                             break;
@@ -598,7 +584,15 @@ export class GameLogic {
 
 
 
-
+            let tile = this.board.getTile(tileX, tileY);
+            if (tile === null) {
+                return;
+            }
+            let pixelRed = tile.getR();
+            let pixelGreen = tile.getG();
+            let pixelBlue = tile.getB();
+            let pixelAlpha = tile.getA();
+/*
 
             //pull red data
             let pixelRed = pixelInfo.data[0];
@@ -608,11 +602,7 @@ export class GameLogic {
             let pixelBlue = pixelInfo.data[2];
             //pull alpha data
             let pixelAlpha = pixelInfo.data[3];
-
-            //set background color to a hex representation of the value pulled from canvas
-            //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
-            //set background color to a rgba representation of the value pulled from canvas
-            //this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha + ")";
+            */
 
             this.previewSquare.style.backgroundColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha/255 + ")";
 
