@@ -291,6 +291,7 @@ export class GameLogic {
         this.ctx.save();
 
         //Draw players
+        /*
         if (focusPlayer !== null) {
             focusPlayer.updateSpriteFrame();
             let leftX = focusPlayer.getX() + 0.5 - Player_Width_Tiles/2;
@@ -315,16 +316,26 @@ export class GameLogic {
             this.ctx.closePath();
             this.ctx.fill();
             this.ctx.stroke();
-        }
+
+            //Draw center tile of the player
+            this.ctx.strokeColor = 'black';
+            this.ctx.fillColor = 'blue';
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.convertTileXCoordinateToScreen(focusPlayer.getX()), this.convertTileYCoordinateToScreen(focusPlayer.getY()));
+            this.ctx.lineTo(this.convertTileXCoordinateToScreen(focusPlayer.getX() + 1.0), this.convertTileYCoordinateToScreen(focusPlayer.getY()));
+            this.ctx.lineTo(this.convertTileXCoordinateToScreen(focusPlayer.getX() + 1.0), this.convertTileYCoordinateToScreen(focusPlayer.getY() + 1.0));
+            this.ctx.lineTo(this.convertTileXCoordinateToScreen(focusPlayer.getX()), this.convertTileYCoordinateToScreen(focusPlayer.getY() + 1.0));
+
+            this.ctx.closePath();
+            this.ctx.fill();
+            this.ctx.stroke();
+        }*/
 
         this.board.getPlayers().forEach((player)=>{
-            if(player.playerID === this.cameraFocusPlayerID){
-                return;
-            }
+            //if(player.playerID === this.cameraFocusPlayerID){
+            //    return;
+            //}
             player.updateSpriteFrame();
-            this.ctx.fillStyle = 'blue';
-            this.ctx.strokeStyle = 'black';
-            //this.ctx.beginPath();
 
             //Player X and Y is in the bottom center of the player rectangle
             let leftX = player.getX() + 0.5 - Player_Width_Tiles/2;
@@ -335,11 +346,26 @@ export class GameLogic {
             this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * player.getSpriteFrame(),
                 0, Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
 
+            this.ctx.fillStyle = 'blue';
+            this.ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
             this.ctx.beginPath();
             this.ctx.moveTo(this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(bottomY));
             this.ctx.lineTo(this.convertTileXCoordinateToScreen(rightX), this.convertTileYCoordinateToScreen(bottomY));
             this.ctx.lineTo(this.convertTileXCoordinateToScreen(rightX), this.convertTileYCoordinateToScreen(topY));
             this.ctx.lineTo(this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY));
+
+            this.ctx.closePath();
+            this.ctx.fill();
+            this.ctx.stroke();
+            
+            //Draw center tile of the player
+            this.ctx.strokeColor = 'black';
+            this.ctx.fillColor = 'blue';
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.convertTileXCoordinateToScreen(player.getX()), this.convertTileYCoordinateToScreen(player.getY()));
+            this.ctx.lineTo(this.convertTileXCoordinateToScreen(player.getX() + 1.0), this.convertTileYCoordinateToScreen(player.getY()));
+            this.ctx.lineTo(this.convertTileXCoordinateToScreen(player.getX() + 1.0), this.convertTileYCoordinateToScreen(player.getY() + 1.0));
+            this.ctx.lineTo(this.convertTileXCoordinateToScreen(player.getX()), this.convertTileYCoordinateToScreen(player.getY() + 1.0));
 
             this.ctx.closePath();
             this.ctx.fill();
