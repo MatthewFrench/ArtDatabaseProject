@@ -261,8 +261,8 @@ export class GameLogic {
     draw = () => {
         let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
         if (focusPlayer !== null) {
-            this.cameraFocusTileX = focusPlayer.getX();
-            this.cameraFocusTileY = focusPlayer.getY();
+            this.cameraFocusTileX = focusPlayer.getClientMovementInfo().getX();
+            this.cameraFocusTileY = focusPlayer.getClientMovementInfo().getY();
         }
         this.backgroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
         this.solidTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
@@ -293,10 +293,10 @@ export class GameLogic {
             player.updateSpriteFrame();
 
             //Player X and Y is in the bottom center of the player rectangle
-            let leftX = player.getX() + 0.5 - Player_Width_Tiles/2;
-            let rightX = player.getX() + 0.5 + Player_Width_Tiles/2;
-            let bottomY = player.getY();
-            let topY = player.getY() + Player_Height_Tiles;
+            let leftX = player.getClientMovementInfo().getX() + 0.5 - Player_Width_Tiles/2;
+            let rightX = player.getClientMovementInfo().getX() + 0.5 + Player_Width_Tiles/2;
+            let bottomY = player.getClientMovementInfo().getY();
+            let topY = player.getClientMovementInfo().getY() + Player_Height_Tiles;
 
             this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * player.getSpriteFrame(),
                 Sprite_Vertical_Table[player.getSpriteID()], Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
@@ -317,10 +317,10 @@ export class GameLogic {
             this.ctx.strokeColor = 'black';
             this.ctx.fillColor = 'blue';
             this.ctx.beginPath();
-            this.ctx.moveTo(this.convertTileXCoordinateToScreen(player.getX()), this.convertTileYCoordinateToScreen(player.getY()));
-            this.ctx.lineTo(this.convertTileXCoordinateToScreen(player.getX() + 1.0), this.convertTileYCoordinateToScreen(player.getY()));
-            this.ctx.lineTo(this.convertTileXCoordinateToScreen(player.getX() + 1.0), this.convertTileYCoordinateToScreen(player.getY() + 1.0));
-            this.ctx.lineTo(this.convertTileXCoordinateToScreen(player.getX()), this.convertTileYCoordinateToScreen(player.getY() + 1.0));
+            this.ctx.moveTo(this.convertTileXCoordinateToScreen(player.getClientMovementInfo().getX()), this.convertTileYCoordinateToScreen(player.getClientMovementInfo().getY()));
+            this.ctx.lineTo(this.convertTileXCoordinateToScreen(player.getClientMovementInfo().getX() + 1.0), this.convertTileYCoordinateToScreen(player.getClientMovementInfo().getY()));
+            this.ctx.lineTo(this.convertTileXCoordinateToScreen(player.getClientMovementInfo().getX() + 1.0), this.convertTileYCoordinateToScreen(player.getClientMovementInfo().getY() + 1.0));
+            this.ctx.lineTo(this.convertTileXCoordinateToScreen(player.getClientMovementInfo().getX()), this.convertTileYCoordinateToScreen(player.getClientMovementInfo().getY() + 1.0));
 
             this.ctx.closePath();
             this.ctx.fill();
@@ -329,7 +329,7 @@ export class GameLogic {
             this.ctx.fillStyle = 'red';
             this.ctx.font = '20px Helvetica';
             this.ctx.textAlign="center";
-            this.ctx.fillText(player.getName(), Math.round(this.convertTileXCoordinateToScreen(player.getX() + 0.5)), Math.round(this.convertTileYCoordinateToScreen(topY + 0.5)));
+            this.ctx.fillText(player.getName(), Math.round(this.convertTileXCoordinateToScreen(player.getClientMovementInfo().getX() + 0.5)), Math.round(this.convertTileYCoordinateToScreen(topY + 0.5)));
         });
 
         this.ctx.restore();
@@ -360,8 +360,8 @@ export class GameLogic {
         let focusPlayerTileX = 0;
         let focusPlayerTileY = 0;
         if (focusPlayer !== null) {
-            focusPlayerTileX = focusPlayer.getX();
-            focusPlayerTileY = focusPlayer.getY();
+            focusPlayerTileX = focusPlayer.getClientMovementInfo().getX();
+            focusPlayerTileY = focusPlayer.getClientMovementInfo().getY();
         }
         this.ctx.translate(-focusPlayerTileX, -focusPlayerTileY);
     };
