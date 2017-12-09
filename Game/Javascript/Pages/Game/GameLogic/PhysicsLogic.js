@@ -10,6 +10,9 @@ const Cut_Off = 0.0001;
 const Solid_Tile_Type = 4;
 const Tunnel_Speed_Cap = 0.5;
 
+const Minimum_Rubber_Band_Tolerance = 0.05;
+const Frame_Rubber_Band_Percentage = 1.0/60.0; //Move 16% per frame, full rubber band in 1 second
+
 export class PhysicsLogic {
     constructor() {
         this.board = null;
@@ -31,8 +34,8 @@ export class PhysicsLogic {
             let totalDelta = 0;
             while (totalDelta < physicsDelta) {
                 let deltaLeft = physicsDelta - totalDelta;
-                let speedX = player.getSpeedX();
-                let speedY = player.getSpeedY();
+                let speedX = player.getServerMovementInfo().getSpeedX();
+                let speedY = player.getServerMovementInfo().getSpeedY();
                 let playerSpeed = Math.hypot(speedX, speedY);
                 if (playerSpeed * deltaLeft > Tunnel_Speed_Cap) {
                     let maxAllowedDelta = Tunnel_Speed_Cap / playerSpeed;
@@ -47,14 +50,48 @@ export class PhysicsLogic {
         });
     };
 
+    /**
+     * Run physics on client and server movement information. Then interpolate between.
+     */
     runPlayerPhysicsLogic = (player, delta)=> {
-        let speedX = player.getSpeedX();
-        let speedY = player.getSpeedY();
-        let x = player.getX();
-        let y = player.getY();
-        let movingLeft = player.getMovingLeft();
-        let movingRight = player.getMovingRight();
-        let jumping = player.getJumping();
+        let clientInfo = player.getClientMovementInfo();
+        let serverInfo = player.getServerMovementInfo();
+        this.runPhysicsOnPlayerMovement(player.getClientMovementInfo(), delta);
+        this.runPhysicsOnPlayerMovement(player.getServerMovementInfo(), delta);
+        //*******Interpolate client closer to server
+        clientInfo.setX(this.getRubberBandInterpolatedValue(serverInfo.getX(), clientInfo.getX()));
+        clientInfo.setY(this.getRubberBandInterpolatedValue(serverInfo.getY(), clientInfo.getY()));
+        clientInfo.setSpeedX(this.getRubberBandInterpolatedValue(serverInfo.getSpeedX(), clientInfo.getSpeedX()));
+        clientInfo.setSpeedY(this.getRubberBandInterpolatedValue(serverInfo.getSpeedY(), clientInfo.getSpeedY()));
+    };
+
+    getRubberBandInterpolatedValue = (serverValue, clientValue) => {
+        let xDistance = Math.abs(clientValue - serverValue);
+        if (xDistance < Minimum_Rubber_Band_Tolerance) {
+            clientValue = serverValue;
+        } else {
+            //Probably could be better written for rubber banding
+            let percentage = 1.0 - (Minimum_Rubber_Band_Tolerance / xDistance);
+            let scalePercentage = Frame_Rubber_Band_Percentage * (10 * percentage);
+            let travelDistance = xDistance * scalePercentage;
+            travelDistance = Math.max(Minimum_Rubber_Band_Tolerance, travelDistance);
+            if (serverValue < clientValue) {
+                clientValue -= travelDistance;
+            } else {
+                clientValue += travelDistance;
+            }
+        }
+        return clientValue;
+    };
+
+    runPhysicsOnPlayerMovement = (playerMovementInfo, delta) => {
+        let speedX = playerMovementInfo.getSpeedX();
+        let speedY = playerMovementInfo.getSpeedY();
+        let x = playerMovementInfo.getX();
+        let y = playerMovementInfo.getY();
+        let movingLeft = playerMovementInfo.getMovingLeft();
+        let movingRight = playerMovementInfo.getMovingRight();
+        let jumping = playerMovementInfo.getJumping();
 
         //Add gravity and friction
         speedY -= Gravity * delta;
@@ -168,10 +205,10 @@ export class PhysicsLogic {
         //Add player speed to position
         x += speedX * delta;
         y += speedY * delta;
-        player.setX(x);
-        player.setY(y);
-        player.setSpeedX(speedX);
-        player.setSpeedY(speedY);
+        playerMovementInfo.setX(x);
+        playerMovementInfo.setY(y);
+        playerMovementInfo.setSpeedX(speedX);
+        playerMovementInfo.setSpeedY(speedY);
     };
 
     unhighlightAllTiles = () => {
