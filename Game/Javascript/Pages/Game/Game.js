@@ -9,6 +9,7 @@ import {GameMessageHandler} from "../../Networking/Game/GameMessageHandler";
 import {BoardSelector} from "./BoardSelector";
 import {GameMessageCreator} from "../../Networking/Game/GameMessageCreator";
 import {SpritePopover} from "./SpritePopover";
+import {EditWorldPopover} from "./EditWorldPopover";
 
 export class Game{
     constructor(switchToLoginPage){
@@ -45,6 +46,7 @@ export class Game{
         this.spritePopover = new SpritePopover(this.gameLogic);
         this.scorePopover = new ScorePopover();
         this.newWorldPopover = new NewWorldPopover();
+        this.editWorldPopover = new EditWorldPopover();
         this.visible = false;
 
         ChatMessageHandler.AddChatMessageListener(this.gotChatMessage);
@@ -125,6 +127,10 @@ export class Game{
             this.isSelectorOpen = true;
         }
         this.focusOnGameCanvas();
+    };
+
+    openEditWorldPopover = () => {
+        this.mainDiv.appendChild(this.editWorldPopover.getDiv());
     };
 
     openCreateWorldPopover = () => {
