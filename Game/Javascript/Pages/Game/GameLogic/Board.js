@@ -13,6 +13,7 @@ export class Board {
         //Tile format: [x][y] = Tile
         this.tiles = new Map();
     }
+
     addPlayer = (playerID, spriteID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
         let player = new Player(playerID, spriteID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping);
         this.players.set(playerID, player);
@@ -23,15 +24,21 @@ export class Board {
         if (player === null) {
             return;
         }
-        player.setX(x);
-        player.setY(y);
-        //Change to setters later
-        player.speedX = speedX;
-        player.speedY = speedY;
-        player.movingLeft = movingLeft;
-        player.movingRight = movingRight;
-        player.jumping = jumping;
-        player.spriteID = spriteID;
+        player.getServerMovementInfo().setX(x);
+        player.getServerMovementInfo().setY(y);
+        player.getServerMovementInfo().setSpeedX(speedX);
+        player.getServerMovementInfo().setSpeedY(speedY);
+        player.getServerMovementInfo().setMovingLeft(movingLeft);
+        player.getServerMovementInfo().setMovingRight(movingRight);
+        player.getServerMovementInfo().setJumping(jumping);
+
+        player.getClientMovementInfo().setSpeedX(speedX);
+        player.getClientMovementInfo().setSpeedY(speedY);
+        player.getClientMovementInfo().setMovingLeft(movingLeft);
+        player.getClientMovementInfo().setMovingRight(movingRight);
+        player.getClientMovementInfo().setJumping(jumping);
+
+        player.setSpriteID(spriteID);
     };
     getPlayer = (playerID) => {
         let player = this.players.get(playerID);
@@ -70,7 +77,7 @@ export class Board {
         }
         return tile;
     };
-    setTile = (x, y, typeID,  r, g, b, a) => {
+    setTile = (x, y, typeID, r, g, b, a) => {
         let tile = this.getTileCreate(x, y);
         tile.setColor(r, g, b, a);
         tile.setTypeID(typeID);

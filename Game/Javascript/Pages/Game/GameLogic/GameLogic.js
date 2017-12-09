@@ -8,6 +8,7 @@ import {Network} from "../../../Networking/Network";
 import spriteSheet from "../../../../Images/walkcyclevarious.png";
 import bgAudio from "../../../../Audio/PatakasWorld.wav";
 import {NanoTimer} from "../../../Utility/Nanotimer";
+import {Stopwatch} from "../../../Utility/Stopwatch";
 
 const Tile_Height = 10;
 const Tile_Width = 10;
@@ -15,13 +16,8 @@ const Player_Width_Tiles = 2;
 const Player_Height_Tiles = 5;
 const Sprite_Width = 26;
 const Sprite_Horizontal_Distance = 64;
-const Sprite_Total_Width = 768;
-const Sprite_Total_Height = 474;
 const Sprite_Vertical_Table = [0, 0, 59, 123, 185, 246, 307, 368, 432];
-const Sprite_X_Start = 18;
-const Frame_Next_Max = 4;
-const Frame_Total_Max = 2;
-const Idiot_Frame_Table = [1, 0, 2];
+const Sprite_X_Start = 22;
 
 const Background_Tile_Type = 3;
 const Solid_Tile_Type = 4;
@@ -84,9 +80,6 @@ export class GameLogic {
         this.fillOn = false;
         this.playerSpriteSheet = new Image();
         this.playerSpriteSheet.src = spriteSheet;
-        //this.frameNumber = 0;
-        //this.frameNextNumber = 0;
-        //this.facingIndex = 4;
 
         this.canvas = Interface.Create({type: 'canvas', className: 'GameArea',
             onMouseDown: this.onMouseDown, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp,
@@ -126,6 +119,11 @@ export class GameLogic {
 
         this.logicTimer = new NanoTimer(this.logicLoop, 1000.0/Target_FPS);
         this.logicTimer.start();
+
+        this.drawStopwatch = new Stopwatch();
+        this.drawPassedTime = 0;
+        this.drawFPS = 0;
+
         this.drawLoop();
     }
 
@@ -177,7 +175,7 @@ export class GameLogic {
         this.drawOn = true;
         this.canvas.style.cursor = "";
         this.focusOnGameCanvas();
-    }
+    };
 
     layerToolClicked = () => {
         this.layerToolButton.classList.add('Selected');
@@ -189,9 +187,9 @@ export class GameLogic {
         this.layerOn = true;
         this.drawOn = false;
         this.fillOn = false;
-        this.canvas.style.cursor = "alias";
+        this.canvas.style.cursor = "";
         this.focusOnGameCanvas();
-    }
+    };
 
     fillToolClicked = () => {
         this.fillToolButton.classList.add('Selected');
@@ -227,7 +225,7 @@ export class GameLogic {
         this.eyeDropButton.classList.remove('Selected');
         this.canvas.style.cursor = "";
         this.focusOnGameCanvas();
-    }
+    };
 
     resetBoardToNewBoard = (boardID) => {
         this.board = new Board(boardID);
@@ -269,19 +267,7 @@ export class GameLogic {
     placeLayer = (x, y, tileType, r, g, b, a) => {
         Network.Send(GameMessageCreator.SetTile(x, y, this.currentTileType, parseInt(this.redSlider.value),
             parseInt(this.greenSlider.value), parseInt(this.blueSlider.value), parseInt(this.alphaSlider.value)));
-    }
-
-    //addOrUpdateTile = (x, y, r, g, b, a) => {
-    //    this.board.setTileColor(x, y, r, g, b, a);
-/*
-        let tile = this.board.getTile(x, y);
-        if (a === 0.0) {
-            this.physicsLogic.removeTileBody(tile);
-        } else {
-            this.physicsLogic.updateTileBodyPosition(tile, x, y);
-        }
-        */
-    //};
+    };
 
     logicLoop = (delta) => {
         if (this.visible) {
@@ -303,8 +289,8 @@ export class GameLogic {
     draw = () => {
         let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
         if (focusPlayer !== null) {
-            this.cameraFocusTileX = focusPlayer.getX();
-            this.cameraFocusTileY = focusPlayer.getY();
+            this.cameraFocusTileX = focusPlayer.getClientMovementInfo().getX();
+            this.cameraFocusTileY = focusPlayer.getClientMovementInfo().getY();
         }
         this.backgroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
         this.solidTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
@@ -328,50 +314,24 @@ export class GameLogic {
         this.ctx.save();
 
         //Draw players
-        if (focusPlayer !== null) {
-            focusPlayer.updateSpriteFrame();
-            let leftX = focusPlayer.getX() + 0.5 - Player_Width_Tiles/2;
-            let rightX = focusPlayer.getX() + 0.5 + Player_Width_Tiles/2;
-            let bottomY = focusPlayer.getY();
-            let topY = focusPlayer.getY() + Player_Height_Tiles;
-            let spriteID = focusPlayer.getSpriteID();
-            this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * focusPlayer.getSpriteFrame(),
-                Sprite_Vertical_Table[spriteID], Sprite_Width, 44,
-                this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
-            this.ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
-            this.ctx.font = '20px Helvetica';
-            this.ctx.textAlign="center";
-            this.ctx.fillText(focusPlayer.getName(), this.convertTileXCoordinateToScreen(focusPlayer.getX() + 0.5), this.convertTileYCoordinateToScreen(topY + 0.5));
-
-            this.ctx.beginPath();
-            this.ctx.moveTo(this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(bottomY));
-            this.ctx.lineTo(this.convertTileXCoordinateToScreen(rightX), this.convertTileYCoordinateToScreen(bottomY));
-            this.ctx.lineTo(this.convertTileXCoordinateToScreen(rightX), this.convertTileYCoordinateToScreen(topY));
-            this.ctx.lineTo(this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY));
-
-            this.ctx.closePath();
-            this.ctx.fill();
-            this.ctx.stroke();
-        }
-
         this.board.getPlayers().forEach((player)=>{
-            if(player.playerID === this.cameraFocusPlayerID){
-                return;
-            }
+            //if(player.playerID === this.cameraFocusPlayerID){
+            //    return;
+            //}
             player.updateSpriteFrame();
-            this.ctx.fillStyle = 'blue';
-            this.ctx.strokeStyle = 'black';
-            //this.ctx.beginPath();
 
             //Player X and Y is in the bottom center of the player rectangle
-            let leftX = player.getX() + 0.5 - Player_Width_Tiles/2;
-            let rightX = player.getX() + 0.5 + Player_Width_Tiles/2;
-            let bottomY = player.getY();
-            let topY = player.getY() + Player_Height_Tiles;
+            let leftX = player.getClientMovementInfo().getX() + 0.5 - Player_Width_Tiles/2;
+            let rightX = player.getClientMovementInfo().getX() + 0.5 + Player_Width_Tiles/2;
+            let bottomY = player.getClientMovementInfo().getY();
+            let topY = player.getClientMovementInfo().getY() + Player_Height_Tiles;
 
             this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * player.getSpriteFrame(),
-                0, Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
+                Sprite_Vertical_Table[player.getSpriteID()], Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
 
+            /*
+            this.ctx.fillStyle = 'blue';
+            this.ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
             this.ctx.beginPath();
             this.ctx.moveTo(this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(bottomY));
             this.ctx.lineTo(this.convertTileXCoordinateToScreen(rightX), this.convertTileYCoordinateToScreen(bottomY));
@@ -381,11 +341,25 @@ export class GameLogic {
             this.ctx.closePath();
             this.ctx.fill();
             this.ctx.stroke();
+            
+            //Draw center tile of the player
+            this.ctx.strokeColor = 'black';
+            this.ctx.fillColor = 'blue';
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.convertTileXCoordinateToScreen(player.getClientMovementInfo().getX()), this.convertTileYCoordinateToScreen(player.getClientMovementInfo().getY()));
+            this.ctx.lineTo(this.convertTileXCoordinateToScreen(player.getClientMovementInfo().getX() + 1.0), this.convertTileYCoordinateToScreen(player.getClientMovementInfo().getY()));
+            this.ctx.lineTo(this.convertTileXCoordinateToScreen(player.getClientMovementInfo().getX() + 1.0), this.convertTileYCoordinateToScreen(player.getClientMovementInfo().getY() + 1.0));
+            this.ctx.lineTo(this.convertTileXCoordinateToScreen(player.getClientMovementInfo().getX()), this.convertTileYCoordinateToScreen(player.getClientMovementInfo().getY() + 1.0));
+
+            this.ctx.closePath();
+            this.ctx.fill();
+            this.ctx.stroke();
+            */
 
             this.ctx.fillStyle = 'red';
             this.ctx.font = '20px Helvetica';
             this.ctx.textAlign="center";
-            this.ctx.fillText(player.getName(), Math.round(this.convertTileXCoordinateToScreen(player.getX() + 0.5)), Math.round(this.convertTileYCoordinateToScreen(topY + 0.5)));
+            this.ctx.fillText(player.getName(), Math.round(this.convertTileXCoordinateToScreen(player.getClientMovementInfo().getX() + 0.5)), Math.round(this.convertTileYCoordinateToScreen(topY + 0.5)));
         });
 
         this.ctx.restore();
@@ -393,28 +367,27 @@ export class GameLogic {
         this.foregroundTileLayerRenderer.draw(this.board);
         this.ctx.drawImage(this.foregroundTileLayerRenderer.getCanvas(), 0, 0);
 
-
-        //Draw color selector
-        /*this.ctx.strokeStyle = 'black';
-        for (let square of this.colorSquareOptions) {
-            this.ctx.fillStyle = square.getColor();
-            this.ctx.strokeRect(square.getX(), square.getY(), square.getWidth(), square.getHeight());
-            this.ctx.fillRect(square.getX(), square.getY(), square.getWidth(), square.getHeight());
-            this.ctx.stroke();
-        }*/
-
-        //Draw preview square for color selection using slider/picker system
-        /*this.ctx.fillStyle = this.previewSquare.getColor();
-        this.ctx.strokeRect(this.previewSquare.getX(), this.previewSquare.getY(), this.previewSquare.getWidth(), this.previewSquare.getHeight());
-        this.ctx.fillRect(this.previewSquare.getX(), this.previewSquare.getY(), this.previewSquare.getWidth(), this.previewSquare.getHeight());
-        this.ctx.stroke();*/
-
         this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         this.ctx.fillRect(0, this.canvas.height - 20, 55, 30);
         this.ctx.fillStyle = 'rgb(0, 255, 0)';
         this.ctx.font = '15px Helvetica';
         this.ctx.textAlign="center";
-        this.ctx.fillText(`${Math.floor(Network.GetPing())} ms`, 25, this.canvas.height - 4);
+        this.ctx.fillText(`${Math.round(Network.GetPing())} ms`, 25, this.canvas.height - 4);
+
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        this.ctx.fillRect(0, this.canvas.height - 20 - 30, 55, 30);
+        this.ctx.fillStyle = 'rgb(0, 255, 0)';
+        this.ctx.font = '15px Helvetica';
+        this.ctx.textAlign="center";
+        this.ctx.fillText(`${Math.round(this.drawFPS)} fps`, 25, this.canvas.height - 4 - 30);
+
+        this.drawPassedTime+=this.drawStopwatch.getMilliseconds();
+        this.drawFPS = Math.min(this.drawFPS, 1000.0 / this.drawStopwatch.getMilliseconds());
+        if (this.drawPassedTime >= 1000.0) {
+            this.drawFPS = 1000.0 / this.drawStopwatch.getMilliseconds();
+            this.drawPassedTime = 0;
+        }
+        this.drawStopwatch.reset();
     };
 
     enterTileDrawingCoordinateSystem = () => {
@@ -432,8 +405,8 @@ export class GameLogic {
         let focusPlayerTileX = 0;
         let focusPlayerTileY = 0;
         if (focusPlayer !== null) {
-            focusPlayerTileX = focusPlayer.getX();
-            focusPlayerTileY = focusPlayer.getY();
+            focusPlayerTileX = focusPlayer.getClientMovementInfo().getX();
+            focusPlayerTileY = focusPlayer.getClientMovementInfo().getY();
         }
         this.ctx.translate(-focusPlayerTileX, -focusPlayerTileY);
     };
@@ -539,10 +512,6 @@ export class GameLogic {
             let pixelBlue = pixelInfo.data[2];
             //pull alpha data
             let pixelAlpha = pixelInfo.data[3];
-
-            //set background color to a hex representation of the value pulled from canvas
-            //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
-            //set background color to a rgba representation of the value pulled from canvas
             this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha/255 + ")";
 
             //set slider values to color selected
@@ -561,10 +530,20 @@ export class GameLogic {
                 //get mouse coordinates
                 let mousePosition = this.getMousePosition(event);
                 //get information about pixel at mouse coordinates from canvas
-                let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
+                //let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
                 let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
                 let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
 
+                let tile = this.board.getTile(tileX, tileY);
+                if (tile === null) {
+                    return;
+                }
+                let pixelRed = tile.getR();
+            let pixelGreen = tile.getG();
+            let pixelBlue = tile.getB();
+            let pixelAlpha = tile.getA();
+
+                /*
                 //pull red data
                 let pixelRed = pixelInfo.data[0];
                 //pull green data
@@ -573,6 +552,7 @@ export class GameLogic {
                 let pixelBlue = pixelInfo.data[2];
                 //pull alpha data
                 let pixelAlpha = pixelInfo.data[3];
+                */
 
                 //set background color to a hex representation of the value pulled from canvas
                 //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
@@ -626,14 +606,14 @@ export class GameLogic {
             //get mouse coordinates
             let mousePosition = this.getMousePosition(event);
             //get information about pixel at mouse coordinates from canvas
-            let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
+            //let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
             let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
             let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
 
             if(this.eyeDropperOn){
                 //Set current tile type to eyedrop
                 let tile = this.board.getTile(tileX, tileY);
-                if(tile != null){
+                if(tile !== null){
                     switch (tile.getTypeID()){
                         case 3: this.backgroundTileTypeClicked();
                             break;
@@ -649,7 +629,15 @@ export class GameLogic {
 
 
 
-
+            let tile = this.board.getTile(tileX, tileY);
+            if (tile === null) {
+                return;
+            }
+            let pixelRed = tile.getR();
+            let pixelGreen = tile.getG();
+            let pixelBlue = tile.getB();
+            let pixelAlpha = tile.getA();
+/*
 
             //pull red data
             let pixelRed = pixelInfo.data[0];
@@ -659,11 +647,7 @@ export class GameLogic {
             let pixelBlue = pixelInfo.data[2];
             //pull alpha data
             let pixelAlpha = pixelInfo.data[3];
-
-            //set background color to a hex representation of the value pulled from canvas
-            //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
-            //set background color to a rgba representation of the value pulled from canvas
-            //this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha + ")";
+            */
 
             this.previewSquare.style.backgroundColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha/255 + ")";
 

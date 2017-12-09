@@ -147,5 +147,36 @@ export class SpritePopover {
 
     saveSprite = () => {
         Network.Send(GameMessageCreator.SpriteChange(this.spriteID));
-    }
+        this.closeSelf();
+    };
+
+    updateSpriteID = () => {
+        this.spriteID = this.gameLogic.board.getPlayer(this.gameLogic.cameraFocusPlayerID).getSpriteID();
+        switch (this.spriteID){
+            case 1:
+                this.sprite1Clicked();
+                break;
+            case 2:
+                this.sprite2Clicked();
+                break;
+            case 3:
+                this.sprite3Clicked();
+                break;
+            case 4:
+                this.sprite4Clicked();
+                break;
+            case 5:
+                this.sprite5Clicked();
+                break;
+            case 6:
+                this.sprite6Clicked();
+                break;
+            case 7:
+                this.sprite7Clicked();
+                break;
+            case 8:
+                this.sprite8Clicked();
+                break;
+        }
+    };
 }
