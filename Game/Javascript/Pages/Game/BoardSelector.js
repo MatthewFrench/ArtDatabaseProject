@@ -8,7 +8,10 @@ export class BoardSelector {
         this.currentBoardID = -1;
         this.mainDiv = Interface.Create({
             type: 'div', className: 'BoardSelector', elements: [
-                {type: 'div', text: 'Create World', className: 'CreateWorld', onClick: this.createWorldClicked},
+                {type: 'div', className: 'WorldOptions', elements: [
+                    {type: 'div', text: 'Create World', className: 'CreateWorld', onClick: this.createWorldClicked},
+                    {type: 'div', text: 'Edit World', className: 'EditWorld', onClick: this.editWorldClicked},
+                ]},
                 this.rowContainer = Interface.Create({type: 'div', className: 'RowContainer'})
             ]
         })
@@ -73,6 +76,10 @@ export class BoardSelector {
 
     createWorldClicked = () => {
         this.game.openCreateWorldPopover();
+    };
+
+    editWorldClicked = () => {
+        this.game.openEditWorldPopover();
     };
 
     getRowByBoardID = (boardID) => {
