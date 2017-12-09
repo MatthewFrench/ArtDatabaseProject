@@ -61,8 +61,8 @@ export class PhysicsLogic {
         //*******Interpolate client closer to server
         clientInfo.setX(this.getRubberBandInterpolatedValue(serverInfo.getX(), clientInfo.getX()));
         clientInfo.setY(this.getRubberBandInterpolatedValue(serverInfo.getY(), clientInfo.getY()));
-        clientInfo.setSpeedX(this.getRubberBandInterpolatedValue(serverInfo.getSpeedX(), clientInfo.getSpeedX()));
-        clientInfo.setSpeedY(this.getRubberBandInterpolatedValue(serverInfo.getSpeedY(), clientInfo.getSpeedY()));
+        //clientInfo.setSpeedX(this.getRubberBandInterpolatedValue(serverInfo.getSpeedX(), clientInfo.getSpeedX()));
+        //clientInfo.setSpeedY(this.getRubberBandInterpolatedValue(serverInfo.getSpeedY(), clientInfo.getSpeedY()));
     };
 
     getRubberBandInterpolatedValue = (serverValue, clientValue) => {
