@@ -16,7 +16,7 @@ const Player_Width_Tiles = 2;
 const Player_Height_Tiles = 5;
 const Sprite_Width = 26;
 const Sprite_Horizontal_Distance = 64;
-const Sprite_Vertical_Table = [0, 0, 59, 123, 185, 246, 307, 368, 432];
+const Sprite_Vertical_Table = [0, 0, 59, 123, 185, 246, 307, 368, 428];
 const Sprite_X_Start = 22;
 
 const Background_Tile_Type = 3;
@@ -556,12 +556,18 @@ export class GameLogic {
                 let mousePosition = this.getMousePosition(event);
                 let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
                 let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
-                if (this.previouslyPlacedTileX !== tileX || this.previouslyPlacedTileY !== tileY) {
+                let positionsBetween = this.line(this.previouslyPlacedTileX, this.previouslyPlacedTileY, tileX, tileY);
+                positionsBetween.forEach(coordinate =>{
+                        this.placeTile(coordinate.x, coordinate.y);
+                });
+                this.previouslyPlacedTileX = tileX;
+                this.previouslyPlacedTileY = tileY;
+                /*if (this.previouslyPlacedTileX !== tileX || this.previouslyPlacedTileY !== tileY) {
                     this.previouslyPlacedTileX = tileX;
                     this.previouslyPlacedTileY = tileY;
 
                     this.placeTile(this.previouslyPlacedTileX, this.previouslyPlacedTileY);
-                }
+                }*/
             }
 
         } else {
@@ -790,5 +796,24 @@ export class GameLogic {
         this.rgbaLabel.childNodes[5].innerText = this.greenSlider.value;
         this.rgbaLabel.childNodes[6].innerText = this.blueSlider.value;
         this.rgbaLabel.childNodes[7].innerText = this.alphaSlider.value;
-    }
+    };
+
+    line = (x0, y0, x1, y1) =>{
+        let dx = Math.abs(x1-x0);
+        let dy = Math.abs(y1-y0);
+        let sx = (x0 < x1) ? 1 : -1;
+        let sy = (y0 < y1) ? 1 : -1;
+        let err = dx-dy;
+
+        let predictedPoints = [];
+
+        while(true){
+            predictedPoints.push({x: x0, y: y0});  // Do what you need to for this
+            if ((x0===x1) && (y0===y1)) break;
+            let e2 = 2*err;
+            if (e2 >-dy){ err -= dy; x0  += sx; }
+            if (e2 < dx){ err += dx; y0  += sy; }
+        }
+        return predictedPoints;
+    };
 }
