@@ -19,7 +19,7 @@ export class PhysicsLogic {
     }
     logic = (board, delta) => {
         this.board = board;
-        this.unhighlightAllTiles();
+        //this.unhighlightAllTiles();
         while (delta > 1.0) {
             this.runPhysics(board, 1.0);
             delta -= 1.0;
@@ -117,10 +117,10 @@ export class PhysicsLogic {
             //Set the tile to be above the ground tile
             if (onGround) {
                 y = bottom + 1;
-                this.highlightTiles(this.getTilesInHorizontalCollision(left, right, bottom));
+                //this.highlightTiles(this.getTilesInHorizontalCollision(left, right, bottom));
             } else {
                 y = bottomNextStep + 1;
-                this.highlightTiles(this.getTilesInHorizontalCollision(left, right, bottomNextStep));
+                //this.highlightTiles(this.getTilesInHorizontalCollision(left, right, bottomNextStep));
             }
             bottom = Math.floor(y);
             top = Math.ceil(y + Player_Height_Tiles);
@@ -162,10 +162,10 @@ export class PhysicsLogic {
 
             if (topSideHit) {
                 y = top - Player_Height_Tiles;
-                this.highlightTiles(this.getTilesInHorizontalCollision(left, right, top));
+                //this.highlightTiles(this.getTilesInHorizontalCollision(left, right, top));
             } else {
                 y = topNextStep - Player_Height_Tiles;
-                this.highlightTiles(this.getTilesInHorizontalCollision(left, right, topNextStep));
+                //this.highlightTiles(this.getTilesInHorizontalCollision(left, right, topNextStep));
             }
 
             bottom = Math.floor(y);
@@ -181,10 +181,10 @@ export class PhysicsLogic {
             speedX = 0;
             if (leftSideHit) {
                 x = left + 1 + 0.5;
-                this.highlightTiles(this.getTilesInVerticalCollision(left, bottom, top - 1));
+                //this.highlightTiles(this.getTilesInVerticalCollision(left, bottom, top - 1));
             } else {
                 x = leftNextStep + 1 + 0.5;
-                this.highlightTiles(this.getTilesInVerticalCollision(leftNextStep, bottom, top - 1));
+                //this.highlightTiles(this.getTilesInVerticalCollision(leftNextStep, bottom, top - 1));
             }
         }
         //Check right side collisions
@@ -196,10 +196,10 @@ export class PhysicsLogic {
             speedX = 0;
             if (rightSideHit) {
                 x = right - 1 - 0.5;
-                this.highlightTiles(this.getTilesInVerticalCollision(right, bottom, top - 1));
+                //this.highlightTiles(this.getTilesInVerticalCollision(right, bottom, top - 1));
             } else {
                 x = rightNextStep - 1 - 0.5;
-                this.highlightTiles(this.getTilesInVerticalCollision(rightNextStep, bottom, top - 1));
+                //this.highlightTiles(this.getTilesInVerticalCollision(rightNextStep, bottom, top - 1));
             }
         }
         //Add player speed to position
@@ -211,7 +211,8 @@ export class PhysicsLogic {
         playerMovementInfo.setSpeedY(speedY);
     };
 
-    unhighlightAllTiles = () => {
+   // unhighlightAllTiles = () => {
+        /*
         this.board.tiles.forEach((x) => {
             x.forEach((tile)=>{
                 if (tile.highlighted) {
@@ -223,8 +224,9 @@ export class PhysicsLogic {
                 }
             });
         });
-    };
-
+        */
+    //};
+/*
     highlightTiles = (tiles) => {
         for (let tile of tiles) {
             if (!tile.highlighted) {
@@ -240,6 +242,7 @@ export class PhysicsLogic {
             }
         }
     };
+    */
 
     getTilesInHorizontalCollision = (x1, x2, y) => {
         let tiles = [];

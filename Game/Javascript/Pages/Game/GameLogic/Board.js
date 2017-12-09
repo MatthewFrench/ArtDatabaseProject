@@ -3,15 +3,15 @@ This holds all Board data and logic.
 Contains board size, players in board and tiles in the board.
  */
 
-import {Tile} from "./Tile";
+import {Tile} from "./Tiles/Tile";
 import {Player} from "./Player";
+import {TileWorld} from "./Tiles/TileWorld";
 
 export class Board {
     constructor(boardID) {
         this.boardID = boardID;
         this.players = new Map();
-        //Tile format: [x][y] = Tile
-        this.tiles = new Map();
+        this.tileWorld = new TileWorld();
     }
 
     addPlayer = (playerID, spriteID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
@@ -54,32 +54,12 @@ export class Board {
         this.players.delete(playerID);
     };
     getTile = (x, y) => {
-        let column = this.tiles.get(x);
-        if (column === undefined) {
-            return null;
-        }
-        let tile = column.get(y);
-        if (tile === undefined) {
-            return null;
-        }
-        return tile;
+        return this.tileWorld.getTile(x, y);
     };
     getTileCreate = (x, y) => {
-        let column = this.tiles.get(x);
-        if (column === undefined) {
-            column = new Map();
-            this.tiles.set(x, column);
-        }
-        let tile = column.get(y);
-        if (tile === undefined) {
-            tile = new Tile(x, y);
-            column.set(y, tile);
-        }
-        return tile;
+        return this.tileWorld.getTile(x, y, true);
     };
     setTile = (x, y, typeID, r, g, b, a) => {
-        let tile = this.getTileCreate(x, y);
-        tile.setColor(r, g, b, a);
-        tile.setTypeID(typeID);
+        this.tileWorld.setTile(x, y, typeID, r, g, b, a);
     };
 }
