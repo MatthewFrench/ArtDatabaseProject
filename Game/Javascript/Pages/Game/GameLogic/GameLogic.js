@@ -8,6 +8,7 @@ import {Network} from "../../../Networking/Network";
 import spriteSheet from "../../../../Images/walkcyclevarious.png";
 import bgAudio from "../../../../Audio/PatakasWorld.wav";
 import {NanoTimer} from "../../../Utility/Nanotimer";
+import {Stopwatch} from "../../../Utility/Stopwatch";
 
 const Tile_Height = 10;
 const Tile_Width = 10;
@@ -70,9 +71,6 @@ export class GameLogic {
         this.fillOn = false;
         this.playerSpriteSheet = new Image();
         this.playerSpriteSheet.src = spriteSheet;
-        //this.frameNumber = 0;
-        //this.frameNextNumber = 0;
-        //this.facingIndex = 4;
 
         this.canvas = Interface.Create({type: 'canvas', className: 'GameArea',
             onMouseDown: this.onMouseDown, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp,
@@ -112,6 +110,11 @@ export class GameLogic {
 
         this.logicTimer = new NanoTimer(this.logicLoop, 1000.0/Target_FPS);
         this.logicTimer.start();
+
+        this.drawStopwatch = new Stopwatch();
+        this.drawCount = 0;
+        this.drawFPS = 0;
+
         this.drawLoop();
     }
 
@@ -229,18 +232,6 @@ export class GameLogic {
             parseInt(this.greenSlider.value), parseInt(this.blueSlider.value), parseInt(this.alphaSlider.value)));
     };
 
-    //addOrUpdateTile = (x, y, r, g, b, a) => {
-    //    this.board.setTileColor(x, y, r, g, b, a);
-/*
-        let tile = this.board.getTile(x, y);
-        if (a === 0.0) {
-            this.physicsLogic.removeTileBody(tile);
-        } else {
-            this.physicsLogic.updateTileBodyPosition(tile, x, y);
-        }
-        */
-    //};
-
     logicLoop = (delta) => {
         if (this.visible) {
             this.logic(delta);
@@ -342,7 +333,20 @@ export class GameLogic {
         this.ctx.fillStyle = 'rgb(0, 255, 0)';
         this.ctx.font = '15px Helvetica';
         this.ctx.textAlign="center";
-        this.ctx.fillText(`${Math.floor(Network.GetPing())} ms`, 25, this.canvas.height - 4);
+        this.ctx.fillText(`${Math.round(Network.GetPing())} ms`, 25, this.canvas.height - 4);
+
+        this.drawCount++;
+        if (this.drawStopwatch.getSeconds() >= 1.0) {
+            this.drawFPS = 1000.0 / (this.drawStopwatch.getMilliseconds()/this.drawCount);
+            this.drawCount = 0;
+            this.drawStopwatch.reset();
+        }
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        this.ctx.fillRect(0, this.canvas.height - 20 - 30, 55, 30);
+        this.ctx.fillStyle = 'rgb(0, 255, 0)';
+        this.ctx.font = '15px Helvetica';
+        this.ctx.textAlign="center";
+        this.ctx.fillText(`${Math.round(this.drawFPS)} fps`, 25, this.canvas.height - 4 - 30);
     };
 
     enterTileDrawingCoordinateSystem = () => {

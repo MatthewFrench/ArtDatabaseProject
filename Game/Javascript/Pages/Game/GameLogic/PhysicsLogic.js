@@ -10,8 +10,8 @@ const Cut_Off = 0.0001;
 const Solid_Tile_Type = 4;
 const Tunnel_Speed_Cap = 0.5;
 
-const Minimum_Rubber_Band_Tolerance = 0.05;
-const Frame_Rubber_Band_Percentage = 1.0/60.0; //Move 16% per frame, full rubber band in 1 second
+const Minimum_Rubber_Band_Tolerance = 0.01;
+const Frame_Rubber_Band_Percentage = 1.0/60.0 / 5; //Move 16% per frame, full rubber band in 5 seconds
 
 export class PhysicsLogic {
     constructor() {
