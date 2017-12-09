@@ -28,18 +28,11 @@ const Target_FPS = 60.0;
 
 export class GameLogic {
     constructor() {
-        this.redSlider = Interface.Create({type: 'input', className: 'RedSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
-        this.greenSlider = Interface.Create({type: 'input', className: 'GreenSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
-        this.blueSlider = Interface.Create({type: 'input', className: 'BlueSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor});
-        this.alphaSlider = Interface.Create({type: 'input', className: 'AlphaSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 255, onChange: this.changePreviewColor});
-        
-        this.volumeSlider = Interface.Create({type: 'input', className:'VolumeSlider', inputType: 'range', min: 0, max: 100, step: 1, value: 15, onChange: this.updateVolume});
-
-        this.bgAudio = new Audio(bgAudio);
-        this.bgAudio.volume = 0.15;
-        this.bgAudio.loop = true;
-
-        this.tileSelector = Interface.Create({type: 'div', className: 'TileSelector', elements: [
+        this.rgbaSelector = Interface.Create({type: 'div', className: 'rgbaSelector', elements: [
+            this.redSlider = Interface.Create({type: 'input', className: 'RedSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor}),
+            this.greenSlider = Interface.Create({type: 'input', className: 'GreenSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor}),
+            this.blueSlider = Interface.Create({type: 'input', className: 'BlueSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor}),
+            this.alphaSlider = Interface.Create({type: 'input', className: 'AlphaSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 255, onChange: this.changePreviewColor}),
             this.rgbaLabel = Interface.Create({type: 'div', className: 'RGBALabel', elements: [
                 {type: 'div', text: 'R', className: 'RedLabel'},
                 {type: 'div', text: 'G', className: 'GreenLabel'},
@@ -49,7 +42,17 @@ export class GameLogic {
                 {type: 'div', text: '255', className: 'GreenValue'},
                 {type: 'div', text: '255', className: 'BlueValue'},
                 {type: 'div', text: '255', className: 'AlphaValue'},
-            ]}),
+            ]})
+        ]});
+
+
+        this.volumeSlider = Interface.Create({type: 'input', className:'VolumeSlider', inputType: 'range', min: 0, max: 100, step: 1, value: 15, onChange: this.updateVolume});
+
+        this.bgAudio = new Audio(bgAudio);
+        this.bgAudio.volume = 0.15;
+        this.bgAudio.loop = true;
+
+        this.tileSelector = Interface.Create({type: 'div', className: 'TileSelector', elements: [
             {type: 'div', text: 'Tile Type', className: 'TileLabel'},
             this.deleteTypeButton = Interface.Create({type: 'div', text: 'Delete', className: 'DeleteButton', onClick: this.deleteTileTypeClicked}),
             this.backgroundTypeButton = Interface.Create({type: 'div', text: 'Background', className: 'BackgroundButton', onClick: this.backgroundTileTypeClicked}),
@@ -60,7 +63,13 @@ export class GameLogic {
                 this.drawToolButton = Interface.Create({type: 'div', text: 'Draw', className: 'drawTool Selected', onClick: this.drawToolClicked}),
                 this.layerToolButton = Interface.Create({type: 'div', text: 'Set Layer', className: 'layerTool', onClick: this.layerToolClicked}),
                 this.fillToolButton = Interface.Create({type: 'div', text: 'Fill', className: 'fillTool', onClick: this.fillToolClicked}),
-                this.eyeDropButton = Interface.Create({type: 'div', text: 'Eye Drop', className: 'EyeDropButton', onClick: this.eyeDropButtonClicked})
+                this.eyeDropButton = Interface.Create({type: 'div', text: 'Eye Drop', className: 'EyeDropButton', onClick: this.eyeDropButtonClicked}),
+                this.addObjectButton = Interface.Create({type: 'div', text: 'Add Object', className: 'AddObjectButton', onClick: this.addObjectButtonClicked}),
+                this.objectSelector = Interface.Create({type: 'select', className: 'objectSelector', elements: [
+                    {type: 'option', text: 'Coin'},
+                    {type: 'option', text: 'Spawn'}
+                ]}),
+                this.deleteObjectButton = Interface.Create({type: 'div', text: 'Delete Object', className: 'DeleteObjectButton', onClick: this.deleteObjectButtonClicked})
             ]})
         ]});
         //holds the value of the color to be used for a tile
@@ -159,10 +168,12 @@ export class GameLogic {
         this.drawToolButton.classList.add('Selected');
         this.layerToolButton.classList.remove('Selected');
         this.fillToolButton.classList.remove('Selected');
+        this.eyeDropButton.classList.remove('Selected');
+        this.addObjectButton.classList.remove('Selected');
+        this.deleteObjectButton.classList.remove('Selected');
         this.layerOn = false;
         this.drawOn = true;
         this.canvas.style.cursor = "";
-        //add tool type
         this.focusOnGameCanvas();
     };
 
@@ -170,23 +181,49 @@ export class GameLogic {
         this.layerToolButton.classList.add('Selected');
         this.drawToolButton.classList.remove('Selected');
         this.fillToolButton.classList.remove('Selected');
+        this.eyeDropButton.classList.remove('Selected');
+        this.addObjectButton.classList.remove('Selected');
+        this.deleteObjectButton.classList.remove('Selected');
         this.layerOn = true;
         this.drawOn = false;
         this.fillOn = false;
         this.canvas.style.cursor = "";
-        //add tool type
         this.focusOnGameCanvas();
     };
 
     fillToolClicked = () => {
         this.fillToolButton.classList.add('Selected');
+        this.drawToolButton.classList.remove('Selected');
         this.layerToolButton.classList.remove('Selected');
-        this.layerToolButton.classList.remove('Selected');
+        this.eyeDropButton.classList.remove('Selected');
+        this.addObjectButton.classList.remove('Selected');
+        this.deleteObjectButton.classList.remove('Selected');
         this.layerOn = false;
         this.drawOn = false;
         this.fillOn = true;
         this.canvas.style.cursor = "";
-        //add tool type
+        this.focusOnGameCanvas();
+    }
+
+    addObjectButtonClicked = () => {
+        this.addObjectButton.classList.add('Selected');
+        this.drawToolButton.classList.remove('Selected');
+        this.layerToolButton.classList.remove('Selected');
+        this.fillToolButton.classList.remove('Selected');
+        this.eyeDropButton.classList.remove('Selected');
+        this.deleteObjectButton.classList.remove('Selected');
+        this.canvas.style.cursor = "";
+        this.focusOnGameCanvas();
+    }
+
+    deleteObjectButtonClicked = () => {
+        this.deleteObjectButton.classList.add('Selected');
+        this.addObjectButton.classList.remove('Selected');
+        this.drawToolButton.classList.remove('Selected');
+        this.layerToolButton.classList.remove('Selected');
+        this.fillToolButton.classList.remove('Selected');
+        this.eyeDropButton.classList.remove('Selected');
+        this.canvas.style.cursor = "";
         this.focusOnGameCanvas();
     };
 
@@ -724,20 +761,8 @@ export class GameLogic {
         return this.canvas;
     };
 
-    getGreenSlider = () => {
-        return this.greenSlider;
-    };
-
-    getRedSlider = () => {
-        return this.redSlider;
-    };
-
-    getBlueSlider = () => {
-        return this.blueSlider;
-    };
-
-    getAlphaSlider = () => {
-        return this.alphaSlider;
+    getRgbaSelector = () => {
+        return this.rgbaSelector;
     };
 
     getEyeDropButton = () => {
@@ -786,6 +811,10 @@ export class GameLogic {
     };
 
     eyeDropButtonClicked = () => {
+        this.eyeDropButton.classList.add('Selected');
+        this.drawToolButton.classList.remove('Selected');
+        this.layerToolButton.classList.remove('Selected');
+        this.fillToolButton.classList.remove('Selected');
         this.canvas.style.cursor = "crosshair";
         this.eyeDropperOn = true;
         this.focusOnGameCanvas();
