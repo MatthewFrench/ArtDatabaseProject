@@ -18,10 +18,7 @@ export class Game{
             {type: 'div', className: 'GameContainer', elements: [
                 {type: 'div', className: 'WorldWrapper', elements: [
                     this.selector = Interface.Create({type: 'div', className: 'ColorSelector', elements:[
-                        this.gameLogic.getRedSlider(),
-                        this.gameLogic.getGreenSlider(),
-                        this.gameLogic.getBlueSlider(),
-                        this.gameLogic.getAlphaSlider(),
+                        this.gameLogic.getRgbaSelector(),
                         this.gameLogic.getEyeDropButton(),
                         this.gameLogic.getTileSelector(),
                         this.gameLogic.getPreviewSquare(),

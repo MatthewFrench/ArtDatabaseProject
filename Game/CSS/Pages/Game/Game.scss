@@ -1,5 +1,9 @@
 .GamePage{
 
+  .Selected {
+    background-color: lightblue;
+  }
+
   .GameContainer {
     position: absolute;
     width: 100%;
@@ -34,81 +38,133 @@
       top: 0px;
       left: 0px;
       transition: top 1s linear;
-      height: 200px;
+      height: 170px;
       border: solid 1px black;
-      width: 175px;
+      width: 250px;
       background-color: white;
       border: solid 2px #b5b5b5;
 
-      .RedSlider {
-        width: 10px;
-        height: 100px;
-        padding: 0 5px;
-        -webkit-appearance: slider-vertical;
-        position: absolute;
-        left: 0px;
-      }
+      .rgbaSelector{
+        .RedSlider {
+          width: 10px;
+          height: 100px;
+          padding: 0 5px;
+          -webkit-appearance: slider-vertical;
+          position: absolute;
+          left: 0px;
+        }
 
-      .GreenSlider {
-        width: 10px;
-        height: 100px;
-        padding: 0 5px;
-        -webkit-appearance: slider-vertical;
-        position: absolute;
-        left: 20px;
-      }
+        .GreenSlider {
+          width: 10px;
+          height: 100px;
+          padding: 0 5px;
+          -webkit-appearance: slider-vertical;
+          position: absolute;
+          left: 20px;
+        }
 
-      .BlueSlider {
-        width: 10px;
-        height: 100px;
-        padding: 0 5px;
-        -webkit-appearance: slider-vertical;
-        position: absolute;
-        left: 40px;
-      }
+        .BlueSlider {
+          width: 10px;
+          height: 100px;
+          padding: 0 5px;
+          -webkit-appearance: slider-vertical;
+          position: absolute;
+          left: 40px;
+        }
 
-      .AlphaSlider {
-        width: 10px;
-        height: 100px;
-        padding: 0 5px;
-        -webkit-appearance: slider-vertical;
-        position: absolute;
-        left: 60px;
-      }
+        .AlphaSlider {
+          width: 10px;
+          height: 100px;
+          padding: 0 5px;
+          -webkit-appearance: slider-vertical;
+          position: absolute;
+          left: 60px;
+        }
 
-      .EyeDropButton {
-        background-color: white;
-        font-size: 8px;
-        padding: 2px;
-        border-radius: 2px;
-        transition: all 1s;
-        cursor: pointer;
-        border: solid 2px #b5b5b5;
-        position: absolute;
-        width: 56px;
-        height: 20px;
-        text-align: center;
-        vertical-align: middle;
-        left: 110px;
-        top: 84px;
-        line-height: 20px;
+        .RGBALabel {
+          position: absolute;
+          left: 4px;
+          top: 1px;
+          width: 80px;
+          height: 30px;
+          font-size: 10px;
 
-        &:hover {
-          box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+          .RedLabel {
+            color: red;
+            position: absolute;
+            left: 2px;
+            top: 115px;
+            width: 5px;
+          }
+
+          .GreenLabel {
+            color: green;
+            position: absolute;
+            left: 22px;
+            top: 115px;
+            width: 5px;
+          }
+
+          .BlueLabel {
+            color: blue;
+            position: absolute;
+            left: 42px;
+            top: 115px;
+            width: 5px;
+          }
+
+          .AlphaLabel {
+            color: black;
+            position: absolute;
+            left: 62px;
+            top: 115px;
+            width: 5px;
+          }
+
+          .RedValue {
+            color: red;
+            position: absolute;
+            left: 2px;
+            top: 105px;
+            width: 5px;
+          }
+
+          .GreenValue {
+            color: green;
+            position: absolute;
+            left: 22px;
+            top: 105px;
+            width: 5px;
+          }
+
+          .BlueValue {
+            color: blue;
+            position: absolute;
+            left: 42px;
+            top: 105px;
+            width: 5px;
+          }
+
+          .AlphaValue {
+            color: black;
+            position: absolute;
+            left: 62px;
+            top: 105px;
+            width: 5px;
+          }
         }
       }
 
+
       .PreviewSquare {
-        background-color: white;
-        width: 21px;
-        height: 107px;
+        width: 80px;
+        height: 20px;
         position: absolute;
-        top: 3px;
-        left: 85px;
+        top: 140px;
+        left: 2px;
         border-radius: 1px;
         border: solid 1px #000000;
       }
-
 
       .ToggleSelector {
         background-color: white;
@@ -124,87 +180,14 @@
       }
 
       .TileSelector {
-        background-color: white;
         padding: 2px;
         border-radius: 2px;
         position: absolute;
         width: 167px;
         height: 80px;
-        left: 1px;
-        top: 115px;
+        left: 75px;
+        top: 90px;
 
-        .RGBALabel {
-          position: absolute;
-          left: 4px;
-          top: 1px;
-          width: 80px;
-          height: 30px;
-          font-size: 10px;
-
-          .RedLabel {
-            color: red;
-            position: absolute;
-            left: 2px;
-            top: -5px;
-            width: 5px;
-          }
-
-          .GreenLabel {
-            color: green;
-            position: absolute;
-            left: 22px;
-            top: -5px;
-            width: 5px;
-          }
-
-          .BlueLabel {
-            color: blue;
-            position: absolute;
-            left: 42px;
-            top: -5px;
-            width: 5px;
-          }
-
-          .AlphaLabel {
-            color: black;
-            position: absolute;
-            left: 62px;
-            top: -5px;
-            width: 5px;
-          }
-
-          .RedValue {
-            color: red;
-            position: absolute;
-            left: 2px;
-            top: 4px;
-            width: 5px;
-          }
-
-          .GreenValue {
-            color: green;
-            position: absolute;
-            left: 22px;
-            top: 4px;
-            width: 5px;
-          }
-
-          .BlueValue {
-            color: blue;
-            position: absolute;
-            left: 42px;
-            top: 4px;
-            width: 5px;
-          }
-
-          .AlphaValue {
-            color: black;
-            position: absolute;
-            left: 62px;
-            top: 4px;
-            width: 5px;
-          }
-        }
 
         .TileLabel {
           font-size: 12px;
@@ -212,13 +195,8 @@
           position: absolute;
           width: 60px;
           text-align: center;
-          left: 18px;
           top: 20px;
           left: 58px;
-        }
-
-        .Selected {
-          background-color: lightblue;
         }
 
         .DeleteButton {
@@ -230,8 +208,12 @@
           width: 60px;
           left: 18px;
           top: 36px;
-          height: 12px;
+          height: 15px;
           cursor: pointer;
+
+          &:hover {
+            box-shadow: 0 5px 6px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+          }
         }
 
         .BackgroundButton {
@@ -243,8 +225,12 @@
           width: 60px;
           left: 90px;
           top: 36px;
-          height: 12px;
+          height: 15px;
           cursor: pointer;
+
+          &:hover {
+            box-shadow: 0 5px 6px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+          }
         }
 
         .SolidButton {
@@ -255,9 +241,13 @@
           position: absolute;
           width: 60px;
           left: 18px;
-          top: 55px;
-          height: 12px;
+          top: 58px;
+          height: 15px;
           cursor: pointer;
+
+          &:hover {
+            box-shadow: 0 5px 6px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+          }
         }
 
         .ForegroundButton {
@@ -268,23 +258,23 @@
           position: absolute;
           width: 60px;
           left: 90px;
-          top: 55px;
+          top: 58px;
           height: 15px;
           cursor: pointer;
+
+          &:hover {
+            box-shadow: 0 5px 6px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+          }
         }
       }
       .toolSelector {
         position:absolute;
         text-align: center;
-        left: 110px;
+        left: 95px;
         .toolLabel{
           position: relative;
-          left: 13px;
+          left: 50px;
           font-weight: bold;
-        }
-
-        .Selected {
-          background-color: lightblue;
         }
 
         .drawTool{
@@ -296,6 +286,10 @@
           width: 60px;
           height: 15px;
           cursor: pointer;
+
+          &:hover {
+            box-shadow: 0 5px 6px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+          }
         }
         .layerTool{
           font-size: 12px;
@@ -306,7 +300,11 @@
           width: 60px;
           height: 15px;
           cursor: pointer;
-          top: 40px;
+          left: 70px;
+
+          &:hover {
+            box-shadow: 0 5px 6px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+          }
         }
         .fillTool{
           font-size: 12px;
@@ -317,7 +315,71 @@
           width: 60px;
           height: 15px;
           cursor: pointer;
+          top: 40px;
+
+          &:hover {
+            box-shadow: 0 5px 6px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+          }
+        }
+        .AddObjectButton{
+          font-size: 12px;
+          padding: 1px;
+          border-radius: 1px;
+          border: solid 1px #b5b5b5;
+          position: absolute;
+          width: 60px;
+          height: 15px;
+          cursor: pointer;
           top: 62px;
+
+          &:hover {
+            box-shadow: 0 5px 6px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+          }
+        }
+        .objectSelector{
+          font-size: 12px;
+          padding: 1px;
+          border-radius: 1px;
+          border: solid 1px #b5b5b5;
+          position: absolute;
+          width: 63px;
+          height: 19px;
+          cursor: pointer;
+          top: 62px;
+          left: 71px;
+        }
+
+        .DeleteObjectButton{
+          font-size: 12px;
+          padding: 1px;
+          border-radius: 1px;
+          border: solid 1px #b5b5b5;
+          position: absolute;
+          width: 70px;
+          height: 15px;
+          cursor: pointer;
+          top: 83px;
+          left: 30px;
+
+          &:hover {
+            box-shadow: 0 5px 6px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+          }
+        }
+      }
+      .EyeDropButton {
+        font-size: 12px;
+        padding: 1px;
+        border-radius: 1px;
+        border: solid 1px #b5b5b5;
+        position: absolute;
+        width: 60px;
+        height: 15px;
+        cursor: pointer;
+        top: 40px;
+        left: 165px;
+
+        &:hover {
+          box-shadow: 0 5px 6px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
         }
       }
     }
@@ -327,8 +389,6 @@
         flex: 1;
         min-width: 0;
         outline: none;
-
-
       }
     }
     .ChatArea {
