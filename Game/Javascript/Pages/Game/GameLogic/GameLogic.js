@@ -112,7 +112,7 @@ export class GameLogic {
         this.logicTimer.start();
 
         this.drawStopwatch = new Stopwatch();
-        this.drawCount = 0;
+        this.drawPassedTime = 0;
         this.drawFPS = 0;
 
         this.drawLoop();
@@ -335,18 +335,20 @@ export class GameLogic {
         this.ctx.textAlign="center";
         this.ctx.fillText(`${Math.round(Network.GetPing())} ms`, 25, this.canvas.height - 4);
 
-        this.drawCount++;
-        if (this.drawStopwatch.getSeconds() >= 1.0) {
-            this.drawFPS = 1000.0 / (this.drawStopwatch.getMilliseconds()/this.drawCount);
-            this.drawCount = 0;
-            this.drawStopwatch.reset();
-        }
         this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         this.ctx.fillRect(0, this.canvas.height - 20 - 30, 55, 30);
         this.ctx.fillStyle = 'rgb(0, 255, 0)';
         this.ctx.font = '15px Helvetica';
         this.ctx.textAlign="center";
         this.ctx.fillText(`${Math.round(this.drawFPS)} fps`, 25, this.canvas.height - 4 - 30);
+
+        this.drawPassedTime+=this.drawStopwatch.getMilliseconds();
+        this.drawFPS = Math.min(this.drawFPS, 1000.0 / this.drawStopwatch.getMilliseconds());
+        if (this.drawPassedTime >= 1000.0) {
+            this.drawFPS = 1000.0 / this.drawStopwatch.getMilliseconds();
+            this.drawPassedTime = 0;
+        }
+        this.drawStopwatch.reset();
     };
 
     enterTileDrawingCoordinateSystem = () => {

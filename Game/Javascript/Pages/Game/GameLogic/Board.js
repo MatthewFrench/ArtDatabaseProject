@@ -32,6 +32,8 @@ export class Board {
         player.getServerMovementInfo().setMovingRight(movingRight);
         player.getServerMovementInfo().setJumping(jumping);
 
+        player.getClientMovementInfo().setSpeedX(speedX);
+        player.getClientMovementInfo().setSpeedY(speedY);
         player.getClientMovementInfo().setMovingLeft(movingLeft);
         player.getClientMovementInfo().setMovingRight(movingRight);
         player.getClientMovementInfo().setJumping(jumping);
