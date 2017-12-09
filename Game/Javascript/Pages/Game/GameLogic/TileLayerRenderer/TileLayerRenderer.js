@@ -43,7 +43,6 @@ export class TileLayerRenderer {
         //Holds tile vertex color info as: Float32Array(this.totalTiles * Verts_Per_Tile * Num_Per_Color);
         this.colors = null;
 
-
         this.setSize(layerWidth, layerHeight);
         this.firstTimeGLSetup();
     }

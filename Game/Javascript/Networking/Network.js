@@ -60,7 +60,7 @@ export class Network {
             average += ping;
         }
         average = average / pingTimeArray.length;
-        return Math.max(pingTime, average);
+        return (pingTime + average) / 2.0;
     }
 
     static GotMessage(message) {
