@@ -136,6 +136,7 @@ export class Game{
     };
 
     spriteButtonClicked = () =>{
+        this.spritePopover.updateSpriteID();
         this.mainDiv.appendChild(this.spritePopover.getDiv());
     };
 
