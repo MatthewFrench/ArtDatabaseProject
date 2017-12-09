@@ -292,6 +292,7 @@ export class GameLogic {
             this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * player.getSpriteFrame(),
                 Sprite_Vertical_Table[player.getSpriteID()], Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
 
+            /*
             this.ctx.fillStyle = 'blue';
             this.ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
             this.ctx.beginPath();
@@ -316,6 +317,7 @@ export class GameLogic {
             this.ctx.closePath();
             this.ctx.fill();
             this.ctx.stroke();
+            */
 
             this.ctx.fillStyle = 'red';
             this.ctx.font = '20px Helvetica';
