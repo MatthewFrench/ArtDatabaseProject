@@ -72,9 +72,14 @@ export class Player {
         this.facingIndex = 4;
     }
 
-    updateSpriteFrame = () => {
-        if (this.getServerMovingLeft() === true) {
-            this.frameNextNumber += 1;
+    updateSpriteFrame = (delta) => {
+        const frameSpeed = 4;
+        //set minimum speed threshold to continue animating
+        if (this.getServerJumping() === true) {
+            this.facingIndex = 8;
+        }
+        else if (this.getServerMovingLeft() === true || (this.getServerSpeedX() < -0.1 && this.getServerMovingRight() !== true)) {
+            this.frameNextNumber += Math.abs(this.getServerSpeedX())*frameSpeed*delta;
             if (this.frameNextNumber > Frame_Next_Max) {
                 this.frameNextNumber = 0;
                 this.frameNumber += 1;
@@ -84,8 +89,8 @@ export class Player {
                 this.facingIndex = 9 + Idiot_Frame_Table[this.frameNumber];
             }
         }
-        else if (this.getServerMovingRight() === true) {
-            this.frameNextNumber += 1;
+        else if (this.getServerMovingRight() === true || this.getServerSpeedX() > 0.1) {
+            this.frameNextNumber += Math.abs(this.getServerSpeedX())*frameSpeed*delta;
             if (this.frameNextNumber > Frame_Next_Max) {
                 this.frameNextNumber = 0;
                 this.frameNumber += 1;
@@ -95,10 +100,6 @@ export class Player {
                 this.facingIndex = 3 + Idiot_Frame_Table[this.frameNumber];
             }
         }
-        else if (this.getServerJumping() === true) {
-            this.facingIndex = 8;
-        }
-
         else{
             this.facingIndex = 7;
             this.frameNumber = 0;
