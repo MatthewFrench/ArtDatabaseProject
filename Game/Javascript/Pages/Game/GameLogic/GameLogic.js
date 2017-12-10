@@ -173,6 +173,7 @@ export class GameLogic {
         this.deleteObjectButton.classList.remove('Selected');
         this.layerOn = false;
         this.drawOn = true;
+        this.eyeDropperOn = false;
         this.canvas.style.cursor = "";
         this.focusOnGameCanvas();
     };
@@ -187,6 +188,7 @@ export class GameLogic {
         this.layerOn = true;
         this.drawOn = false;
         this.fillOn = false;
+        this.eyeDropperOn = false;
         this.canvas.style.cursor = "";
         this.focusOnGameCanvas();
     };
@@ -201,6 +203,7 @@ export class GameLogic {
         this.layerOn = false;
         this.drawOn = false;
         this.fillOn = true;
+        this.eyeDropperOn = false;
         this.canvas.style.cursor = "";
         this.focusOnGameCanvas();
     }
@@ -212,6 +215,7 @@ export class GameLogic {
         this.fillToolButton.classList.remove('Selected');
         this.eyeDropButton.classList.remove('Selected');
         this.deleteObjectButton.classList.remove('Selected');
+        this.eyeDropperOn = false;
         this.canvas.style.cursor = "";
         this.focusOnGameCanvas();
     }
@@ -223,6 +227,7 @@ export class GameLogic {
         this.layerToolButton.classList.remove('Selected');
         this.fillToolButton.classList.remove('Selected');
         this.eyeDropButton.classList.remove('Selected');
+        this.eyeDropperOn = false;
         this.canvas.style.cursor = "";
         this.focusOnGameCanvas();
     };
@@ -527,6 +532,9 @@ export class GameLogic {
 
             //turn off the eyedropper
             this.eyeDropperOn = false;
+            this.drawToolButton.classList.add('Selected');
+            this.eyeDropButton.classList.remove('Selected');
+
         }
 
         else if(this.layerOn){
@@ -818,6 +826,8 @@ export class GameLogic {
         this.drawToolButton.classList.remove('Selected');
         this.layerToolButton.classList.remove('Selected');
         this.fillToolButton.classList.remove('Selected');
+        this.addObjectButton.classList.remove('Selected');
+        this.deleteObjectButton.classList.remove('Selected');
         this.canvas.style.cursor = "crosshair";
         this.eyeDropperOn = true;
         this.focusOnGameCanvas();
