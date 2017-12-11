@@ -17,7 +17,7 @@ const Player_Width_Tiles = 2;
 const Player_Height_Tiles = 5;
 const Sprite_Width = 26;
 const Sprite_Horizontal_Distance = 64;
-const Sprite_Vertical_Table = [0, 0, 59, 123, 185, 246, 307, 368, 428];
+const Sprite_Vertical_Table = [0, -10, 52, 112, 172, 233, 294, 355, 418];
 const Sprite_X_Start = 22;
 
 const Background_Tile_Type = 3;
@@ -298,6 +298,9 @@ export class GameLogic {
 
     logic = (delta) => {
         this.physicsLogic.logic(this.board, delta);
+        this.board.getPlayers().forEach((player)=> {
+            player.updateSpriteFrame(delta);
+        });
     };
 
     drawTileLayers = (drawBackgroundInsteadOfForeground) => {
@@ -408,7 +411,7 @@ export class GameLogic {
             //if(player.playerID === this.cameraFocusPlayerID){
             //    return;
             //}
-            player.updateSpriteFrame();
+
 
             //Player X and Y is in the bottom center of the player rectangle
             let leftX = player.getClientMovementInfo().getX() + 0.5 - Player_Width_Tiles/2;
@@ -417,7 +420,7 @@ export class GameLogic {
             let topY = player.getClientMovementInfo().getY() + Player_Height_Tiles;
 
             this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * player.getSpriteFrame(),
-                Sprite_Vertical_Table[player.getSpriteID()], Sprite_Width, 44,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) + 6, Sprite_Width, 44);
+                Sprite_Vertical_Table[player.getSpriteID()], Sprite_Width, 54,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) - 4, Sprite_Width, 54);
 
             /*
             this.ctx.fillStyle = 'blue';
