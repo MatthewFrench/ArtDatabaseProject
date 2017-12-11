@@ -388,8 +388,26 @@
         border: solid 1px black;
         flex: 1;
         min-width: 0;
+        position: relative;
+      }
+
+      .Canvas2D {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         outline: none;
       }
+
+      .CanvasWebGLBackground {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
     }
     .ChatArea {
       position: relative;

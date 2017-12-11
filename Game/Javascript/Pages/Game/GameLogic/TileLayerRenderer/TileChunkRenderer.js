@@ -1,29 +1,23 @@
-
 const Tile_Height = 10;
 const Tile_Width = 10;
 const Num_Per_Vert = 2; // Ex: x, y
 const Verts_Per_Tile = 6;
 const Num_Per_Color = 4; // r, g, b, a
 
-export class TileLayerRenderer {
-    constructor(className, layerWidth, layerHeight, renderTileType) {
+const Chunk_Width = 25;
+const Chunk_Height = 25;
+
+export class TileChunkRenderer {
+    constructor() {
         //************** Variables
-        this.renderTileType = renderTileType;
-        //This is the center of where the camera is looking
-        this.focusTileX = 0;
-        this.focusTileY = 0;
-        //Number of tiles of each side
-        this.tilesHorizontal = 0;
-        this.tilesVertical = 0;
-        //Total possible viewable tiles
-        this.totalTiles = 0;
-        //Total number of tiles that are actually to be drawn
-        this.actualDrawTileCount = 0;
-        //This is the current tile size of the colors and positions arrays
-        this.currentArrayTileSize = 0;
         //Resolution of the screen
-        this.layerWidth = 0;
-        this.layerHeight = 0;
+        this.chunkWidth = Chunk_Width;
+        this.chunkHeight = Chunk_Height;
+        //Number of tiles of each side
+        this.tilesHorizontal = this.chunkWidth;
+        this.tilesVertical = this.chunkHeight;
+        //Total possible viewable tiles
+        this.totalTiles = this.tilesHorizontal * this.tilesVertical;
         //************** GL Variables
         //HTML5 Canvas
         this.canvas = null;
@@ -36,28 +30,23 @@ export class TileLayerRenderer {
         this.resolutionUniformLocation = null;
         //Buffers that drawing information gets copied to
         this.positionBuffer = null;
-        this.colorBuffer = null;
         //************** Storing tile information
         //Holds tile vertex info as: Float32Array(this.totalTiles * Verts_Per_Tile * Num_Per_Vert)
         this.positions = null;
-        //Holds tile vertex color info as: Float32Array(this.totalTiles * Verts_Per_Tile * Num_Per_Color);
-        this.colors = null;
 
-        this.setSize(layerWidth, layerHeight);
-        this.firstTimeGLSetup(className);
+        this.firstTimeGLSetup();
     }
 
-    firstTimeGLSetup = (className) => {
+    firstTimeGLSetup = () => {
         //Vector Shader
         let VERT_SRC = require('./VertexShader.glsl');
         //Fragment shader
         let FRAG_SRC = require('./FragmentShader.glsl');
         //Create Canvas
         this.canvas = document.createElement('canvas');
-        this.canvas.className = className;
-        this.canvas.width = this.layerWidth;
-        this.canvas.height = this.layerHeight;
-        this.gl = this.canvas.getContext('webgl');
+        this.canvas.width = this.chunkWidth * Tile_Width;
+        this.canvas.height = this.chunkHeight * Tile_Height;
+        this.gl = this.canvas.getContext('webgl', {preserveDrawingBuffer: true});
         //Create program
         let program = this.gl.createProgram();
         //Bind vertex shader
@@ -98,47 +87,42 @@ export class TileLayerRenderer {
         stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
         offset = 0;        // start at the beginning of the buffer
         this.gl.vertexAttribPointer(this.colorAttributeLocation, size, type, normalize, stride, offset);
-        this.updateShaderResolutionVariable();
-    };
-
-    updateShaderResolutionVariable = () => {
-        if (this.gl === null) {
-            return;
-        }
-
-        this.canvas.width = this.layerWidth;
-        this.canvas.height = this.layerHeight;
         //Set the global shader resolution
-        this.gl.uniform2f(this.resolutionUniformLocation, this.layerWidth, this.layerHeight);
+        this.gl.uniform2f(this.resolutionUniformLocation, this.chunkWidth * Tile_Width, this.chunkHeight * Tile_Height);
         //Set the opengl viewport size
         // Tell WebGL how to convert from clip space to pixels
-        this.gl.viewport(0, 0, this.layerWidth, this.layerHeight);
+        this.gl.viewport(0, 0, this.chunkWidth * Tile_Width, this.chunkHeight * Tile_Height);
+        //Fill position array
+        //I can say anything and it won't affect the code
+        //Tara is sexy
+        this.positions = new Float32Array(this.totalTiles * Verts_Per_Tile * Num_Per_Vert);
+        this.setPositionsArray();
+        this.copyPositionsToPositionBuffer();
     };
 
-    setSize = (width, height) => {
-        this.layerWidth = width;
-        this.layerHeight = height;
-        this.updateShaderResolutionVariable();
-
-        this.tilesHorizontal = Math.ceil(this.layerWidth / Tile_Width);
-        this.tilesVertical = Math.ceil(this.layerHeight / Tile_Height);
-        //Add padding
-        let padding = 1;
-        this.totalTiles = (this.tilesHorizontal + padding * 2) * (this.tilesVertical + padding * 2);
+    static GetRectangleNumberFromPosition = (x, y) => {
+        return y * Chunk_Width + x;
     };
 
-    setFocusTilePosition = (focusTileX, focusTileY) => {
-        this.focusTileX = focusTileX;
-        this.focusTileY = focusTileY;
+    setPositionsArray = () => {
+        //Loop through all tiles and set positions
+        for (let x = 0; x < this.chunkWidth; x++) {
+            for (let y = 0; y < this.chunkHeight; y++) {
+                this.setRectanglePositionInPositionArray(x, y, Tile_Width, Tile_Height);
+            }
+        }
     };
 
     copyPositionsToPositionBuffer = () => {
         // Bind the position buffer.
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.positions, this.gl.DYNAMIC_DRAW);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.positions, this.gl.STREAM_DRAW);
     };
 
-    setRectanglePositionInPositionArray = (rectNumber, x, y, width, height) => {
+    setRectanglePositionInPositionArray = (tileX, tileY, width, height) => {
+        let rectNumber = TileChunkRenderer.GetRectangleNumberFromPosition(tileX, tileY);
+        let x = tileX * Tile_Width;
+        let y = tileY * Tile_Height;
         //Vertex 1
         let tileStart = rectNumber * Verts_Per_Tile * Num_Per_Vert;
         this.positions[tileStart] = x;
@@ -160,84 +144,36 @@ export class TileLayerRenderer {
         this.positions[tileStart + 11] = y + height;
     };
 
-    setRectangleColorInColorArray = (rectNumber, r, g, b, a) => {
+    static CreateColorArray = () => {
+        return new Float32Array(Chunk_Width * Chunk_Height * Verts_Per_Tile * Num_Per_Color);
+    };
+    static SetRectangleColorInColorArray = (colorArray, x, y, r, g, b, a) => {
+        let rectNumber = TileChunkRenderer.GetRectangleNumberFromPosition(x, y);
         let tileStart = rectNumber * Verts_Per_Tile * Num_Per_Color;
         for (let vertexNumber = 0; vertexNumber < Verts_Per_Tile; vertexNumber++) {
             let vertexStart = tileStart + vertexNumber * Num_Per_Color;
-            this.colors[vertexStart] = r;
-            this.colors[vertexStart + 1] = g;
-            this.colors[vertexStart + 2] = b;
-            this.colors[vertexStart + 3] = a;
+            colorArray[vertexStart] = r;
+            colorArray[vertexStart + 1] = g;
+            colorArray[vertexStart + 2] = b;
+            colorArray[vertexStart + 3] = a;
         }
     };
 
-    copyColorsToColorBuffer = () => {
+    copyColorsToColorBuffer = (colorArray) => {
         // Bind the color buffer.
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorBuffer);
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.colors, this.gl.DYNAMIC_DRAW);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, colorArray, this.gl.STATIC_DRAW);
     };
 
-    resizeBuffersToFitScreen = () => {
-        if (this.currentArrayTileSize < this.totalTiles) {
-            this.positions = new Float32Array(this.totalTiles * Verts_Per_Tile * Num_Per_Vert);
-            this.colors = new Float32Array(this.totalTiles * Verts_Per_Tile * Num_Per_Color);
-            this.currentArrayTileSize = this.totalTiles;
-        }
-    };
-
-    copyTileDataToArrays = (board) => {
-        let halfHorizontalTiles = this.tilesHorizontal / 2;
-        let halfVerticalTiles = this.tilesVertical / 2;
-        //Calculate top and bottom tile location, top is going to be positive
-        let topTile = Math.ceil(this.focusTileY + halfVerticalTiles) + 1;
-        let bottomTile = Math.floor(this.focusTileY - halfVerticalTiles);
-        //Calculate left and right tile location
-        let leftTile = Math.floor(this.focusTileX - halfHorizontalTiles);
-        let rightTile = Math.ceil(this.focusTileX + halfHorizontalTiles) + 1;
-
-        let halfScreenHeight = this.layerHeight / 2;
-        let halfScreenWidth = this.layerWidth / 2;
-
-        //Subtract tile width and height so we're exactly in the center
-        let offsetX = -Tile_Width/2;
-        let offsetY = -Tile_Height/2;
-        //Add position of self
-        offsetX += -this.focusTileX * Tile_Width;
-        offsetY += -this.focusTileY * Tile_Height;
-
-        //Loop between locations
-        this.actualDrawTileCount = 0;
-        for (let tileY = bottomTile; tileY < topTile; tileY++) {
-            for (let tileX = leftTile; tileX < rightTile; tileX++) {
-                let tile = board.getTile(tileX, tileY);
-                if (tile !== null && tile.getTypeID() === this.renderTileType) {
-                    this.setRectanglePositionInPositionArray(this.actualDrawTileCount,
-                        tile.getX() * Tile_Width + halfScreenWidth + offsetX,
-                        tile.getY() * Tile_Height + halfScreenHeight + offsetY,
-                        Tile_Width, Tile_Height);
-                    this.setRectangleColorInColorArray(this.actualDrawTileCount, tile.getR(), tile.getG(), tile.getB(), tile.getA());
-                    this.actualDrawTileCount++;
-                }
-            }
-        }
-    };
-
-    draw = (board) => {
+    draw = () => {
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-
-        this.resizeBuffersToFitScreen();
-        this.copyTileDataToArrays(board);
-        if (this.actualDrawTileCount === 0) {
-            return;
-        }
-        this.copyPositionsToPositionBuffer();
-        this.copyColorsToColorBuffer();
 
         // draw
         let primitiveType = this.gl.TRIANGLES;
         let offset = 0;
-        let count = Verts_Per_Tile * this.actualDrawTileCount;
+        let count = Verts_Per_Tile * this.totalTiles;
         this.gl.drawArrays(primitiveType, offset, count);
+        this.gl.flush();
     };
 
     //Compile Shader Function

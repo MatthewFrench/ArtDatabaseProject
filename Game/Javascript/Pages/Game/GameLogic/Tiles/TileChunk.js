@@ -2,6 +2,11 @@
  * Defines and holds the information for a chunk of tiles
  */
 import {Tile} from "./Tile";
+import {TileChunkRenderer} from "../TileLayerRenderer/TileChunkRenderer";
+
+const Tile_Type_Background = 3;
+const Tile_Type_Solid = 4;
+const Tile_Type_Foreground = 5;
 
 export class TileChunk {
     constructor(chunkX, chunkY, tileWidth, tileHeight) {
@@ -19,6 +24,9 @@ export class TileChunk {
             }
             this.tiles.push(columnArray);
         }
+        //For rendering quickly
+        this.backgroundColorRenderArray = TileChunkRenderer.CreateColorArray();
+        this.foregroundColorRenderArray = TileChunkRenderer.CreateColorArray();
     }
     convertTileXToLocalX(tileX) {
         return tileX - (this.chunkX * this.tileWidth);
@@ -40,5 +48,42 @@ export class TileChunk {
         let tile = this.getTile(tileX, tileY, true);
         tile.setColor(r, g, b, a);
         tile.setTypeID(typeID);
+        //Set the render color for fast rendering
+        let localX = this.convertTileXToLocalX(tileX);
+        let localY = this.convertTileYToLocalY(tileY);
+        if (typeID === Tile_Type_Background || typeID === Tile_Type_Solid) {
+            TileChunkRenderer.SetRectangleColorInColorArray(this.backgroundColorRenderArray, localX, localY, r, g, b, a);
+        } else {
+            TileChunkRenderer.SetRectangleColorInColorArray(this.backgroundColorRenderArray, localX, localY, 0, 0, 0, 0);
+        }
+        if (typeID === Tile_Type_Foreground) {
+            TileChunkRenderer.SetRectangleColorInColorArray(this.foregroundColorRenderArray, localX, localY, r, g, b, a);
+        } else {
+            TileChunkRenderer.SetRectangleColorInColorArray(this.foregroundColorRenderArray, localX, localY, 0, 0, 0, 0);
+        }
     }
+
+    getBackgroundColorRenderArray = () => {
+        return this.backgroundColorRenderArray;
+    };
+
+    getForegroundColorRenderArray = () => {
+        return this.foregroundColorRenderArray;
+    };
+
+    getChunkX = () => {
+        return this.chunkX;
+    };
+
+    getChunkY = () => {
+        return this.chunkY;
+    };
+
+    getChunkTileX = () => {
+        return this.chunkX * this.tileWidth;
+    };
+
+    getChunkTileY = () => {
+        return this.chunkY * this.tileHeight;
+    };
 }

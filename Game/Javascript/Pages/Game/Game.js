@@ -18,6 +18,7 @@ export class Game{
         this.mainDiv = Interface.Create({type:'div', className: 'GamePage', elements:[
             {type: 'div', className: 'GameContainer', elements: [
                 {type: 'div', className: 'WorldWrapper', elements: [
+                    this.gameLogic.getDiv(),
                     this.selector = Interface.Create({type: 'div', className: 'ColorSelector', elements:[
                         this.gameLogic.getRgbaSelector(),
                         this.gameLogic.getEyeDropButton(),
@@ -28,7 +29,6 @@ export class Game{
                     ]}),
                     {type: 'label', className: 'volumeSliderLabel', text: 'Volume: '},
                     this.gameLogic.getVolumeSlider(),
-                    this.gameLogic.getCanvas(),
                     (this.boardSelector = new BoardSelector(this)).getDiv()
 
                 ]},
@@ -60,7 +60,7 @@ export class Game{
     }
 
     focusOnGameCanvas = () => {
-        this.gameLogic.getCanvas().focus();
+        this.gameLogic.focusOnGameCanvas();
     };
 
     //Event handler from the board selector

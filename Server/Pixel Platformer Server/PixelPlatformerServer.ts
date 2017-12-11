@@ -16,7 +16,7 @@ export class PixelPlatformerServer {
     Query.Initialize();
     Network.Initialize();
     NetworkHandler.SetHandleConnectCallback(this.playerConnected);
-      NetworkHandler.SetHandleDisconnectCallback(this.playerDiconnected);
+    NetworkHandler.SetHandleDisconnectCallback(this.playerDiconnected);
     this.gameLogic = new GameLogic(this);
     this.chatLogic = new ChatLogic(this);
     this.accountLogic = new AccountLogic(this);

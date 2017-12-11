@@ -14,7 +14,7 @@ export class Board {
     boardID : number;
     players : Map<number, Player>;
     tiles: Map<number, Map<number, Tile>>;
-    name: string;
+    name: string = 'Not Loaded';
     creatorID: number;
     isDeleted: boolean;
     maxWidth: number;
