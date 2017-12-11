@@ -124,6 +124,9 @@ export class PhysicsLogic {
             }
             bottom = Math.floor(y);
             top = Math.ceil(y + Player_Height_Tiles);
+            playerMovementInfo.setIsOnGround(true);
+        } else {
+            playerMovementInfo.setIsOnGround(false);
         }
         onGround = onGround || nextStepOnGround;
 

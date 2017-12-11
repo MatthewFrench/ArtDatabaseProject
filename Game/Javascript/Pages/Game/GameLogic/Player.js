@@ -1,6 +1,13 @@
 const Frame_Next_Max = 4;
 const Frame_Total_Max = 2;
 const Idiot_Frame_Table = [1, 0, 2];
+const Minimum_Direction_Movement_Cutoff = 0.01;
+const Player_Frame_Speed = 4;
+
+const Facing_Left_Frame = 9;
+const Facing_Right_Frame = 3;
+const Facing_Forward_Frame = 7;
+const Facing_Forward_Jumping_Frame = 8;
 
 export class PlayerMovementInfo {
     constructor(x, y, speedX, speedY, movingLeft, movingRight, jumping) {
@@ -11,7 +18,16 @@ export class PlayerMovementInfo {
         this.movingLeft = movingLeft;
         this.movingRight = movingRight;
         this.jumping = jumping;
+        this.isOnGround = false;
     }
+
+    getIsOnGround = () => {
+        return this.isOnGround;
+    };
+
+    setIsOnGround = (isOnGround) => {
+        this.isOnGround = isOnGround;
+    };
 
     getX = () => {
         return this.x;
@@ -72,40 +88,65 @@ export class Player {
         this.facingIndex = 4;
     }
 
-    updateSpriteFrame = (delta) => {
-        const frameSpeed = 4;
-        //set minimum speed threshold to continue animating
-        if (this.getServerJumping() === true) {
-            this.facingIndex = 8;
-        }
-        else if (this.getServerMovingLeft() === true || (this.getServerSpeedX() < -0.1 && this.getServerMovingRight() !== true)) {
-            this.frameNextNumber += Math.abs(this.getServerSpeedX())*frameSpeed*delta;
-            if (this.frameNextNumber > Frame_Next_Max) {
-                this.frameNextNumber = 0;
-                this.frameNumber += 1;
-                if (this.frameNumber > Frame_Total_Max) {
-                    this.frameNumber = 0;
-                }
-                this.facingIndex = 9 + Idiot_Frame_Table[this.frameNumber];
-            }
-        }
-        else if (this.getServerMovingRight() === true || this.getServerSpeedX() > 0.1) {
-            this.frameNextNumber += Math.abs(this.getServerSpeedX())*frameSpeed*delta;
-            if (this.frameNextNumber > Frame_Next_Max) {
-                this.frameNextNumber = 0;
-                this.frameNumber += 1;
-                if (this.frameNumber > Frame_Total_Max) {
-                    this.frameNumber = 0;
-                }
-                this.facingIndex = 3 + Idiot_Frame_Table[this.frameNumber];
-            }
-        }
-        else{
-            this.facingIndex = 7;
-            this.frameNumber = 0;
+    incrementSpriteFrameNumber = (delta) => {
+        this.frameNextNumber += Math.abs(this.getServerSpeedX()) * Player_Frame_Speed * delta;
+        if (this.frameNextNumber > Frame_Next_Max) {
             this.frameNextNumber = 0;
+            this.frameNumber += 1;
+            if (this.frameNumber > Frame_Total_Max) {
+                this.frameNumber = 0;
+            }
         }
+    };
 
+    updateSpriteFrame = (delta) => {
+        if (this.clientMovementInfo.getIsOnGround() === false) {
+            //We're in the air
+            if (this.getClientMovingRight() === true) {
+                //Moving Right
+                this.facingIndex = Facing_Right_Frame + Idiot_Frame_Table[this.frameNumber];
+            } else if (this.getClientMovingLeft() === true) {
+                //Moving Left
+                this.facingIndex = Facing_Left_Frame + Idiot_Frame_Table[this.frameNumber];
+            } else {
+                if (this.getClientJumping()) {
+                    //Trying to jump
+                    this.facingIndex = Facing_Forward_Jumping_Frame;
+                } else {
+                    //Falling
+                    this.facingIndex = Facing_Forward_Frame;
+                    this.frameNumber = 0;
+                    this.frameNextNumber = 0;
+                }
+            }
+        } else {
+            //On the ground
+            if (this.getClientMovingLeft()) {
+                //Moving left
+                this.incrementSpriteFrameNumber(delta);
+                this.facingIndex = Facing_Left_Frame + Idiot_Frame_Table[this.frameNumber];
+            } else if (this.getClientMovingRight()) {
+                //Moving right
+                this.incrementSpriteFrameNumber(delta);
+                this.facingIndex = Facing_Right_Frame + Idiot_Frame_Table[this.frameNumber];
+            } else {
+                //Not trying to move left or right but on ground
+                if (this.getClientSpeedX() < -Minimum_Direction_Movement_Cutoff) {
+                    //Face direction we're gliding, left
+                    this.incrementSpriteFrameNumber(delta);
+                    this.facingIndex = Facing_Left_Frame + Idiot_Frame_Table[this.frameNumber];
+                } else if (this.getClientSpeedX() > Minimum_Direction_Movement_Cutoff) {
+                    //Face direction we're gliding, right
+                    this.incrementSpriteFrameNumber(delta);
+                    this.facingIndex = Facing_Right_Frame + Idiot_Frame_Table[this.frameNumber];
+                } else {
+                    //Face center
+                    this.facingIndex = Facing_Forward_Frame;
+                    this.frameNumber = 0;
+                    this.frameNextNumber = 0;
+                }
+            }
+        }
     };
 
     getSpriteFrame = () => {

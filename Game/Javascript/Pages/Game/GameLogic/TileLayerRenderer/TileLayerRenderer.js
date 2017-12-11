@@ -5,10 +5,14 @@ const Num_Per_Vert = 2; // Ex: x, y
 const Verts_Per_Tile = 6;
 const Num_Per_Color = 4; // r, g, b, a
 
+const Tile_Type_Background = 3;
+const Tile_Type_Solid = 4;
+const Tile_Type_Foreground = 5;
+
 export class TileLayerRenderer {
-    constructor(className, layerWidth, layerHeight, renderTileType) {
+    constructor(className, layerWidth, layerHeight, isBackgroundNotForeground) {
         //************** Variables
-        this.renderTileType = renderTileType;
+        this.isBackgroundNotForeground = isBackgroundNotForeground;
         //This is the center of where the camera is looking
         this.focusTileX = 0;
         this.focusTileY = 0;
@@ -210,13 +214,19 @@ export class TileLayerRenderer {
         for (let tileY = bottomTile; tileY < topTile; tileY++) {
             for (let tileX = leftTile; tileX < rightTile; tileX++) {
                 let tile = board.getTile(tileX, tileY);
-                if (tile !== null && tile.getTypeID() === this.renderTileType) {
-                    this.setRectanglePositionInPositionArray(this.actualDrawTileCount,
-                        tile.getX() * Tile_Width + halfScreenWidth + offsetX,
-                        tile.getY() * Tile_Height + halfScreenHeight + offsetY,
-                        Tile_Width, Tile_Height);
-                    this.setRectangleColorInColorArray(this.actualDrawTileCount, tile.getR(), tile.getG(), tile.getB(), tile.getA());
-                    this.actualDrawTileCount++;
+                if (tile !== null) {
+                    if ((this.isBackgroundNotForeground && (tile.getTypeID() === Tile_Type_Background ||
+                        tile.getTypeID() === Tile_Type_Solid)) ||
+                        (!this.isBackgroundNotForeground && tile.getTypeID() === Tile_Type_Foreground)) {
+
+                        this.setRectanglePositionInPositionArray(this.actualDrawTileCount,
+                            tile.getX() * Tile_Width + halfScreenWidth + offsetX,
+                            tile.getY() * Tile_Height + halfScreenHeight + offsetY,
+                            Tile_Width, Tile_Height);
+                        this.setRectangleColorInColorArray(this.actualDrawTileCount, tile.getR(), tile.getG(), tile.getB(), tile.getA());
+                        this.actualDrawTileCount++;
+
+                    }
                 }
             }
         }
