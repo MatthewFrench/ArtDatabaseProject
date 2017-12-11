@@ -9,7 +9,6 @@ import spriteSheet from "../../../../Images/walkcyclevarious.png";
 import bgAudio from "../../../../Audio/PatakasWorld.wav";
 import {NanoTimer} from "../../../Utility/Nanotimer";
 import {Stopwatch} from "../../../Utility/Stopwatch";
-import {TileChunkRenderer} from "./TileLayerRenderer/TileChunkRenderer";
 
 const Tile_Height = 10;
 const Tile_Width = 10;
@@ -26,6 +25,10 @@ const Foreground_Tile_Type = 5;
 const Deleted_Tile_Type = 6;
 
 const Target_FPS = 60.0;
+
+//Static variables for providing access to the renderer in TileChunk
+let BackgroundTileLayerRenderer;
+let ForegroundTileLayerRenderer;
 
 export class GameLogic {
     constructor() {
@@ -109,7 +112,9 @@ export class GameLogic {
 
         //this.backgroundTileLayerRenderer = new TileLayerRenderer(1000, 800, Background_Tile_Type);
         this.backgroundTileLayerRenderer = new TileLayerRenderer('CanvasWebGLBackground', 1000, 800, true);
+        BackgroundTileLayerRenderer = this.backgroundTileLayerRenderer;
         this.foregroundTileLayerRenderer = new TileLayerRenderer('CanvasWebGLForeground', 1000, 800, false);
+        ForegroundTileLayerRenderer = this.foregroundTileLayerRenderer;
         //this.foregroundTileLayerRenderer = new TileLayerRenderer(1000, 800, Foreground_Tile_Type);
 
         //this.tileChunkRenderer = new TileChunkRenderer();
@@ -132,8 +137,8 @@ export class GameLogic {
         this.logicTimer.start();
 
         this.drawStopwatch = new Stopwatch();
-        this.drawPassedTime = 0;
-        this.drawFPS = 0;
+        //Format [time, fps]
+        this.fpsTimesArray = [];
 
         this.drawLoop();
     }
@@ -252,8 +257,7 @@ export class GameLogic {
     };
 
     addPlayer = (playerID, spriteID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
-        /*let player = */this.board.addPlayer(playerID, spriteID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping);
-        //this.physicsLogic.addPlayerBody(player);
+        this.board.addPlayer(playerID, spriteID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping);
     };
 
     removePlayer = (playerID) => {
@@ -301,73 +305,6 @@ export class GameLogic {
         });
     };
 
-    drawTileLayers = (drawBackgroundInsteadOfForeground) => {
-        let tilesHorizontal = Math.ceil(this.canvas.width / Tile_Width);
-        let tilesVertical = Math.ceil(this.canvas.height / Tile_Height);
-
-        let halfHorizontalTiles = tilesHorizontal / 2;
-        let halfVerticalTiles = tilesVertical / 2;
-        //Calculate top and bottom tile location, top is going to be positive
-        let topTile = Math.ceil(this.cameraFocusTileY + halfVerticalTiles) + 1;
-        let bottomTile = Math.floor(this.cameraFocusTileY - halfVerticalTiles);
-        //Calculate left and right tile location
-        let leftTile = Math.floor(this.cameraFocusTileX - halfHorizontalTiles);
-        let rightTile = Math.ceil(this.cameraFocusTileX + halfHorizontalTiles) + 1;
-
-        let halfScreenHeight = this.canvas.height / 2;
-        let halfScreenWidth = this.canvas.width / 2;
-
-        //Subtract tile width and height so we're exactly in the center
-        let offsetX = -Tile_Width/2;
-        let offsetY = -Tile_Height/2;
-        //Add position of self
-        offsetX += -this.cameraFocusTileX * Tile_Width;
-        offsetY += -this.cameraFocusTileY * Tile_Height;
-
-        let drawChunks = this.board.tileWorld.getChunksInTileRange(leftTile, bottomTile, rightTile, topTile);
-
-        let chunkIndex = 0;
-        for (let chunk of drawChunks) {
-            chunkIndex++;
-            if (drawBackgroundInsteadOfForeground === true) {
-                this.tileChunkRenderer.copyColorsToColorBuffer(chunk.getBackgroundColorRenderArray());
-            } else {
-                this.tileChunkRenderer.copyColorsToColorBuffer(chunk.getForegroundColorRenderArray());
-            }
-            this.tileChunkRenderer.draw();
-            //Draw to canvas
-            let chunkTileX = chunk.getChunkTileX();
-            let chunkTileY = chunk.getChunkTileY();
-
-            let width = this.tileChunkRenderer.getCanvas().width;
-            let height = this.tileChunkRenderer.getCanvas().height;
-
-            let x = this.convertTileXCoordinateToScreen(chunkTileX);
-            let y = this.convertTileYCoordinateToScreen(chunkTileY) - height;
-
-            this.ctx.drawImage(this.tileChunkRenderer.getCanvas(), x, y);
-            //this.ctx.strokeRect(x, y, width, height);
-        }
-
-        //Loop between locations
-        /*
-        this.actualDrawTileCount = 0;
-        for (let tileY = bottomTile; tileY < topTile; tileY++) {
-            for (let tileX = leftTile; tileX < rightTile; tileX++) {
-                let tile = board.getTile(tileX, tileY);
-                if (tile !== null && tile.getTypeID() === this.renderTileType) {
-                    this.setRectanglePositionInPositionArray(this.actualDrawTileCount,
-                        tile.getX() * Tile_Width + halfScreenWidth + offsetX,
-                        tile.getY() * Tile_Height + halfScreenHeight + offsetY,
-                        Tile_Width, Tile_Height);
-                    this.setRectangleColorInColorArray(this.actualDrawTileCount, tile.getR(), tile.getG(), tile.getB(), tile.getA());
-                    this.actualDrawTileCount++;
-                }
-            }
-        }
-        */
-    };
-
     draw = () => {
         let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
         if (focusPlayer !== null) {
@@ -375,44 +312,20 @@ export class GameLogic {
             this.cameraFocusTileY = focusPlayer.getClientMovementInfo().getY();
         }
 
-        //Get tile chunks in range for drawing
-
-
-
-        //this.backgroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
         this.backgroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
         this.foregroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
-        //this.foregroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
 
-        //this.resize();
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        //Draw background
-        //this.ctx.fillStyle = "rgba(255, 255, 255, 1)";
-        //this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-        //this.drawTileLayers(true);
-
-        //this.backgroundTileLayerRenderer.draw(this.board);
-
-        //this.backgroundTileLayerRenderer.draw(this.board);
-        //this.backgroundTileLayerRenderer.draw(this.board);
+        //Draw tile layers
         this.backgroundTileLayerRenderer.draw(this.board);
         this.foregroundTileLayerRenderer.draw(this.board);
 
-        //this.ctx.drawImage(this.backgroundTileLayerRenderer.getCanvas(), 0, 0);
-        //this.ctx.drawImage(this.backgroundTileLayerRenderer.getCanvas(), 0, 0);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         //Test drawing in tile transformation
         this.ctx.save();
 
         //Draw players
         this.board.getPlayers().forEach((player)=>{
-            //if(player.playerID === this.cameraFocusPlayerID){
-            //    return;
-            //}
-
-
             //Player X and Y is in the bottom center of the player rectangle
             let leftX = player.getClientMovementInfo().getX() + 0.5 - Player_Width_Tiles/2;
             let rightX = player.getClientMovementInfo().getX() + 0.5 + Player_Width_Tiles/2;
@@ -425,6 +338,8 @@ export class GameLogic {
                 this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) - 4,
                 Sprite_Width, 54);
 
+            /*
+            //Draw the physics box around the player for debugging
             this.ctx.fillStyle = 'blue';
             this.ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
             this.ctx.beginPath();
@@ -449,21 +364,15 @@ export class GameLogic {
             this.ctx.closePath();
             this.ctx.fill();
             this.ctx.stroke();
-
+*/
 
             this.ctx.fillStyle = 'red';
             this.ctx.font = '20px Helvetica';
             this.ctx.textAlign="center";
-            this.ctx.fillText(player.getName(), Math.round(this.convertTileXCoordinateToScreen(player.getClientMovementInfo().getX() + 0.5)), Math.round(this.convertTileYCoordinateToScreen(topY + 0.5)));
+            this.ctx.fillText(player.getName(), Math.floor(this.convertTileXCoordinateToScreen(player.getClientMovementInfo().getX() + 0.5)), Math.floor(this.convertTileYCoordinateToScreen(topY + 0.5)));
         });
 
         this.ctx.restore();
-
-
-        //this.drawTileLayers(false);
-
-        //this.foregroundTileLayerRenderer.draw(this.board);
-        //this.ctx.drawImage(this.foregroundTileLayerRenderer.getCanvas(), 0, 0);
 
         this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         this.ctx.fillRect(0, this.canvas.height - 20, 55, 30);
@@ -477,15 +386,29 @@ export class GameLogic {
         this.ctx.fillStyle = 'rgb(0, 255, 0)';
         this.ctx.font = '15px Helvetica';
         this.ctx.textAlign="center";
-        this.ctx.fillText(`${Math.round(this.drawFPS)} fps`, 25, this.canvas.height - 4 - 30);
+        this.ctx.fillText(`${Math.round(this.getMinimumFPS())} fps`, 25, this.canvas.height - 4 - 30);
 
-        this.drawPassedTime+=this.drawStopwatch.getMilliseconds();
-        this.drawFPS = Math.min(this.drawFPS, 1000.0 / this.drawStopwatch.getMilliseconds());
-        if (this.drawPassedTime >= 1000.0) {
-            this.drawFPS = 1000.0 / this.drawStopwatch.getMilliseconds();
-            this.drawPassedTime = 0;
-        }
+        //Trim old time from the fps array
+        let currentTime = window.performance.now();
+        this.fpsTimesArray = this.fpsTimesArray.filter((timeData)=> currentTime - timeData[0] <= 1500.0);
+        //Add new time to the fps array
+        let latestFPS = 1000.0 / this.drawStopwatch.getMilliseconds();
         this.drawStopwatch.reset();
+        this.fpsTimesArray.push([currentTime, latestFPS]);
+    };
+
+    /**
+     * Returns the minimum FPS of the tracked FPS.
+     */
+    getMinimumFPS = () => {
+        if (this.fpsTimesArray.length === 0) {
+            return 0;
+        }
+        let minimum = this.fpsTimesArray[0][1];
+        for (let fpsTimeData of this.fpsTimesArray) {
+            minimum = Math.min(minimum, fpsTimeData[1]);
+        }
+        return minimum;
     };
 
     enterTileDrawingCoordinateSystem = () => {
@@ -597,30 +520,6 @@ export class GameLogic {
 
         }
         else if (this.eyeDropperOn) {
-            //get mouse coordinates
-            //let mousePosition = this.getMousePosition(event);
-            //get information about pixel at mouse coordinates from canvas
-            /*
-            let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
-
-            //pull red data
-            let pixelRed = pixelInfo.data[0];
-            //pull green data
-            let pixelGreen = pixelInfo.data[1];
-            //pull blue data
-            let pixelBlue = pixelInfo.data[2];
-            //pull alpha data
-            let pixelAlpha = pixelInfo.data[3];
-            this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha/255 + ")";
-            */
-
-            //set slider values to color selected
-/*
-            this.redSlider.value = pixelRed;
-            this.greenSlider.value = pixelGreen;
-            this.blueSlider.value = pixelBlue;
-            this.alphaSlider.value = pixelAlpha;
-            */
             //switch cursor in canvas back to standard pointer
             this.canvas.style.cursor = "";
 
@@ -687,7 +586,7 @@ export class GameLogic {
                 let mousePosition = this.getMousePosition(event);
                 let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
                 let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
-                let positionsBetween = this.line(this.previouslyPlacedTileX, this.previouslyPlacedTileY, tileX, tileY);
+                let positionsBetween = this.getPointsOnLine(this.previouslyPlacedTileX, this.previouslyPlacedTileY, tileX, tileY);
                 positionsBetween.forEach(coordinate =>{
                         this.placeTile(coordinate.x, coordinate.y);
                 });
@@ -811,13 +710,8 @@ export class GameLogic {
             this.canvas.width = cssWidth;
             this.canvas.height = cssHeight;
 
-            //this.backgroundTileLayerRenderer.getCanvas().width = cssWidth;
-            //this.backgroundTileLayerRenderer.getCanvas().height = cssHeight;
             this.backgroundTileLayerRenderer.setSize(cssWidth, cssHeight);
             this.foregroundTileLayerRenderer.setSize(cssWidth, cssHeight);
-            //this.backgroundTileLayerRenderer.setSize(cssWidth, cssHeight);
-            //this.backgroundTileLayerRenderer.setSize(cssWidth, cssHeight);
-            //this.foregroundTileLayerRenderer.setSize(cssWidth, cssHeight);
         }
     };
 
@@ -901,7 +795,7 @@ export class GameLogic {
         this.rgbaLabel.childNodes[7].innerText = this.alphaSlider.value;
     };
 
-    line = (x0, y0, x1, y1) =>{
+    getPointsOnLine = (x0, y0, x1, y1) =>{
         let dx = Math.abs(x1-x0);
         let dy = Math.abs(y1-y0);
         let sx = (x0 < x1) ? 1 : -1;
@@ -918,6 +812,13 @@ export class GameLogic {
             if (e2 < dx){ err += dx; y0  += sy; }
         }
         return predictedPoints;
+    };
+
+    static GetBackgroundTileLayerRenderer = () => {
+        return BackgroundTileLayerRenderer;
+    };
+    static GetForegroundTileLayerRenderer = () => {
+        return ForegroundTileLayerRenderer;
     };
 
     getDiv = () => {

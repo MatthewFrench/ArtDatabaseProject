@@ -24,7 +24,7 @@ export class Network {
         connection.on('pong', function(ms) {
             pingTime = ms;
             pingTimeArray.push(pingTime);
-            if (pingTimeArray.length > 5) {
+            if (pingTimeArray.length > 3) {
                 pingTimeArray.shift();
             }
         });

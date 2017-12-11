@@ -40,7 +40,7 @@ export class NanoTimer {
         this.isLooping = false;
         if (timeUntilNextCallback  <= 10) {
             if (timeUntilNextCallback <= 5) {
-                if (timeUntilNextCallback <= 0.5) {
+                if (timeUntilNextCallback <= 0.0) {
                     if (timeUntilNextCallback <= -this.milliseconds) {
                         this.loop();
                     } else {
