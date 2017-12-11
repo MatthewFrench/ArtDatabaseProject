@@ -1,5 +1,5 @@
 import {Player} from "../../Player/Player";
-import {Tile} from "../../Logic/Game/Tile";
+import {Tile} from "../../Logic/Game/Tile/Tile";
 
 const {MessageWriter} = require("../../Utility/MessageWriter");
 const GameID = require("./../MessageDefinitions/ClientMessageDefinitions").Controllers.Game.ID;

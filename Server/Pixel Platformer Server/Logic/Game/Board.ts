@@ -1,6 +1,6 @@
 import {Player} from "../../Player/Player";
 import {Query} from "../../Database/Query";
-import {Tile} from "./Tile";
+import {Tile} from "./Tile/Tile";
 import {Physics} from "./Physics";
 import {GameMessageCreator} from "../../Networking/Game/GameMessageCreator";
 import {ChatMessageCreator} from "../../Networking/Chat/ChatMessageCreator";
@@ -8,12 +8,12 @@ import {Stopwatch} from "../../Utility/Stopwatch";
 import {Network} from "../../Networking/Network";
 import {NetworkHandler} from "../../Networking/NetworkHandler";
 import {TileUpdateQueue} from "./TileUpdateQueue";
+import {TileWorld} from "./Tile/TileWorld";
 
 export class Board {
     physics : Physics;
     boardID : number;
     players : Map<number, Player>;
-    tiles: Map<number, Map<number, Tile>>;
     name: string = 'Not Loaded';
     creatorID: number;
     isDeleted: boolean;
@@ -21,12 +21,13 @@ export class Board {
     maxHeight: number;
     lastModifiedDate = new Date();
     updatePlayerStopwatch = new Stopwatch();
+    tileWorld: TileWorld;
 
     constructor(boardID, onFinishLoad : () => void) {
         this.physics = new Physics(this);
         this.boardID = boardID;
         this.players = new Map();
-        this.tiles = new Map();
+        this.tileWorld = new TileWorld(this.boardID);
         this.loadBoardInfo().then(()=>{
             this.loadTilesFromDatabase().then(()=>{
                 onFinishLoad();
@@ -46,7 +47,6 @@ export class Board {
 
     loadTilesFromDatabase = async () => {
         let tileDataArray = await Query.GetAllTiles(this.boardID);
-        this.tiles = new Map();
         for (let tileData of tileDataArray) {
             let boardID = tileData["board_id"];
             //let tileID = tileData["tile_id"];
@@ -60,11 +60,8 @@ export class Board {
             let creatorID = tileData["creator_id"];
             let lastModifiedID = tileData["last_modified_id"];
 
-            let tile = new Tile(boardID, typeID, x, y ,r, g, b, a, creatorID, lastModifiedID);
-            if (!this.tiles.has(x)) {
-                this.tiles.set(x, new Map());
-            }
-            this.tiles.get(x).set(y, tile);
+            let tile = this.tileWorld.setTile(boardID, typeID, x, y ,r, g, b, a, creatorID, lastModifiedID);
+
             if (this.players.size > 0) {
                 this.sendToAllPlayersInBoard(GameMessageCreator.UpdateTile(tile));
             }
@@ -75,6 +72,7 @@ export class Board {
     //Run from logic loop
     logic = (delta) => {
         this.physics.logic(delta);
+        this.tileWorld.runPlayerSightCalculations();
         //Send moving player locations
         if (this.updatePlayerStopwatch.getMilliseconds() >= 1000.0/2.0) { //30
             this.updatePlayerStopwatch.reset();
@@ -103,12 +101,8 @@ export class Board {
         }
         //Send self focus
         player.send(GameMessageCreator.FocusPlayer(player));
-        //Send all tile data to new player (inefficient)
-        for (let [x, yMap] of this.tiles) {
-            for (let [y, tile] of yMap) {
-                player.send(GameMessageCreator.UpdateTile(tile));
-            }
-        }
+        //This updates player sight tiles
+        this.tileWorld.addPlayerToWorld(player);
         //Send chat message telling the player he switched to a board
         player.send(ChatMessageCreator.AddChatMessage(this.boardID,
             player.getAccountData().getPlayerID(), '<span style="color: red">Server</span>',
@@ -118,6 +112,7 @@ export class Board {
     };
 
     removePlayer = (player : Player) => {
+        this.tileWorld.removePlayerFromWorld(player);
         this.players.delete(player.getAccountData().getPlayerID());
         //Send remove player to all players
         this.sendToAllPlayersInBoard(GameMessageCreator.RemovePlayer(player));
@@ -128,31 +123,18 @@ export class Board {
 
     addOrUpdateTile = (x, y, r, g, b, a, tileType, player: Player) => {
         this.lastModifiedDate = new Date();
-        if (!this.tiles.has(x)) {
-            this.tiles.set(x, new Map());
-        }
-        let tile = this.getTile(x, y);
-        if (tile === null) {
-            tile = new Tile(this.boardID, tileType, x, y, r, g, b, a,
-                player.getAccountData().getPlayerID(), player.getAccountData().getPlayerID());
-            this.tiles.get(x).set(y, tile);
-        } else {
-            tile.setColor(r, g, b, a);
-            tile.setLastModifiedID(player.getAccountData().getPlayerID());
-            tile.setTypeID(tileType);
-        }
+
+        let tile = this.tileWorld.setTile(this.boardID, tileType, x, y, r, g, b, a,
+            player.getAccountData().getPlayerID(), player.getAccountData().getPlayerID());
 
         TileUpdateQueue.AddTileUpdateToQueue(this.boardID, x, y, r, g, b, a,
             player.getAccountData().getPlayerID(), tileType);
 
-        /*
-        Query.UpdateOrInsertTile(this.boardID, x, y, r, g, b, a,
-                player.getAccountData().getPlayerID(), tileType).then((tileID)=>{
-            tile.setTileID(tileID);
-        });*/
-
-        //Send updates to players
-        this.sendToAllPlayersInBoard(GameMessageCreator.UpdateTile(tile));
+        let chunk = this.tileWorld.getChunkForTile(x, y);
+        let chunkUpdateMessage = GameMessageCreator.UpdateTile(tile)
+        for (let player of chunk.getPlayersInSight()) {
+            player.send(chunkUpdateMessage);
+        }
 
         this.updateBoardSelectorForThisBoard();
     };
@@ -164,14 +146,7 @@ export class Board {
     };
 
     getTile = (x, y) => {
-        if (!this.tiles.has(x)) {
-            return null;
-        }
-        let tile = this.tiles.get(x).get(y);
-        if (tile === undefined) {
-            return null;
-        }
-        return tile;
+        return this.tileWorld.getTile(x, y);
     };
 
     getBoardID = () : number => {
@@ -195,10 +170,6 @@ export class Board {
     };
 
     getTileCount = () => {
-        let count = 0;
-        for (let [x, column] of this.tiles) {
-            count += column.size;
-        }
-        return count;
+        return this.tileWorld.getTileCount();
     };
 }
