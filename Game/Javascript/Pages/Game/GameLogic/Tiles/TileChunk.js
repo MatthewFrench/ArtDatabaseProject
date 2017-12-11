@@ -4,9 +4,11 @@
 import {Tile} from "./Tile";
 import {TileChunkRenderer} from "../TileLayerRenderer/TileChunkRenderer";
 
+/*
 const Tile_Type_Background = 3;
 const Tile_Type_Solid = 4;
 const Tile_Type_Foreground = 5;
+*/
 
 export class TileChunk {
     constructor(chunkX, chunkY, tileWidth, tileHeight) {
@@ -25,8 +27,8 @@ export class TileChunk {
             this.tiles.push(columnArray);
         }
         //For rendering quickly
-        this.backgroundColorRenderArray = TileChunkRenderer.CreateColorArray();
-        this.foregroundColorRenderArray = TileChunkRenderer.CreateColorArray();
+        //this.backgroundColorRenderArray = TileChunkRenderer.CreateColorArray();
+        //this.foregroundColorRenderArray = TileChunkRenderer.CreateColorArray();
     }
     convertTileXToLocalX(tileX) {
         return tileX - (this.chunkX * this.tileWidth);
@@ -48,6 +50,7 @@ export class TileChunk {
         let tile = this.getTile(tileX, tileY, true);
         tile.setColor(r, g, b, a);
         tile.setTypeID(typeID);
+        /*
         //Set the render color for fast rendering
         let localX = this.convertTileXToLocalX(tileX);
         let localY = this.convertTileYToLocalY(tileY);
@@ -61,8 +64,9 @@ export class TileChunk {
         } else {
             TileChunkRenderer.SetRectangleColorInColorArray(this.foregroundColorRenderArray, localX, localY, 0, 0, 0, 0);
         }
+        */
     }
-
+/*
     getBackgroundColorRenderArray = () => {
         return this.backgroundColorRenderArray;
     };
@@ -70,7 +74,7 @@ export class TileChunk {
     getForegroundColorRenderArray = () => {
         return this.foregroundColorRenderArray;
     };
-
+*/
     getChunkX = () => {
         return this.chunkX;
     };

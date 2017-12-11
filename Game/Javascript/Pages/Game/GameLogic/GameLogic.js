@@ -108,15 +108,17 @@ export class GameLogic {
         this.currentTileType = Solid_Tile_Type;
 
         //this.backgroundTileLayerRenderer = new TileLayerRenderer(1000, 800, Background_Tile_Type);
-        this.solidTileLayerRenderer = new TileLayerRenderer('CanvasWebGLBackground', 1000, 800, Solid_Tile_Type);
+        this.backgroundTileLayerRenderer = new TileLayerRenderer('CanvasWebGLBackground', 1000, 800, true);
+        this.foregroundTileLayerRenderer = new TileLayerRenderer('CanvasWebGLForeground', 1000, 800, false);
         //this.foregroundTileLayerRenderer = new TileLayerRenderer(1000, 800, Foreground_Tile_Type);
 
         //this.tileChunkRenderer = new TileChunkRenderer();
 
 
         this.mainDiv = Interface.Create({type: 'div', className: 'GameArea', elements:[
-            this.solidTileLayerRenderer.getCanvas(),
-                this.canvas
+            this.backgroundTileLayerRenderer.getCanvas(),
+                this.canvas,
+                this.foregroundTileLayerRenderer.getCanvas()
             ]});
 
         this.redSlider.value = 0;
@@ -382,7 +384,8 @@ export class GameLogic {
 
 
         //this.backgroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
-        this.solidTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
+        this.backgroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
+        this.foregroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
         //this.foregroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
 
         //this.resize();
@@ -396,12 +399,13 @@ export class GameLogic {
 
         //this.backgroundTileLayerRenderer.draw(this.board);
 
-        //this.solidTileLayerRenderer.draw(this.board);
-        //this.solidTileLayerRenderer.draw(this.board);
-        this.solidTileLayerRenderer.draw(this.board);
+        //this.backgroundTileLayerRenderer.draw(this.board);
+        //this.backgroundTileLayerRenderer.draw(this.board);
+        this.backgroundTileLayerRenderer.draw(this.board);
+        this.foregroundTileLayerRenderer.draw(this.board);
 
         //this.ctx.drawImage(this.backgroundTileLayerRenderer.getCanvas(), 0, 0);
-        //this.ctx.drawImage(this.solidTileLayerRenderer.getCanvas(), 0, 0);
+        //this.ctx.drawImage(this.backgroundTileLayerRenderer.getCanvas(), 0, 0);
 
         //Test drawing in tile transformation
         this.ctx.save();
@@ -422,7 +426,7 @@ export class GameLogic {
             this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * player.getSpriteFrame(),
                 Sprite_Vertical_Table[player.getSpriteID()], Sprite_Width, 54,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) - 4, Sprite_Width, 54);
 
-            /*
+
             this.ctx.fillStyle = 'blue';
             this.ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
             this.ctx.beginPath();
@@ -447,7 +451,7 @@ export class GameLogic {
             this.ctx.closePath();
             this.ctx.fill();
             this.ctx.stroke();
-            */
+
 
             this.ctx.fillStyle = 'red';
             this.ctx.font = '20px Helvetica';
@@ -805,11 +809,12 @@ export class GameLogic {
             this.canvas.width = cssWidth;
             this.canvas.height = cssHeight;
 
-            //this.solidTileLayerRenderer.getCanvas().width = cssWidth;
-            //this.solidTileLayerRenderer.getCanvas().height = cssHeight;
-            this.solidTileLayerRenderer.setSize(cssWidth, cssHeight);
+            //this.backgroundTileLayerRenderer.getCanvas().width = cssWidth;
+            //this.backgroundTileLayerRenderer.getCanvas().height = cssHeight;
+            this.backgroundTileLayerRenderer.setSize(cssWidth, cssHeight);
+            this.foregroundTileLayerRenderer.setSize(cssWidth, cssHeight);
             //this.backgroundTileLayerRenderer.setSize(cssWidth, cssHeight);
-            //this.solidTileLayerRenderer.setSize(cssWidth, cssHeight);
+            //this.backgroundTileLayerRenderer.setSize(cssWidth, cssHeight);
             //this.foregroundTileLayerRenderer.setSize(cssWidth, cssHeight);
         }
     };
