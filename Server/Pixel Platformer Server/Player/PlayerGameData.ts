@@ -11,6 +11,8 @@ export class PlayerGameData {
     private movingLeft = false;
     private movingRight = false;
     private jumping = false;
+    private currentChunkX = null;
+    private currentChunkY = null;
     constructor() {
 
     }
@@ -68,5 +70,17 @@ export class PlayerGameData {
     };
     setJumping = (value) => {
         this.jumping = value;
+    };
+    getCurrentChunkX = () => {
+        return this.currentChunkX;
+    };
+    getCurrentChunkY = () => {
+        return this.currentChunkY;
+    };
+    setCurrentChunkX = (currentChunkX) => {
+        this.currentChunkX = currentChunkX;
+    };
+    setCurrentChunkY = (currentChunkY) => {
+        this.currentChunkY = currentChunkY;
     };
 }

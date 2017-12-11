@@ -102,6 +102,12 @@ export class TileWorld {
         }
         let playerChunkX = Math.floor(player.getGameData().getX() / Chunk_Width);
         let playerChunkY = Math.floor(player.getGameData().getY() / Chunk_Height);
+        if (playerChunkX === player.getGameData().getCurrentChunkX() &&
+            playerChunkY === player.getGameData().getCurrentChunkY()) {
+            return;
+        }
+        player.getGameData().setCurrentChunkX(playerChunkX);
+        player.getGameData().setCurrentChunkY(playerChunkY);
         let currentChunks : TileChunk[] = [];
         if (this.playerChunkSightConnections.has(player)) {
             currentChunks = this.playerChunkSightConnections.get(player);
@@ -174,6 +180,9 @@ export class TileWorld {
 
     public addPlayerToWorld = (player: Player) => {
         this.playersInWorld.push(player);
+        //Set player chunk to null
+        player.getGameData().setCurrentChunkX(null);
+        player.getGameData().setCurrentChunkY(null);
         this.updatePlayerSight(player);
     };
     public removePlayerFromWorld = (player: Player) => {
