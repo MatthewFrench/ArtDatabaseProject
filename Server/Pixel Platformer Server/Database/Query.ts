@@ -34,7 +34,9 @@ export class Query {
                 connection.release();
             }
         } catch (err) {
-            connection.destroy();
+            if (connection !== null) {
+                connection.destroy();
+            }
             //Assume the entire pool has been compromised
             databaseInstance.resetConnectionPool();
             console.log(err);

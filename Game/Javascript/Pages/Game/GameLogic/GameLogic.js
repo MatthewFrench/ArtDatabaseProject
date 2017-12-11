@@ -9,6 +9,7 @@ import spriteSheet from "../../../../Images/walkcyclevarious.png";
 import bgAudio from "../../../../Audio/PatakasWorld.wav";
 import {NanoTimer} from "../../../Utility/Nanotimer";
 import {Stopwatch} from "../../../Utility/Stopwatch";
+import {TileChunkRenderer} from "./TileLayerRenderer/TileChunkRenderer";
 
 const Tile_Height = 10;
 const Tile_Width = 10;
@@ -81,7 +82,7 @@ export class GameLogic {
         this.playerSpriteSheet = new Image();
         this.playerSpriteSheet.src = spriteSheet;
 
-        this.canvas = Interface.Create({type: 'canvas', className: 'GameArea',
+        this.canvas = Interface.Create({type: 'canvas', className: 'Canvas2D',
             onMouseDown: this.onMouseDown, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp,
             onMouseMove: this.onMouseMove, onMouseUp: this.onMouseUp});
         this.canvas.tabIndex = 1;
@@ -106,9 +107,17 @@ export class GameLogic {
         this.mouseDown = false;
         this.currentTileType = Solid_Tile_Type;
 
-        this.backgroundTileLayerRenderer = new TileLayerRenderer(1000, 800, Background_Tile_Type);
-        this.solidTileLayerRenderer = new TileLayerRenderer(1000, 800, Solid_Tile_Type);
-        this.foregroundTileLayerRenderer = new TileLayerRenderer(1000, 800, Foreground_Tile_Type);
+        //this.backgroundTileLayerRenderer = new TileLayerRenderer(1000, 800, Background_Tile_Type);
+        this.solidTileLayerRenderer = new TileLayerRenderer('CanvasWebGLBackground', 1000, 800, Solid_Tile_Type);
+        //this.foregroundTileLayerRenderer = new TileLayerRenderer(1000, 800, Foreground_Tile_Type);
+
+        //this.tileChunkRenderer = new TileChunkRenderer();
+
+
+        this.mainDiv = Interface.Create({type: 'div', className: 'GameArea', elements:[
+            this.solidTileLayerRenderer.getCanvas(),
+                this.canvas
+            ]});
 
         this.redSlider.value = 0;
         this.greenSlider.value = 0;
@@ -206,7 +215,7 @@ export class GameLogic {
         this.eyeDropperOn = false;
         this.canvas.style.cursor = "";
         this.focusOnGameCanvas();
-    }
+    };
 
     addObjectButtonClicked = () => {
         this.addObjectButton.classList.add('Selected');
@@ -218,7 +227,7 @@ export class GameLogic {
         this.eyeDropperOn = false;
         this.canvas.style.cursor = "";
         this.focusOnGameCanvas();
-    }
+    };
 
     deleteObjectButtonClicked = () => {
         this.deleteObjectButton.classList.add('Selected');
@@ -291,29 +300,105 @@ export class GameLogic {
         this.physicsLogic.logic(this.board, delta);
     };
 
+    drawTileLayers = (drawBackgroundInsteadOfForeground) => {
+        let tilesHorizontal = Math.ceil(this.canvas.width / Tile_Width);
+        let tilesVertical = Math.ceil(this.canvas.height / Tile_Height);
+
+        let halfHorizontalTiles = tilesHorizontal / 2;
+        let halfVerticalTiles = tilesVertical / 2;
+        //Calculate top and bottom tile location, top is going to be positive
+        let topTile = Math.ceil(this.cameraFocusTileY + halfVerticalTiles) + 1;
+        let bottomTile = Math.floor(this.cameraFocusTileY - halfVerticalTiles);
+        //Calculate left and right tile location
+        let leftTile = Math.floor(this.cameraFocusTileX - halfHorizontalTiles);
+        let rightTile = Math.ceil(this.cameraFocusTileX + halfHorizontalTiles) + 1;
+
+        let halfScreenHeight = this.canvas.height / 2;
+        let halfScreenWidth = this.canvas.width / 2;
+
+        //Subtract tile width and height so we're exactly in the center
+        let offsetX = -Tile_Width/2;
+        let offsetY = -Tile_Height/2;
+        //Add position of self
+        offsetX += -this.cameraFocusTileX * Tile_Width;
+        offsetY += -this.cameraFocusTileY * Tile_Height;
+
+        let drawChunks = this.board.tileWorld.getChunksInTileRange(leftTile, bottomTile, rightTile, topTile);
+
+        let chunkIndex = 0;
+        for (let chunk of drawChunks) {
+            chunkIndex++;
+            if (drawBackgroundInsteadOfForeground === true) {
+                this.tileChunkRenderer.copyColorsToColorBuffer(chunk.getBackgroundColorRenderArray());
+            } else {
+                this.tileChunkRenderer.copyColorsToColorBuffer(chunk.getForegroundColorRenderArray());
+            }
+            this.tileChunkRenderer.draw();
+            //Draw to canvas
+            let chunkTileX = chunk.getChunkTileX();
+            let chunkTileY = chunk.getChunkTileY();
+
+            let width = this.tileChunkRenderer.getCanvas().width;
+            let height = this.tileChunkRenderer.getCanvas().height;
+
+            let x = this.convertTileXCoordinateToScreen(chunkTileX);
+            let y = this.convertTileYCoordinateToScreen(chunkTileY) - height;
+
+            this.ctx.drawImage(this.tileChunkRenderer.getCanvas(), x, y);
+            //this.ctx.strokeRect(x, y, width, height);
+        }
+
+        //Loop between locations
+        /*
+        this.actualDrawTileCount = 0;
+        for (let tileY = bottomTile; tileY < topTile; tileY++) {
+            for (let tileX = leftTile; tileX < rightTile; tileX++) {
+                let tile = board.getTile(tileX, tileY);
+                if (tile !== null && tile.getTypeID() === this.renderTileType) {
+                    this.setRectanglePositionInPositionArray(this.actualDrawTileCount,
+                        tile.getX() * Tile_Width + halfScreenWidth + offsetX,
+                        tile.getY() * Tile_Height + halfScreenHeight + offsetY,
+                        Tile_Width, Tile_Height);
+                    this.setRectangleColorInColorArray(this.actualDrawTileCount, tile.getR(), tile.getG(), tile.getB(), tile.getA());
+                    this.actualDrawTileCount++;
+                }
+            }
+        }
+        */
+    };
+
     draw = () => {
         let focusPlayer = this.board.getPlayer(this.cameraFocusPlayerID);
         if (focusPlayer !== null) {
             this.cameraFocusTileX = focusPlayer.getClientMovementInfo().getX();
             this.cameraFocusTileY = focusPlayer.getClientMovementInfo().getY();
         }
-        this.backgroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
-        this.solidTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
-        this.foregroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
 
-        this.resize();
+        //Get tile chunks in range for drawing
+
+
+
+        //this.backgroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
+        this.solidTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
+        //this.foregroundTileLayerRenderer.setFocusTilePosition(this.cameraFocusTileX, this.cameraFocusTileY);
+
+        //this.resize();
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         //Draw background
-        this.ctx.fillStyle = "rgba(255, 255, 255, 1)";
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        //this.ctx.fillStyle = "rgba(255, 255, 255, 1)";
+        //this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.backgroundTileLayerRenderer.draw(this.board);
+        //this.drawTileLayers(true);
 
+        //this.backgroundTileLayerRenderer.draw(this.board);
+
+        //this.solidTileLayerRenderer.draw(this.board);
+        //this.solidTileLayerRenderer.draw(this.board);
         this.solidTileLayerRenderer.draw(this.board);
 
-        this.ctx.drawImage(this.backgroundTileLayerRenderer.getCanvas(), 0, 0);
-        this.ctx.drawImage(this.solidTileLayerRenderer.getCanvas(), 0, 0);
+        //this.ctx.drawImage(this.backgroundTileLayerRenderer.getCanvas(), 0, 0);
+        //this.ctx.drawImage(this.solidTileLayerRenderer.getCanvas(), 0, 0);
 
         //Test drawing in tile transformation
         this.ctx.save();
@@ -369,8 +454,11 @@ export class GameLogic {
 
         this.ctx.restore();
 
-        this.foregroundTileLayerRenderer.draw(this.board);
-        this.ctx.drawImage(this.foregroundTileLayerRenderer.getCanvas(), 0, 0);
+
+        //this.drawTileLayers(false);
+
+        //this.foregroundTileLayerRenderer.draw(this.board);
+        //this.ctx.drawImage(this.foregroundTileLayerRenderer.getCanvas(), 0, 0);
 
         this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         this.ctx.fillRect(0, this.canvas.height - 20, 55, 30);
@@ -551,17 +639,6 @@ export class GameLogic {
             let pixelBlue = tile.getB();
             let pixelAlpha = tile.getA();
 
-                /*
-                //pull red data
-                let pixelRed = pixelInfo.data[0];
-                //pull green data
-                let pixelGreen = pixelInfo.data[1];
-                //pull blue data
-                let pixelBlue = pixelInfo.data[2];
-                //pull alpha data
-                let pixelAlpha = pixelInfo.data[3];
-                */
-
                 //set background color to a hex representation of the value pulled from canvas
                 //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
                 //set background color to a rgba representation of the value pulled from canvas
@@ -607,12 +684,6 @@ export class GameLogic {
                 });
                 this.previouslyPlacedTileX = tileX;
                 this.previouslyPlacedTileY = tileY;
-                /*if (this.previouslyPlacedTileX !== tileX || this.previouslyPlacedTileY !== tileY) {
-                    this.previouslyPlacedTileX = tileX;
-                    this.previouslyPlacedTileY = tileY;
-
-                    this.placeTile(this.previouslyPlacedTileX, this.previouslyPlacedTileY);
-                }*/
             }
 
         } else {
@@ -641,8 +712,6 @@ export class GameLogic {
                 }
             }
 
-
-
             let tile = this.board.getTile(tileX, tileY);
             if (tile === null) {
                 return;
@@ -651,17 +720,6 @@ export class GameLogic {
             let pixelGreen = tile.getG();
             let pixelBlue = tile.getB();
             let pixelAlpha = tile.getA();
-/*
-
-            //pull red data
-            let pixelRed = pixelInfo.data[0];
-            //pull green data
-            let pixelGreen = pixelInfo.data[1];
-            //pull blue data
-            let pixelBlue = pixelInfo.data[2];
-            //pull alpha data
-            let pixelAlpha = pixelInfo.data[3];
-            */
 
             this.previewSquare.style.backgroundColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha/255 + ")";
 
@@ -672,7 +730,6 @@ export class GameLogic {
             this.alphaSlider.value = pixelAlpha;
 
             //turn off the eyedropper
-            //this.eyeDropperOn = false;
             if(this.mouseDown){
                 this.placeLayer(tileX, tileY, this.currentTileType, this.redSlider.value, this.greenSlider.value, this.blueSlider.value, this.alphaSlider.value );
 
@@ -715,23 +772,16 @@ export class GameLogic {
         //Left
         if ((event.keyCode === 37 || event.keyCode === 65) && this.leftPressed === true) {
             this.leftPressed = false;
-            //this.facingIndex = 10;
-            //this.frameNextNumber = 0;
-            //this.frameNumber = 0;
             Network.Send(GameMessageCreator.MovingLeft(this.leftPressed));
         }
         //Right
         if ((event.keyCode === 39 || event.keyCode === 68) && this.rightPressed === true) {
             this.rightPressed = false;
-            //this.facingIndex = 4;
-            //this.frameNextNumber = 0;
-            //this.frameNumber = 0;
             Network.Send(GameMessageCreator.MovingRight(this.rightPressed));
         }
         //Up
         if ((event.keyCode === 38 || event.keyCode === 87) && this.upPressed === true) {
             this.upPressed = false;
-            //this.facingIndex = 4;
             Network.Send(GameMessageCreator.Jumping(this.upPressed));
         }
         //Down
@@ -741,6 +791,9 @@ export class GameLogic {
     };
 
     resize = () => {
+        if (!this.visible) {
+            return;
+        }
         let canvasWidth = this.canvas.width;
         let canvasHeight = this.canvas.height;
         let cssWidth = this.canvas.clientWidth;
@@ -748,9 +801,13 @@ export class GameLogic {
         if (canvasWidth !== cssWidth || canvasHeight !== cssHeight) {
             this.canvas.width = cssWidth;
             this.canvas.height = cssHeight;
-            this.backgroundTileLayerRenderer.setSize(cssWidth, cssHeight);
+
+            //this.solidTileLayerRenderer.getCanvas().width = cssWidth;
+            //this.solidTileLayerRenderer.getCanvas().height = cssHeight;
             this.solidTileLayerRenderer.setSize(cssWidth, cssHeight);
-            this.foregroundTileLayerRenderer.setSize(cssWidth, cssHeight);
+            //this.backgroundTileLayerRenderer.setSize(cssWidth, cssHeight);
+            //this.solidTileLayerRenderer.setSize(cssWidth, cssHeight);
+            //this.foregroundTileLayerRenderer.setSize(cssWidth, cssHeight);
         }
     };
 
@@ -758,15 +815,12 @@ export class GameLogic {
         this.visible = visible;
         this.canvas.focus();
         if(visible){
+            this.resize();
             this.startMusic();
         }
         else{
             this.stopMusic();
         }
-    };
-
-    getCanvas = () => {
-        return this.canvas;
     };
 
     getRgbaSelector = () => {
@@ -854,5 +908,9 @@ export class GameLogic {
             if (e2 < dx){ err += dx; y0  += sy; }
         }
         return predictedPoints;
+    };
+
+    getDiv = () => {
+        return this.mainDiv;
     };
 }
