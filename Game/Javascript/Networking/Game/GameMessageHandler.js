@@ -9,6 +9,7 @@ let RemovePlayerListeners = [];
 let UpdatePlayerListeners = [];
 let UpdateTileListeners = [];
 let FocusPlayerIDListeners = [];
+let UpdateChunkListeners = [];
 
 export class GameMessageHandler {
     static RouteMessage(message) {
@@ -34,6 +35,9 @@ export class GameMessageHandler {
             } break;
             case Messages.FocusPlayerID: {
                 GameMessageHandler.FocusPlayerID(message);
+            } break;
+            case Messages.UpdateChunk: {
+                GameMessageHandler.UpdateChunk(message);
             } break;
         }
     }
@@ -377,6 +381,84 @@ export class GameMessageHandler {
         }
     }
 
+
+    static UpdateChunk(message) {
+        //Parse message with validation
+        if (!message.hasInt32()) {
+            console.error('Invalid Message');
+            console.trace();
+            return;
+        }
+        let chunkX = message.getInt32();
+
+        if (!message.hasInt32()) {
+            console.error('Invalid Message');
+            console.trace();
+            return;
+        }
+        let chunkY = message.getInt32();
+
+        let tileData = [];
+
+        while (!message.isAtEndOfData()) {
+
+            if (!message.hasInt32()) {
+                console.error('Invalid Message');
+                console.trace();
+                return;
+            }
+            let x = message.getInt32();
+
+            if (!message.hasInt32()) {
+                console.error('Invalid Message');
+                console.trace();
+                return;
+            }
+            let y = message.getInt32();
+
+            if (!message.hasUint16()) {
+                console.error('Invalid Message');
+                console.trace();
+                return;
+            }
+            let typeID = message.getUint16();
+
+            if (!message.hasUint8()) {
+                console.error('Invalid Message');
+                console.trace();
+                return;
+            }
+            let r = message.getUint8();
+
+            if (!message.hasUint8()) {
+                console.error('Invalid Message');
+                console.trace();
+                return;
+            }
+            let g = message.getUint8();
+
+            if (!message.hasUint8()) {
+                console.error('Invalid Message');
+                console.trace();
+                return;
+            }
+            let b = message.getUint8();
+
+            if (!message.hasUint8()) {
+                console.error('Invalid Message');
+                console.trace();
+                return;
+            }
+            let a = message.getUint8();
+            tileData.push({x: x, y: y, typeID: typeID, r: r, g: g, b: b, a: a});
+        }
+
+        //Send to all listeners
+        for (let callback of UpdateChunkListeners) {
+            callback(chunkX, chunkY, tileData).then();
+        }
+    }
+
     static AddUpdateSelectorBoardListener(callback) {
         AddUpdateSelectorBoardListeners.push(callback);
     }
@@ -397,5 +479,8 @@ export class GameMessageHandler {
     }
     static AddFocusPlayerIDListener(callback) {
         FocusPlayerIDListeners.push(callback);
+    }
+    static AddUpdateChunkListener(callback) {
+        UpdateChunkListeners.push(callback);
     }
 }

@@ -70,4 +70,10 @@ export class TileWorld {
         let chunk = this.getChunkForTile(tileX, tileY, true);
         chunk.setTile(tileX, tileY, typeID, r, g, b, a);
     };
+    updateChunk = (chunkX, chunkY, tileData) => {
+        let chunk = this.getChunkForChunkPosition(chunkX, chunkY, true);
+        for (let tileInfo of tileData) {
+            chunk.setTile(tileInfo['x'], tileInfo['y'], tileInfo['typeID'], tileInfo['r'], tileInfo['g'], tileInfo['b'], tileInfo['a']);
+        }
+    };
 }

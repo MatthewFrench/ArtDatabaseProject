@@ -256,6 +256,10 @@ export class GameLogic {
         this.board.setTile(x, y, typeID, r, g, b, a);
     };
 
+    updateChunk = (chunkX, chunkY, tileData) => {
+        this.board.updateChunk(chunkX, chunkY, tileData);
+    };
+
     addPlayer = (playerID, spriteID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
         this.board.addPlayer(playerID, spriteID, name, x, y, speedX, speedY, movingLeft, movingRight, jumping);
     };
