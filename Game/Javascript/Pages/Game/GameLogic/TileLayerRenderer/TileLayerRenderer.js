@@ -7,6 +7,8 @@ const Num_Per_Color = 4; // r, g, b, a
 const Chunk_Width = 25;
 const Chunk_Height = 25;
 
+const Chunk_Inactive_Range = 10;
+
 export class TileLayerRenderer {
     constructor(className, layerWidth, layerHeight, isBackgroundNotForeground) {
         //************** Variables
@@ -16,6 +18,7 @@ export class TileLayerRenderer {
         this.focusTileY = 0;
         this.chunkWidth = Chunk_Width;
         this.chunkHeight = Chunk_Height;
+        this.bufferPool = [];
         //Number of tiles of each side
         this.tilesHorizontal = this.chunkWidth;
         this.tilesVertical = this.chunkHeight;
@@ -97,9 +100,20 @@ export class TileLayerRenderer {
         this.positions = new Float32Array(this.totalTiles * Verts_Per_Tile * Num_Per_Vert);
         this.setPositionsArray();
         this.copyPositionsToPositionBuffer();
+
+        this.activeChunks = [];
     };
 
-    CreateBuffer = () => {
+    ReturnBuffer = (buffer, chunk) => {
+        this.bufferPool.push(buffer);
+        this.activeChunks.splice(this.activeChunks.indexOf(chunk), 1);
+    };
+
+    GetBuffer = (chunk) => {
+        this.activeChunks.push(chunk);
+        if (this.bufferPool.length > 0) {
+            return this.bufferPool.shift();
+        }
         return this.gl.createBuffer();
     };
 
@@ -257,6 +271,21 @@ export class TileLayerRenderer {
             let offset = 0;
             let count = Verts_Per_Tile * this.totalTiles;
             this.gl.drawArrays(primitiveType, offset, count);
+        }
+
+        this.pruneInactiveChunks();
+    };
+
+    pruneInactiveChunks = () => {
+        let playerChunkX = Math.floor(this.focusTileX / Chunk_Width);
+        let playerChunkY = Math.floor(this.focusTileY / Chunk_Height);
+        for (let index = 0; index < this.activeChunks; index++) {
+            let chunk = this.activeChunks[index];
+            if (Math.abs(chunk.getChunkX() - playerChunkX) > Chunk_Inactive_Range ||
+                Math.abs(chunk.getChunkY() - playerChunkY) > Chunk_Inactive_Range) {
+                chunk.releaseBuffers();
+                index--;
+            }
         }
     };
 

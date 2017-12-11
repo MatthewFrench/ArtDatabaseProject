@@ -28,11 +28,12 @@ export class TileChunk {
         //For rendering quickly
         this.backgroundColorRenderArray = TileLayerRenderer.CreateColorArray();
         this.foregroundColorRenderArray = TileLayerRenderer.CreateColorArray();
-        this.backgroundColorBuffer = GameLogic.GetBackgroundTileLayerRenderer().CreateBuffer();
-        this.foregroundColorBuffer = GameLogic.GetForegroundTileLayerRenderer().CreateBuffer();
+        this.backgroundColorBuffer = null;
+        this.foregroundColorBuffer = null;
         this.dirtyBackgroundBuffer = true;
         this.dirtyForegroundBuffer = true;
     }
+
     convertTileXToLocalX(tileX) {
         return tileX - (this.chunkX * this.tileWidth);
     }
@@ -73,6 +74,15 @@ export class TileChunk {
         }
     }
 
+    releaseBuffers = () => {
+        GameLogic.GetBackgroundTileLayerRenderer().ReturnBuffer(this.backgroundColorBuffer, this);
+        this.backgroundColorBuffer = null;
+        GameLogic.GetForegroundTileLayerRenderer().ReturnBuffer(this.foregroundColorBuffer, this);
+        this.foregroundColorBuffer = null;
+        this.dirtyBackgroundBuffer = true;
+        this.dirtyForegroundBuffer = true;
+    };
+
     getBackgroundColorRenderArray = () => {
         return this.backgroundColorRenderArray;
     };
@@ -82,10 +92,18 @@ export class TileChunk {
     };
 
     getBackgroundColorBuffer = () => {
+        if (this.backgroundColorBuffer === null) {
+            this.backgroundColorBuffer = GameLogic.GetBackgroundTileLayerRenderer().GetBuffer(this);
+            this.dirtyBackgroundBuffer = true;
+        }
         return this.backgroundColorBuffer;
     };
     
     getForegroundColorBuffer = () => {
+        if (this.foregroundColorBuffer === null) {
+            this.foregroundColorBuffer = GameLogic.GetForegroundTileLayerRenderer().GetBuffer(this);
+            this.dirtyForegroundBuffer = true;
+        }
         return this.foregroundColorBuffer;
     };
 
@@ -97,11 +115,11 @@ export class TileChunk {
     };
 
     isBackgroundColorBufferDirty = () => {
-        return this.dirtyBackgroundBuffer;
+        return this.dirtyBackgroundBuffer || this.backgroundColorBuffer === null;
     };
 
     isForegroundColorBufferDirty = () => {
-        return this.dirtyForegroundBuffer;
+        return this.dirtyForegroundBuffer || this.foregroundColorBuffer === null;
     };
 
     getChunkX = () => {
