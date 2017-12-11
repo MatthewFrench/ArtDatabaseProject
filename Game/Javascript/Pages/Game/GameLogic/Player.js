@@ -1,3 +1,5 @@
+import {Stopwatch} from "../../../Utility/Stopwatch";
+
 const Frame_Next_Max = 4;
 const Frame_Total_Max = 2;
 const Idiot_Frame_Table = [1, 0, 2];
@@ -19,6 +21,13 @@ export class PlayerMovementInfo {
         this.movingRight = movingRight;
         this.jumping = jumping;
         this.isOnGround = false;
+
+        this.interpolationDistanceX = 0;
+        this.interpolationDistanceY = 0;
+        this.interpolationSpeedX = 0;
+        this.interpolationSpeedY = 0;
+        this.interpolationStopwatch = new Stopwatch();
+        this.interpolationRunning = false;
     }
 
     getIsOnGround = () => {

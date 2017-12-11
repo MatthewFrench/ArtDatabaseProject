@@ -1,3 +1,5 @@
+import {Stopwatch} from "../../../Utility/Stopwatch";
+
 const Player_Width_Tiles = 2;
 //Player height is 5 but subtract a tiny bit to allow physics to pass it underneath tight spaces.
 const Player_Height_Tiles = 5;
@@ -11,7 +13,9 @@ const Solid_Tile_Type = 4;
 const Tunnel_Speed_Cap = 0.5;
 
 const Minimum_Rubber_Band_Tolerance = 0.01;
-const Frame_Rubber_Band_Percentage = 1.0/60.0 / 5; //Move 16% per frame, full rubber band in 5 seconds
+const Frame_Rubber_Band_Percentage = 1.0/60.0/5; //Move 16% per frame, full rubber band in 5 seconds
+
+const Linear_Interpolation_Duration = 0.20;
 
 export class PhysicsLogic {
     constructor() {
@@ -56,13 +60,66 @@ export class PhysicsLogic {
     runPlayerPhysicsLogic = (player, delta)=> {
         let clientInfo = player.getClientMovementInfo();
         let serverInfo = player.getServerMovementInfo();
-        this.runPhysicsOnPlayerMovement(player.getClientMovementInfo(), delta);
-        this.runPhysicsOnPlayerMovement(player.getServerMovementInfo(), delta);
+        this.runPhysicsOnPlayerMovement(clientInfo, delta);
+        this.runPhysicsOnPlayerMovement(serverInfo, delta);
+
+        let interpolationSmoothingSeconds = Linear_Interpolation_Duration; //1 second
+        if (clientInfo.interpolationRunning === false) {
+            clientInfo.setX(serverInfo.getX());
+            clientInfo.setY(serverInfo.getY());
+            clientInfo.setSpeedX(serverInfo.getSpeedX());
+            clientInfo.setSpeedY(serverInfo.getSpeedY());
+        } else {
+            let donePercent = clientInfo.interpolationStopwatch.getMilliseconds() / (interpolationSmoothingSeconds * 1000.0);
+            if (donePercent >= 1.0) {
+                clientInfo.setX(serverInfo.getX());
+                clientInfo.setY(serverInfo.getY());
+                clientInfo.setSpeedX(serverInfo.getSpeedX());
+                clientInfo.setSpeedY(serverInfo.getSpeedY());
+                clientInfo.interpolationRunning = false;
+            } else {
+                clientInfo.setX(this.percentInterpolate(clientInfo.getX(), serverInfo.getX(),
+                    clientInfo.interpolationDistanceX, interpolationSmoothingSeconds, donePercent, delta));
+                clientInfo.setY(this.percentInterpolate(clientInfo.getY(), serverInfo.getY(),
+                    clientInfo.interpolationDistanceY, interpolationSmoothingSeconds, donePercent, delta));
+                clientInfo.setSpeedX(this.percentInterpolate(clientInfo.getSpeedX(), serverInfo.getSpeedX(),
+                    clientInfo.interpolationSpeedX, interpolationSmoothingSeconds, donePercent, delta));
+                clientInfo.setSpeedY(this.percentInterpolate(clientInfo.getSpeedY(), serverInfo.getSpeedY(),
+                    clientInfo.interpolationSpeedY, interpolationSmoothingSeconds, donePercent, delta));
+
+            }
+        }
+
         //*******Interpolate client closer to server
         clientInfo.setX(this.getRubberBandInterpolatedValue(serverInfo.getX(), clientInfo.getX()));
         clientInfo.setY(this.getRubberBandInterpolatedValue(serverInfo.getY(), clientInfo.getY()));
-        //clientInfo.setSpeedX(this.getRubberBandInterpolatedValue(serverInfo.getSpeedX(), clientInfo.getSpeedX()));
-        //clientInfo.setSpeedY(this.getRubberBandInterpolatedValue(serverInfo.getSpeedY(), clientInfo.getSpeedY()));
+        clientInfo.setSpeedX(this.getRubberBandInterpolatedValue(serverInfo.getSpeedX(), clientInfo.getSpeedX()));
+        clientInfo.setSpeedY(this.getRubberBandInterpolatedValue(serverInfo.getSpeedY(), clientInfo.getSpeedY()));
+    };
+
+    percentInterpolate = (clientValue, serverValue, interpolationDistance, interpolationSmoothingSeconds, donePercent, delta) => {
+        let moveAmount = 0.034 / interpolationSmoothingSeconds * delta;
+        let distanceBetween = Math.abs(clientValue - serverValue);
+        if (distanceBetween < moveAmount) {
+            clientValue = serverValue;
+        } else {
+            if (clientValue < serverValue) {
+                clientValue = clientValue + moveAmount;
+            } else {
+                clientValue = clientValue - moveAmount;
+            }
+            //Move client closer if it's past max distance
+            let maxDistanceFromServer = Math.abs(interpolationDistance * (1.0 - donePercent));
+            let currentDistance = Math.abs(clientValue - serverValue);
+            if (currentDistance > maxDistanceFromServer) {
+                if (clientValue < serverValue) {
+                    clientValue = serverValue - maxDistanceFromServer;
+                } else {
+                    clientValue = serverValue + maxDistanceFromServer;
+                }
+            }
+        }
+        return clientValue;
     };
 
     getRubberBandInterpolatedValue = (serverValue, clientValue) => {
