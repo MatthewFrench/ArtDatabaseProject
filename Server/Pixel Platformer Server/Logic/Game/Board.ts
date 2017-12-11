@@ -74,7 +74,7 @@ export class Board {
         this.physics.logic(delta);
         this.tileWorld.runPlayerSightCalculations();
         //Send moving player locations
-        if (this.updatePlayerStopwatch.getMilliseconds() >= 1000.0/2.0) { //30
+        if (this.updatePlayerStopwatch.getMilliseconds() >= 1000.0/4.0) { //30
             this.updatePlayerStopwatch.reset();
             for (let [playerID, player] of this.players) {
                 this.sendToAllPlayersInBoard(GameMessageCreator.UpdatePlayer(player));

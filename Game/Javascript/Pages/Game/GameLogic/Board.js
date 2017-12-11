@@ -24,19 +24,38 @@ export class Board {
         if (player === null) {
             return;
         }
-        player.getServerMovementInfo().setX(x);
-        player.getServerMovementInfo().setY(y);
-        player.getServerMovementInfo().setSpeedX(speedX);
-        player.getServerMovementInfo().setSpeedY(speedY);
-        player.getServerMovementInfo().setMovingLeft(movingLeft);
-        player.getServerMovementInfo().setMovingRight(movingRight);
-        player.getServerMovementInfo().setJumping(jumping);
 
-        player.getClientMovementInfo().setSpeedX(speedX);
-        player.getClientMovementInfo().setSpeedY(speedY);
-        player.getClientMovementInfo().setMovingLeft(movingLeft);
-        player.getClientMovementInfo().setMovingRight(movingRight);
-        player.getClientMovementInfo().setJumping(jumping);
+        let clientInfo = player.getClientMovementInfo();
+        let serverInfo = player.getServerMovementInfo();
+
+        //Set the client position to be the approximate server position
+        clientInfo.setX(serverInfo.getX());
+        clientInfo.setY(serverInfo.getY());
+        clientInfo.setSpeedX(serverInfo.getSpeedX());
+        clientInfo.setSpeedY(serverInfo.getSpeedY());
+
+        //Update the server position
+        serverInfo.setX(x);
+        serverInfo.setY(y);
+        serverInfo.setSpeedX(speedX);
+        serverInfo.setSpeedY(speedY);
+        serverInfo.setMovingLeft(movingLeft);
+        serverInfo.setMovingRight(movingRight);
+        serverInfo.setJumping(jumping);
+
+        //player.getClientMovementInfo().setSpeedX(speedX);
+        //player.getClientMovementInfo().setSpeedY(speedY);
+        clientInfo.setMovingLeft(movingLeft);
+        clientInfo.setMovingRight(movingRight);
+        clientInfo.setJumping(jumping);
+
+        //Interpolate the client position to the server position
+        clientInfo.interpolationRunning = true;
+        clientInfo.interpolationDistanceX = Math.abs(clientInfo.getX() - serverInfo.getY());
+        clientInfo.interpolationDistanceY = Math.abs(clientInfo.getY() - serverInfo.getY());
+        clientInfo.interpolationSpeedX = Math.abs(clientInfo.getSpeedX() - serverInfo.getSpeedX());
+        clientInfo.interpolationSpeedY = Math.abs(clientInfo.getSpeedY() - serverInfo.getSpeedY());
+        clientInfo.interpolationStopwatch.reset();
 
         player.setSpriteID(spriteID);
     };
