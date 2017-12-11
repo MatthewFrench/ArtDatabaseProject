@@ -62,4 +62,7 @@ export class Board {
     setTile = (x, y, typeID, r, g, b, a) => {
         this.tileWorld.setTile(x, y, typeID, r, g, b, a);
     };
+    updateChunk = (chunkX, chunkY, tileData) => {
+        this.tileWorld.updateChunk(chunkX, chunkY, tileData);
+    };
 }

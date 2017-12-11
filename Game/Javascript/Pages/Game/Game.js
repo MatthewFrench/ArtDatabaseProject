@@ -57,6 +57,7 @@ export class Game{
         GameMessageHandler.AddUpdatePlayerListener(this.gotPlayerUpdatedMessage);
         GameMessageHandler.AddRemovePlayerListener(this.gotPlayerRemovedMessage);
         GameMessageHandler.AddFocusPlayerIDListener(this.gotSetPlayerFocusMessage);
+        GameMessageHandler.AddUpdateChunkListener(this.gotUpdateChunkMessage);
     }
 
     focusOnGameCanvas = () => {
@@ -85,6 +86,11 @@ export class Game{
     gotPlayedAddedMessage = async (playerID, spriteID, displayName, x, y, speedX, speedY, movingLeft, movingRight, jumping) => {
         this.gameLogic.addPlayer(playerID, spriteID, displayName, x, y, speedX, speedY, movingLeft, movingRight, jumping);
     };
+
+    gotUpdateChunkMessage = async(chunkX, chunkY, tileData) => {
+        this.gameLogic.updateChunk(chunkX, chunkY, tileData);
+    };
+
     gotTileUpdateMessage = async (x, y, typeID, r, g, b, a) => {
         this.gameLogic.updateTile(x, y, typeID, r, g, b, a);
     };

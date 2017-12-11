@@ -1,5 +1,7 @@
 import {Player} from "../../Player/Player";
 import {Tile} from "../../Logic/Game/Tile/Tile";
+import {TileChunk} from "../../Logic/Game/Tile/TileChunk";
+const Tile_Type_Deleted = 6;
 
 const {MessageWriter} = require("../../Utility/MessageWriter");
 const GameID = require("./../MessageDefinitions/ClientMessageDefinitions").Controllers.Game.ID;
@@ -92,6 +94,32 @@ export class GameMessageCreator {
         message.addUint8(GameID);
         message.addUint8(Messages.FocusPlayerID);
         message.addInt32(player.getAccountData().getPlayerID());
+        return message.toBuffer();
+    };
+    //Update chunk message
+    static UpdateChunk = (chunk: TileChunk) => {
+        let message = new MessageWriter();
+        message.addUint8(GameID);
+        message.addUint8(Messages.UpdateChunk);
+        message.addInt32(chunk.getChunkX());
+        message.addInt32(chunk.getChunkY());
+        let tiles = chunk.getTiles();
+        let chunkWidth = chunk.getTileWidth();
+        let chunkHeight = chunk.getTileHeight();
+        for (let tileX = 0; tileX < chunkWidth; tileX++) {
+            for (let tileY = 0; tileY < chunkHeight; tileY++) {
+                let tile = tiles[tileX][tileY];
+                if (tile !== null && tile.getTypeID() !== Tile_Type_Deleted && tile.getA() !== 0) {
+                    message.addInt32(tile.getX());
+                    message.addInt32(tile.getY());
+                    message.addUint16(tile.getTypeID());
+                    message.addUint8(tile.getR());
+                    message.addUint8(tile.getG());
+                    message.addUint8(tile.getB());
+                    message.addUint8(tile.getA());
+                }
+            }
+        }
         return message.toBuffer();
     };
 }

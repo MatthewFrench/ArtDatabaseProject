@@ -100,12 +100,18 @@ export class TileChunk {
     };
 
     sendTilesToPlayer = (player : Player) => {
-        for (let tileColumn of this.tiles) {
-            for (let tile of tileColumn) {
-                if (tile !== null && tile.getTypeID() !== Tile_Type_Deleted && tile.getA() !== 0) {
-                    player.send(GameMessageCreator.UpdateTile(tile));
-                }
-            }
-        }
+        player.send(GameMessageCreator.UpdateChunk(this));
+    };
+
+    getTiles = () => {
+        return this.tiles;
+    };
+
+    getTileWidth = () => {
+        return this.tileWidth;
+    };
+
+    getTileHeight = () => {
+        return this.tileHeight;
     };
 }

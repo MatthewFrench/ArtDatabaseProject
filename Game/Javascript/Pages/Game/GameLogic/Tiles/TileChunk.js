@@ -43,6 +43,9 @@ export class TileChunk {
     getTile(tileX, tileY, createNew = false) {
         let localX = this.convertTileXToLocalX(tileX);
         let localY = this.convertTileYToLocalY(tileY);
+        return this.getLocalTile(tileX, tileY, localX, localY, createNew);
+    }
+    getLocalTile(tileX, tileY, localX, localY, createNew = false) {
         let tile = this.tiles[localX][localY];
         if (tile === null && createNew === true) {
             tile = new Tile(tileX, tileY);
@@ -51,13 +54,13 @@ export class TileChunk {
         return tile;
     }
     setTile(tileX, tileY, typeID, r, g, b, a) {
-        let tile = this.getTile(tileX, tileY, true);
+        let localX = this.convertTileXToLocalX(tileX);
+        let localY = this.convertTileYToLocalY(tileY);
+        let tile = this.getLocalTile(tileX, tileY, localX, localY, true);
         tile.setColor(r, g, b, a);
         tile.setTypeID(typeID);
 
         //Set the render color for fast rendering
-        let localX = this.convertTileXToLocalX(tileX);
-        let localY = this.convertTileYToLocalY(tileY);
         if (typeID === Tile_Type_Background || typeID === Tile_Type_Solid) {
             TileLayerRenderer.SetRectangleColorInColorArray(this.backgroundColorRenderArray, localX, localY, r, g, b, a);
             this.dirtyBackgroundBuffer = true;

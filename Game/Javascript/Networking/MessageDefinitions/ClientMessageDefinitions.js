@@ -33,6 +33,8 @@ export const Controllers = {
             UpdateTile: 6,
             //The tells the client to focus on this ID, likely self
             FocusPlayerID: 7,
+            //Update a chunk message
+            UpdateChunk: 8
         }
     },
     Network: {
