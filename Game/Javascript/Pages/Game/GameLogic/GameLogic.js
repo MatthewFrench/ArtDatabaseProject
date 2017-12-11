@@ -280,10 +280,6 @@ export class GameLogic {
         Network.Send(GameMessageCreator.SetTile(x, y, this.currentTileType, parseInt(this.redSlider.value),
             parseInt(this.greenSlider.value), parseInt(this.blueSlider.value), parseInt(this.alphaSlider.value)));
     };
-    placeLayer = (x, y, tileType, r, g, b, a) => {
-        Network.Send(GameMessageCreator.SetTile(x, y, this.currentTileType, parseInt(this.redSlider.value),
-            parseInt(this.greenSlider.value), parseInt(this.blueSlider.value), parseInt(this.alphaSlider.value)));
-    };
 
     logicLoop = (delta) => {
         if (this.visible) {
@@ -423,9 +419,11 @@ export class GameLogic {
             let bottomY = player.getClientMovementInfo().getY();
             let topY = player.getClientMovementInfo().getY() + Player_Height_Tiles;
 
-            this.ctx.drawImage(this.playerSpriteSheet, Sprite_X_Start + Sprite_Horizontal_Distance * player.getSpriteFrame(),
-                Sprite_Vertical_Table[player.getSpriteID()], Sprite_Width, 54,  this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) - 4, Sprite_Width, 54);
-
+            this.ctx.drawImage(this.playerSpriteSheet,
+                Sprite_X_Start + Sprite_Horizontal_Distance * player.getSpriteFrame(), Sprite_Vertical_Table[player.getSpriteID()],
+                Sprite_Width, 54,
+                this.convertTileXCoordinateToScreen(leftX), this.convertTileYCoordinateToScreen(topY) - 4,
+                Sprite_Width, 54);
 
             this.ctx.fillStyle = 'blue';
             this.ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
@@ -600,8 +598,9 @@ export class GameLogic {
         }
         else if (this.eyeDropperOn) {
             //get mouse coordinates
-            let mousePosition = this.getMousePosition(event);
+            //let mousePosition = this.getMousePosition(event);
             //get information about pixel at mouse coordinates from canvas
+            /*
             let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
 
             //pull red data
@@ -613,12 +612,15 @@ export class GameLogic {
             //pull alpha data
             let pixelAlpha = pixelInfo.data[3];
             this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha/255 + ")";
+            */
 
             //set slider values to color selected
+/*
             this.redSlider.value = pixelRed;
             this.greenSlider.value = pixelGreen;
             this.blueSlider.value = pixelBlue;
             this.alphaSlider.value = pixelAlpha;
+            */
             //switch cursor in canvas back to standard pointer
             this.canvas.style.cursor = "";
 
@@ -670,7 +672,7 @@ export class GameLogic {
                 //Get tile position
                 this.previouslyPlacedTileX = this.convertScreenXCoordinateToTile(mousePosition.x);
                 this.previouslyPlacedTileY = this.convertScreenYCoordinateToTile(mousePosition.y);
-                this.placeLayer(tileX, tileY, this.currentTileType, this.redSlider.value, this.greenSlider.value, this.blueSlider.value, this.alphaSlider.value );
+                //this.placeLayer(tileX, tileY, this.currentTileType, this.redSlider.value, this.greenSlider.value, this.blueSlider.value, this.alphaSlider.value );
                 //this.layerOn = false;
                 this.canvas.cursor = '';
             }
@@ -738,7 +740,7 @@ export class GameLogic {
 
             //turn off the eyedropper
             if(this.mouseDown){
-                this.placeLayer(tileX, tileY, this.currentTileType, this.redSlider.value, this.greenSlider.value, this.blueSlider.value, this.alphaSlider.value );
+                //this.placeLayer(tileX, tileY, this.currentTileType, this.redSlider.value, this.greenSlider.value, this.blueSlider.value, this.alphaSlider.value );
 
             }
 
