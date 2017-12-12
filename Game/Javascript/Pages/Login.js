@@ -39,6 +39,7 @@ export class Login {
     tryAutoLogin = () => {
         if(localStorage.getItem('Credentials')){
             {
+                this.loginButtonClicked();
                 let Credentials = JSON.parse(localStorage.getItem('Credentials'));
                 Network.Send(AccountMessageCreator.Login(Credentials.username, Credentials.password));
             }
