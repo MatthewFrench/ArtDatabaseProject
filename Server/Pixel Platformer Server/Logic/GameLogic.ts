@@ -14,16 +14,7 @@ export class GameLogic {
     boards: Map<number, Board>;
     flushDBTilesStopwatch: Stopwatch;
 
-    //logicLoopBenchmark: Benchmark;
-    //logicLoopRestartBenchmark: Benchmark;
-
     logicLoopTimer: NanoTimer;
-
-    /*
-    deltaStopwatch = new Stopwatch();
-    deltaCounter = 0;
-    deltaMax = 0;
-    */
 
     constructor(server) {
         this.server = server;
@@ -44,12 +35,6 @@ export class GameLogic {
                 this.boards.set(boardID, new Board(boardID, () => {}));
             }
         });
-
-        /*
-        this.logicLoopBenchmark = new Benchmark('Processing');
-        this.logicLoopRestartBenchmark = new Benchmark('Loop Consistency');
-        this.logicLoopRestartBenchmark.start();
-        */
 
         this.logicLoopTimer = new NanoTimer(this.logic, 1000.0/60.0);
         this.logicLoopTimer.start();

@@ -663,10 +663,30 @@ export class GameLogic {
                 let searchArrayContains = (tilePos) => {
                     return pastSearched.filter(pos => pos.x === tilePos.x && pos.y === tilePos.y).length > 0;
                 };
+                let addTileToSearchArray = (lookAtPos, lookAtTile) => {
+                    let addTile = false;
+                    if (!searchArrayContains(lookAtPos)) {
+                        if (isNullTile) {
+                            if (lookAtTile === null || lookAtTile.getTypeID() === Deleted_Tile_Type) {
+                                addTile = true;
+                            }
+                        } else {
+                            if (lookAtTile.getTypeID() === targetLayer &&
+                                lookAtTile.getR() === targetR && lookAtTile.getG() === targetG &&
+                                lookAtTile.getB() === targetB && lookAtTile.getA() === targetA) {
+                                addTile = true;
+                            }
+                        }
+                    }
+                    if (addTile) {
+                        searchArray.push(lookAtPos);
+                        pastSearched.push(lookAtPos);
+                    }
+                };
                 searchArray.push({x: tileX, y: tileY});
+                pastSearched.push({x: tileX, y: tileY});
                 while (searchArray.length > 0) {
                     let position = searchArray.shift();
-                    pastSearched.push(position);
                     fillArray.push(position);
                     //Now search neighbors
                     let topPos = {x: position.x, y: position.y - 1};
@@ -679,39 +699,19 @@ export class GameLogic {
                     let rightTile = this.board.getTile(rightPos.x, rightPos.y);
                     if (Math.hypot(topPos.x - tileX, topPos.y - tileY) <= maxRadius) {
                         //If top tile is equal to target
-                        if (!searchArrayContains(topPos) && (isNullTile && (topTile === null || topTile.getTypeID() === Deleted_Tile_Type)) ||
-                            (!isNullTile && topTile.getTypeID() === targetLayer && topTile.getR() === targetR &&
-                                topTile.getG() === targetG && topTile.getB() === targetB && topTile.getA() === targetA)) {
-                            //Add
-                            searchArray.push(topPos);
-                        }
+                        addTileToSearchArray(topPos, topTile);
                     }
                     if (Math.hypot(bottomPos.x - tileX, bottomPos.y - tileY) <= maxRadius) {
                         //Bottom tile is equal to target
-                        if (!searchArrayContains(bottomPos) && (isNullTile && (bottomTile === null || bottomTile.getTypeID() === Deleted_Tile_Type)) ||
-                            (!isNullTile && bottomTile.getTypeID() === targetLayer && bottomTile.getR() === targetR &&
-                                bottomTile.getG() === targetG && bottomTile.getB() === targetB && bottomTile.getA() === targetA)) {
-                            //Add
-                            searchArray.push(bottomPos);
-                        }
+                        addTileToSearchArray(bottomPos, bottomTile);
                     }
                     if (Math.hypot(leftPos.x - tileX, leftPos.y - tileY) <= maxRadius) {
                         //Left tile is equal to target
-                        if (!searchArrayContains(leftPos) && (isNullTile && (leftTile === null || leftTile.getTypeID() === Deleted_Tile_Type)) ||
-                            (!isNullTile && leftTile.getTypeID() === targetLayer && leftTile.getR() === targetR &&
-                                leftTile.getG() === targetG && leftTile.getB() === targetB && leftTile.getA() === targetA)) {
-                            //Add
-                            searchArray.push(leftPos);
-                        }
+                        addTileToSearchArray(leftPos, leftTile);
                     }
                     if (Math.hypot(rightPos.x - tileX, rightPos.y - tileY) <= maxRadius) {
                         //Right tile is equal to target
-                        if (!searchArrayContains(rightPos) && (isNullTile && (rightTile === null || rightTile.getTypeID() === Deleted_Tile_Type)) ||
-                            (!isNullTile && rightTile.getTypeID() === targetLayer && rightTile.getR() === targetR &&
-                                rightTile.getG() === targetG && rightTile.getB() === targetB && rightTile.getA() === targetA)) {
-                            //Add
-                            searchArray.push(rightPos);
-                        }
+                        addTileToSearchArray(rightPos, rightTile);
                     }
                 }
 
