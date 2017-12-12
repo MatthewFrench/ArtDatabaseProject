@@ -110,25 +110,25 @@ export class GameLogic {
                 {type: 'div', text: 'Tile Type', className: 'TileLabel'},
                 this.deleteTypeButton = Interface.Create({
                     type: 'div',
-                    text: 'Delete',
+                    text: 'Delete (1)',
                     className: 'DeleteButton',
                     onClick: this.deleteTileTypeClicked
                 }),
                 this.backgroundTypeButton = Interface.Create({
                     type: 'div',
-                    text: 'Background',
+                    text: 'Background (2)',
                     className: 'BackgroundButton',
                     onClick: this.backgroundTileTypeClicked
                 }),
                 this.solidTypeButton = Interface.Create({
                     type: 'div',
-                    text: 'Solid',
+                    text: 'Solid (3)',
                     className: 'SolidButton Selected',
                     onClick: this.solidTileTypeClicked
                 }),
                 this.foregroundTypeButton = Interface.Create({
                     type: 'div',
-                    text: 'Foreground',
+                    text: 'Foreground (4)',
                     className: 'ForegroundButton',
                     onClick: this.foregroundTileTypeClicked
                 }),
@@ -137,25 +137,25 @@ export class GameLogic {
                         {type: 'span', text: 'Tools', className: 'toolLabel'},
                         this.drawToolButton = Interface.Create({
                             type: 'div',
-                            text: 'Draw',
+                            text: 'Draw (Q)',
                             className: 'drawTool Selected',
                             onClick: this.drawToolClicked
                         }),
                         this.layerToolButton = Interface.Create({
                             type: 'div',
-                            text: 'Set Layer',
+                            text: 'Set Layer (L)',
                             className: 'layerTool',
                             onClick: this.layerToolClicked
                         }),
                         this.fillToolButton = Interface.Create({
                             type: 'div',
-                            text: 'Fill',
+                            text: 'Fill (F)',
                             className: 'fillTool',
                             onClick: this.fillToolClicked
                         }),
                         this.eyeDropButton = Interface.Create({
                             type: 'div',
-                            text: 'Eye Drop',
+                            text: 'Eye Drop (E)',
                             className: 'EyeDropButton',
                             onClick: this.eyeDropButtonClicked
                         }),
