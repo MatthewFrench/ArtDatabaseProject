@@ -55,29 +55,6 @@ export class GameLogic {
         this.logicLoopTimer.start();
     }
     logic = (delta) => {
-/*
-        //This chunk of code is for making sure that delta is correct
-        this.deltaCounter+= delta;
-        this.deltaMax = Math.max(delta, this.deltaMax);
-        if (this.deltaStopwatch.getSeconds() >= 1.0) {
-            console.log('Delta total: ' + this.deltaCounter);
-            console.log('Seconds: ' + this.deltaStopwatch.getSeconds());
-            console.log('Per second: ' + (this.deltaCounter / this.deltaStopwatch.getSeconds()));
-            console.log('Delta max: ' + this.deltaMax);
-            this.deltaCounter = 0;
-            this.deltaStopwatch.reset();
-        }
-        */
-
-        /*
-        this.logicLoopRestartBenchmark.stop();
-        this.logicLoopRestartBenchmark.start();
-        this.logicLoopRestartBenchmark.clearHistoryAfterDuration(60 * 60);
-        this.logicLoopRestartBenchmark.prettyPrintAtInterval(10, 10);
-
-        this.logicLoopBenchmark.start();
-        */
-
         for (let [boardID, board] of this.boards) {
             board.logic(delta);
         }
@@ -89,12 +66,6 @@ export class GameLogic {
         for (let [_, player] of NetworkHandler.GetPlayers()) {
             player.flushSendQueue();
         }
-
-        /*
-        this.logicLoopBenchmark.stop();
-        this.logicLoopBenchmark.clearHistoryAfterDuration(60 * 60);
-        this.logicLoopBenchmark.prettyPrintAtInterval(10, 10);
-        */
     };
     handleRequestBoardSwitchMessage = async(player: Player, boardID: number) => {
         this.switchPlayerToBoard(player, boardID);

@@ -633,7 +633,91 @@ export class GameLogic {
                 this.previouslyPlacedTileY = this.convertScreenYCoordinateToTile(mousePosition.y);
                 this.placeTile(this.previouslyPlacedTileX, this.previouslyPlacedTileY);
             } else if (this.fillOn) {
+                //Fill tool
+                //get mouse coordinates
+                let mousePosition = this.getMousePosition(event);
+                //get information about pixel at mouse coordinates from canvas
+                let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
+                let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
+                let tile = this.board.getTile(tileX, tileY);
+                let isNullTile = false;
+                let targetLayer = -1;
+                let targetR = 0;
+                let targetB = 0;
+                let targetG = 0;
+                let targetA = 0;
+                let maxRadius = 5;
+                if (tile === null || tile.getTypeID() === Deleted_Tile_Type) {
+                    isNullTile = true;
+                } else {
+                    targetLayer = tile.getTypeID();
+                    targetR = tile.getR();
+                    targetG = tile.getG();
+                    targetB = tile.getB();
+                    targetA = tile.getA();
+                }
 
+                let pastSearched = [];
+                let fillArray = [];
+                let searchArray = [];
+                let searchArrayContains = (tilePos) => {
+                    return pastSearched.filter(pos => pos.x === tilePos.x && pos.y === tilePos.y).length > 0;
+                };
+                searchArray.push({x: tileX, y: tileY});
+                while (searchArray.length > 0) {
+                    let position = searchArray.shift();
+                    pastSearched.push(position);
+                    fillArray.push(position);
+                    //Now search neighbors
+                    let topPos = {x: position.x, y: position.y - 1};
+                    let bottomPos = {x: position.x, y: position.y + 1};
+                    let leftPos = {x: position.x - 1, y: position.y};
+                    let rightPos = {x: position.x + 1, y: position.y};
+                    let topTile = this.board.getTile(topPos.x, topPos.y);
+                    let bottomTile = this.board.getTile(bottomPos.x, bottomPos.y);
+                    let leftTile = this.board.getTile(leftPos.x, leftPos.y);
+                    let rightTile = this.board.getTile(rightPos.x, rightPos.y);
+                    if (Math.hypot(topPos.x - tileX, topPos.y - tileY) <= maxRadius) {
+                        //If top tile is equal to target
+                        if (!searchArrayContains(topPos) && (isNullTile && (topTile === null || topTile.getTypeID() === Deleted_Tile_Type)) ||
+                            (!isNullTile && topTile.getTypeID() === targetLayer && topTile.getR() === targetR &&
+                                topTile.getG() === targetG && topTile.getB() === targetB && topTile.getA() === targetA)) {
+                            //Add
+                            searchArray.push(topPos);
+                        }
+                    }
+                    if (Math.hypot(bottomPos.x - tileX, bottomPos.y - tileY) <= maxRadius) {
+                        //Bottom tile is equal to target
+                        if (!searchArrayContains(bottomPos) && (isNullTile && (bottomTile === null || bottomTile.getTypeID() === Deleted_Tile_Type)) ||
+                            (!isNullTile && bottomTile.getTypeID() === targetLayer && bottomTile.getR() === targetR &&
+                                bottomTile.getG() === targetG && bottomTile.getB() === targetB && bottomTile.getA() === targetA)) {
+                            //Add
+                            searchArray.push(bottomPos);
+                        }
+                    }
+                    if (Math.hypot(leftPos.x - tileX, leftPos.y - tileY) <= maxRadius) {
+                        //Left tile is equal to target
+                        if (!searchArrayContains(leftPos) && (isNullTile && (leftTile === null || leftTile.getTypeID() === Deleted_Tile_Type)) ||
+                            (!isNullTile && leftTile.getTypeID() === targetLayer && leftTile.getR() === targetR &&
+                                leftTile.getG() === targetG && leftTile.getB() === targetB && leftTile.getA() === targetA)) {
+                            //Add
+                            searchArray.push(leftPos);
+                        }
+                    }
+                    if (Math.hypot(rightPos.x - tileX, rightPos.y - tileY) <= maxRadius) {
+                        //Right tile is equal to target
+                        if (!searchArrayContains(rightPos) && (isNullTile && (rightTile === null || rightTile.getTypeID() === Deleted_Tile_Type)) ||
+                            (!isNullTile && rightTile.getTypeID() === targetLayer && rightTile.getR() === targetR &&
+                                rightTile.getG() === targetG && rightTile.getB() === targetB && rightTile.getA() === targetA)) {
+                            //Add
+                            searchArray.push(rightPos);
+                        }
+                    }
+                }
+
+                for (let tilePos of fillArray) {
+                    this.placeTile(tilePos.x, tilePos.y);
+                }
             }
         }
         else if (this.eyeDropperOn) {
@@ -693,9 +777,6 @@ export class GameLogic {
             //this.placeLayer(tileX, tileY, this.currentTileType, this.redSlider.value, this.greenSlider.value, this.blueSlider.value, this.alphaSlider.value );
             //this.layerOn = false;
             this.canvas.cursor = '';
-        } else if (this.fillOn) {
-            //Fill tool
-            
         }
     };
 
