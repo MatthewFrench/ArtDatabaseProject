@@ -533,7 +533,6 @@ export class GameLogic {
             this.eyeDropButton.classList.remove('Selected');
 
         }
-
         else if(this.layerOn){
                 //get mouse coordinates
                 let mousePosition = this.getMousePosition(event);
@@ -575,6 +574,9 @@ export class GameLogic {
                 //Get tile position
                 this.previouslyPlacedTileX = this.convertScreenXCoordinateToTile(mousePosition.x);
                 this.previouslyPlacedTileY = this.convertScreenYCoordinateToTile(mousePosition.y);
+
+                this.placeTile(tileX, tileY);
+
                 //this.placeLayer(tileX, tileY, this.currentTileType, this.redSlider.value, this.greenSlider.value, this.blueSlider.value, this.alphaSlider.value );
                 //this.layerOn = false;
                 this.canvas.cursor = '';
@@ -642,12 +644,20 @@ export class GameLogic {
             this.alphaSlider.value = pixelAlpha;
 
             //turn off the eyedropper
-            if(this.mouseDown){
+            if (this.mouseDown && this.layerOn){
+
+                let positionsBetween = this.getPointsOnLine(this.previouslyPlacedTileX, this.previouslyPlacedTileY, tileX, tileY);
+                positionsBetween.forEach(coordinate =>{
+                    this.placeTile(coordinate.x, coordinate.y);
+                });
                 //this.placeLayer(tileX, tileY, this.currentTileType, this.redSlider.value, this.greenSlider.value, this.blueSlider.value, this.alphaSlider.value );
 
             }
 
             this.updateSliderLabels();
+
+            this.previouslyPlacedTileX = tileX;
+            this.previouslyPlacedTileY = tileY;
         }
 
     };
