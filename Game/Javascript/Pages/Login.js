@@ -76,7 +76,6 @@ export class Login {
         }
         else{
             alert('Invalid username or password');
-            this.usernameTxt.value = '';
             this.passwordTxt.value = '';
             this.loginButton.classList.remove('Disabled');
         }
