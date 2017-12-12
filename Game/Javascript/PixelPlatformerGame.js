@@ -23,6 +23,7 @@ export class PixelPlatformerGame {
         });
         this.gamePage = new Game(() => {
             this.switchToPage(this.loginPage);
+            this.loginPage.loginButton.classList.remove('Disabled');
             localStorage.removeItem('Credentials');
         });
 
