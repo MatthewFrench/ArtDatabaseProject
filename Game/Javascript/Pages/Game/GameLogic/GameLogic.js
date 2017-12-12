@@ -32,50 +32,155 @@ let ForegroundTileLayerRenderer;
 
 export class GameLogic {
     constructor() {
-        this.rgbaSelector = Interface.Create({type: 'div', className: 'rgbaSelector', elements: [
-            this.redSlider = Interface.Create({type: 'input', className: 'RedSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor}),
-            this.greenSlider = Interface.Create({type: 'input', className: 'GreenSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor}),
-            this.blueSlider = Interface.Create({type: 'input', className: 'BlueSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 0, onChange: this.changePreviewColor}),
-            this.alphaSlider = Interface.Create({type: 'input', className: 'AlphaSlider',  inputType: 'range', min: 0, max: 255, step: 1, value: 255, onChange: this.changePreviewColor}),
-            this.rgbaLabel = Interface.Create({type: 'div', className: 'RGBALabel', elements: [
-                {type: 'div', text: 'R', className: 'RedLabel'},
-                {type: 'div', text: 'G', className: 'GreenLabel'},
-                {type: 'div', text: 'B', className: 'BlueLabel'},
-                {type: 'div', text: 'A', className: 'AlphaLabel'},
-                {type: 'div', text: '255', className: 'RedValue'},
-                {type: 'div', text: '255', className: 'GreenValue'},
-                {type: 'div', text: '255', className: 'BlueValue'},
-                {type: 'div', text: '255', className: 'AlphaValue'},
-            ]})
-        ]});
+        this.rgbaSelector = Interface.Create({
+            type: 'div', className: 'rgbaSelector', elements: [
+                this.redSlider = Interface.Create({
+                    type: 'input',
+                    className: 'RedSlider',
+                    inputType: 'range',
+                    min: 0,
+                    max: 255,
+                    step: 1,
+                    value: 0,
+                    onChange: this.changePreviewColor
+                }),
+                this.greenSlider = Interface.Create({
+                    type: 'input',
+                    className: 'GreenSlider',
+                    inputType: 'range',
+                    min: 0,
+                    max: 255,
+                    step: 1,
+                    value: 0,
+                    onChange: this.changePreviewColor
+                }),
+                this.blueSlider = Interface.Create({
+                    type: 'input',
+                    className: 'BlueSlider',
+                    inputType: 'range',
+                    min: 0,
+                    max: 255,
+                    step: 1,
+                    value: 0,
+                    onChange: this.changePreviewColor
+                }),
+                this.alphaSlider = Interface.Create({
+                    type: 'input',
+                    className: 'AlphaSlider',
+                    inputType: 'range',
+                    min: 0,
+                    max: 255,
+                    step: 1,
+                    value: 255,
+                    onChange: this.changePreviewColor
+                }),
+                this.rgbaLabel = Interface.Create({
+                    type: 'div', className: 'RGBALabel', elements: [
+                        {type: 'div', text: 'R', className: 'RedLabel'},
+                        {type: 'div', text: 'G', className: 'GreenLabel'},
+                        {type: 'div', text: 'B', className: 'BlueLabel'},
+                        {type: 'div', text: 'A', className: 'AlphaLabel'},
+                        {type: 'div', text: '255', className: 'RedValue'},
+                        {type: 'div', text: '255', className: 'GreenValue'},
+                        {type: 'div', text: '255', className: 'BlueValue'},
+                        {type: 'div', text: '255', className: 'AlphaValue'},
+                    ]
+                })
+            ]
+        });
 
 
-        this.volumeSlider = Interface.Create({type: 'input', className:'VolumeSlider', inputType: 'range', min: 0, max: 100, step: 1, value: 15, onChange: this.updateVolume});
+        this.volumeSlider = Interface.Create({
+            type: 'input',
+            className: 'VolumeSlider',
+            inputType: 'range',
+            min: 0,
+            max: 100,
+            step: 1,
+            value: 15,
+            onChange: this.updateVolume
+        });
 
         this.bgAudio = new Audio(bgAudio);
         this.bgAudio.volume = 0.15;
         this.bgAudio.loop = true;
 
-        this.tileSelector = Interface.Create({type: 'div', className: 'TileSelector', elements: [
-            {type: 'div', text: 'Tile Type', className: 'TileLabel'},
-            this.deleteTypeButton = Interface.Create({type: 'div', text: 'Delete', className: 'DeleteButton', onClick: this.deleteTileTypeClicked}),
-            this.backgroundTypeButton = Interface.Create({type: 'div', text: 'Background', className: 'BackgroundButton', onClick: this.backgroundTileTypeClicked}),
-            this.solidTypeButton = Interface.Create({type: 'div', text: 'Solid', className: 'SolidButton Selected', onClick: this.solidTileTypeClicked}),
-            this.foregroundTypeButton = Interface.Create({type: 'div', text: 'Foreground', className: 'ForegroundButton', onClick: this.foregroundTileTypeClicked}),
-            this.toolSelector = Interface.Create({type: 'div', className: 'toolSelector', elements: [
-                {type: 'span', text: 'Tools', className: 'toolLabel'},
-                this.drawToolButton = Interface.Create({type: 'div', text: 'Draw', className: 'drawTool Selected', onClick: this.drawToolClicked}),
-                this.layerToolButton = Interface.Create({type: 'div', text: 'Set Layer', className: 'layerTool', onClick: this.layerToolClicked}),
-                this.fillToolButton = Interface.Create({type: 'div', text: 'Fill', className: 'fillTool', onClick: this.fillToolClicked}),
-                this.eyeDropButton = Interface.Create({type: 'div', text: 'Eye Drop', className: 'EyeDropButton', onClick: this.eyeDropButtonClicked}),
-                this.addObjectButton = Interface.Create({type: 'div', text: 'Add Object', className: 'AddObjectButton', onClick: this.addObjectButtonClicked}),
-                this.objectSelector = Interface.Create({type: 'select', className: 'objectSelector', elements: [
-                    {type: 'option', text: 'Coin'},
-                    {type: 'option', text: 'Spawn'}
-                ]}),
-                this.deleteObjectButton = Interface.Create({type: 'div', text: 'Delete Object', className: 'DeleteObjectButton', onClick: this.deleteObjectButtonClicked})
-            ]})
-        ]});
+        this.tileSelector = Interface.Create({
+            type: 'div', className: 'TileSelector', elements: [
+                {type: 'div', text: 'Tile Type', className: 'TileLabel'},
+                this.deleteTypeButton = Interface.Create({
+                    type: 'div',
+                    text: 'Delete',
+                    className: 'DeleteButton',
+                    onClick: this.deleteTileTypeClicked
+                }),
+                this.backgroundTypeButton = Interface.Create({
+                    type: 'div',
+                    text: 'Background',
+                    className: 'BackgroundButton',
+                    onClick: this.backgroundTileTypeClicked
+                }),
+                this.solidTypeButton = Interface.Create({
+                    type: 'div',
+                    text: 'Solid',
+                    className: 'SolidButton Selected',
+                    onClick: this.solidTileTypeClicked
+                }),
+                this.foregroundTypeButton = Interface.Create({
+                    type: 'div',
+                    text: 'Foreground',
+                    className: 'ForegroundButton',
+                    onClick: this.foregroundTileTypeClicked
+                }),
+                this.toolSelector = Interface.Create({
+                    type: 'div', className: 'toolSelector', elements: [
+                        {type: 'span', text: 'Tools', className: 'toolLabel'},
+                        this.drawToolButton = Interface.Create({
+                            type: 'div',
+                            text: 'Draw',
+                            className: 'drawTool Selected',
+                            onClick: this.drawToolClicked
+                        }),
+                        this.layerToolButton = Interface.Create({
+                            type: 'div',
+                            text: 'Set Layer',
+                            className: 'layerTool',
+                            onClick: this.layerToolClicked
+                        }),
+                        this.fillToolButton = Interface.Create({
+                            type: 'div',
+                            text: 'Fill',
+                            className: 'fillTool',
+                            onClick: this.fillToolClicked
+                        }),
+                        this.eyeDropButton = Interface.Create({
+                            type: 'div',
+                            text: 'Eye Drop',
+                            className: 'EyeDropButton',
+                            onClick: this.eyeDropButtonClicked
+                        }),
+                        this.addObjectButton = Interface.Create({
+                            type: 'div',
+                            text: 'Add Object',
+                            className: 'AddObjectButton',
+                            onClick: this.addObjectButtonClicked
+                        }),
+                        this.objectSelector = Interface.Create({
+                            type: 'select', className: 'objectSelector', elements: [
+                                {type: 'option', text: 'Coin'},
+                                {type: 'option', text: 'Spawn'}
+                            ]
+                        }),
+                        this.deleteObjectButton = Interface.Create({
+                            type: 'div',
+                            text: 'Delete Object',
+                            className: 'DeleteObjectButton',
+                            onClick: this.deleteObjectButtonClicked
+                        })
+                    ]
+                })
+            ]
+        });
         //holds the value of the color to be used for a tile
         this.previewSquare = Interface.Create({type: 'div', className: 'PreviewSquare'});
         this.eyeDropperOn = false;
@@ -85,9 +190,11 @@ export class GameLogic {
         this.playerSpriteSheet = new Image();
         this.playerSpriteSheet.src = spriteSheet;
 
-        this.canvas = Interface.Create({type: 'canvas', className: 'Canvas2D',
+        this.canvas = Interface.Create({
+            type: 'canvas', className: 'Canvas2D',
             onMouseDown: this.onMouseDown, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp,
-            onMouseMove: this.onMouseMove, onMouseUp: this.onMouseUp});
+            onMouseMove: this.onMouseMove, onMouseUp: this.onMouseUp
+        });
         this.canvas.tabIndex = 1;
         this.ctx = this.canvas.getContext('2d');
         window.addEventListener("resize", this.resize);
@@ -120,11 +227,13 @@ export class GameLogic {
         //this.tileChunkRenderer = new TileChunkRenderer();
 
 
-        this.mainDiv = Interface.Create({type: 'div', className: 'GameArea', elements:[
-            this.backgroundTileLayerRenderer.getCanvas(),
+        this.mainDiv = Interface.Create({
+            type: 'div', className: 'GameArea', elements: [
+                this.backgroundTileLayerRenderer.getCanvas(),
                 this.canvas,
                 this.foregroundTileLayerRenderer.getCanvas()
-            ]});
+            ]
+        });
 
         this.redSlider.value = 0;
         this.greenSlider.value = 0;
@@ -133,7 +242,7 @@ export class GameLogic {
         this.changePreviewColor();
         //this.updateSliderLabels();
 
-        this.logicTimer = new NanoTimer(this.logicLoop, 1000.0/Target_FPS);
+        this.logicTimer = new NanoTimer(this.logicLoop, 1000.0 / Target_FPS);
         this.logicTimer.start();
 
         this.drawStopwatch = new Stopwatch();
@@ -189,6 +298,7 @@ export class GameLogic {
         this.deleteObjectButton.classList.remove('Selected');
         this.layerOn = false;
         this.drawOn = true;
+        this.fillOn = false;
         this.eyeDropperOn = false;
         this.canvas.style.cursor = "";
         this.focusOnGameCanvas();
@@ -304,7 +414,7 @@ export class GameLogic {
 
     logic = (delta) => {
         this.physicsLogic.logic(this.board, delta);
-        this.board.getPlayers().forEach((player)=> {
+        this.board.getPlayers().forEach((player) => {
             player.updateSpriteFrame(delta);
         });
     };
@@ -329,10 +439,10 @@ export class GameLogic {
         this.ctx.save();
 
         //Draw players
-        this.board.getPlayers().forEach((player)=>{
+        this.board.getPlayers().forEach((player) => {
             //Player X and Y is in the bottom center of the player rectangle
-            let leftX = player.getClientMovementInfo().getX() + 0.5 - Player_Width_Tiles/2;
-            let rightX = player.getClientMovementInfo().getX() + 0.5 + Player_Width_Tiles/2;
+            let leftX = player.getClientMovementInfo().getX() + 0.5 - Player_Width_Tiles / 2;
+            let rightX = player.getClientMovementInfo().getX() + 0.5 + Player_Width_Tiles / 2;
             let bottomY = player.getClientMovementInfo().getY();
             let topY = player.getClientMovementInfo().getY() + Player_Height_Tiles;
 
@@ -372,7 +482,7 @@ export class GameLogic {
 
             this.ctx.fillStyle = 'red';
             this.ctx.font = '20px Helvetica';
-            this.ctx.textAlign="center";
+            this.ctx.textAlign = "center";
             this.ctx.fillText(player.getName(), Math.floor(this.convertTileXCoordinateToScreen(player.getClientMovementInfo().getX() + 0.5)), Math.floor(this.convertTileYCoordinateToScreen(topY + 0.5)));
         });
 
@@ -382,19 +492,19 @@ export class GameLogic {
         this.ctx.fillRect(0, this.canvas.height - 20, 55, 30);
         this.ctx.fillStyle = 'rgb(0, 255, 0)';
         this.ctx.font = '15px Helvetica';
-        this.ctx.textAlign="center";
+        this.ctx.textAlign = "center";
         this.ctx.fillText(`${Math.round(Network.GetPing())} ms`, 25, this.canvas.height - 4);
 
         this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         this.ctx.fillRect(0, this.canvas.height - 20 - 30, 55, 30);
         this.ctx.fillStyle = 'rgb(0, 255, 0)';
         this.ctx.font = '15px Helvetica';
-        this.ctx.textAlign="center";
+        this.ctx.textAlign = "center";
         this.ctx.fillText(`${Math.round(this.getMinimumFPS())} fps`, 25, this.canvas.height - 4 - 30);
 
         //Trim old time from the fps array
         let currentTime = window.performance.now();
-        this.fpsTimesArray = this.fpsTimesArray.filter((timeData)=> currentTime - timeData[0] <= 1500.0);
+        this.fpsTimesArray = this.fpsTimesArray.filter((timeData) => currentTime - timeData[0] <= 1500.0);
         //Add new time to the fps array
         let latestFPS = 1000.0 / this.drawStopwatch.getMilliseconds();
         this.drawStopwatch.reset();
@@ -417,7 +527,7 @@ export class GameLogic {
 
     enterTileDrawingCoordinateSystem = () => {
         //Place 0,0 at the center of the screen
-        this.ctx.translate(this.canvas.width/2, this.canvas.height * 0.5);
+        this.ctx.translate(this.canvas.width / 2, this.canvas.height * 0.5);
         //Flip the coordinate system
         this.ctx.scale(1, -1);
         //Set the scale so 1 = 1 tile instead of 1 pixel
@@ -445,7 +555,7 @@ export class GameLogic {
         point.x *= Tile_Width;
         point.y *= Tile_Height;
         point.y *= -1;
-        point.x += this.canvas.width/2;
+        point.x += this.canvas.width / 2;
         point.y += this.canvas.height * 0.5;
         return point;
     };
@@ -453,7 +563,7 @@ export class GameLogic {
         x -= this.cameraFocusTileX;
         x -= 0.5;
         x *= Tile_Width;
-        x += this.canvas.width/2;
+        x += this.canvas.width / 2;
         return x;
     };
     convertTileYCoordinateToScreen = (y) => {
@@ -469,7 +579,7 @@ export class GameLogic {
         let point = new Point(oldPoint.x, oldPoint.y);
 
         point.y -= this.canvas.height * 0.5;
-        point.x -= this.canvas.width/2;
+        point.x -= this.canvas.width / 2;
         point.y /= -1;
         point.y /= Tile_Height;
         point.x /= Tile_Width;
@@ -484,7 +594,7 @@ export class GameLogic {
     };
 
     convertScreenXCoordinateToTile = (x) => {
-        x -= this.canvas.width/2;
+        x -= this.canvas.width / 2;
         x /= Tile_Width;
         x += 0.5;
         x += this.cameraFocusTileX;
@@ -501,9 +611,9 @@ export class GameLogic {
         return y;
     };
 
-    getMousePosition = (event) =>{
+    getMousePosition = (event) => {
         let rect = this.canvas.getBoundingClientRect();
-        return{
+        return {
             x: (event.clientX - rect.left) / (rect.right - rect.left) * this.canvas.width,
             y: (event.clientY - rect.top) / (rect.bottom - rect.top) * this.canvas.height
         }
@@ -511,17 +621,20 @@ export class GameLogic {
 
     onMouseDown = (event) => {
         //check if eyedropper enabled
-        if(!this.eyeDropperOn && !this.layerOn){
-            //Handle tile placement
-            this.previouslyPlacedTileX = null;
-            this.previouslyPlacedTileY = null;
-            this.mouseDown = true;
-            //Get tile position
-            let mousePosition = this.getMousePosition(event);
-            this.previouslyPlacedTileX = this.convertScreenXCoordinateToTile(mousePosition.x);
-            this.previouslyPlacedTileY = this.convertScreenYCoordinateToTile(mousePosition.y);
-            this.placeTile(this.previouslyPlacedTileX, this.previouslyPlacedTileY);
+        if (!this.eyeDropperOn && !this.layerOn) {
+            if (this.drawOn) {
+                //Handle tile placement
+                this.previouslyPlacedTileX = null;
+                this.previouslyPlacedTileY = null;
+                this.mouseDown = true;
+                //Get tile position
+                let mousePosition = this.getMousePosition(event);
+                this.previouslyPlacedTileX = this.convertScreenXCoordinateToTile(mousePosition.x);
+                this.previouslyPlacedTileY = this.convertScreenYCoordinateToTile(mousePosition.y);
+                this.placeTile(this.previouslyPlacedTileX, this.previouslyPlacedTileY);
+            } else if (this.fillOn) {
 
+            }
         }
         else if (this.eyeDropperOn) {
             //switch cursor in canvas back to standard pointer
@@ -533,75 +646,7 @@ export class GameLogic {
             this.eyeDropButton.classList.remove('Selected');
 
         }
-        else if(this.layerOn){
-                //get mouse coordinates
-                let mousePosition = this.getMousePosition(event);
-                //get information about pixel at mouse coordinates from canvas
-                //let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
-                let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
-                let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
-
-                let tile = this.board.getTile(tileX, tileY);
-                if (tile === null) {
-                    return;
-                }
-                let pixelRed = tile.getR();
-            let pixelGreen = tile.getG();
-            let pixelBlue = tile.getB();
-            let pixelAlpha = tile.getA();
-
-                //set background color to a hex representation of the value pulled from canvas
-                //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
-                //set background color to a rgba representation of the value pulled from canvas
-                //this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha + ")";
-
-                this.previewSquare.style.backgroundColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha/255 + ")";
-
-                //set slider values to color selected
-                this.redSlider.value = pixelRed;
-                this.greenSlider.value = pixelGreen;
-                this.blueSlider.value = pixelBlue;
-                this.alphaSlider.value = pixelAlpha;
-
-                //turn off the eyedropper
-                //this.eyeDropperOn = false;
-
-                this.updateSliderLabels();
-                //Handle tile placement
-                this.previouslyPlacedTileX = null;
-                this.previouslyPlacedTileY = null;
-                this.mouseDown = true;
-                //Get tile position
-                this.previouslyPlacedTileX = this.convertScreenXCoordinateToTile(mousePosition.x);
-                this.previouslyPlacedTileY = this.convertScreenYCoordinateToTile(mousePosition.y);
-
-                this.placeTile(tileX, tileY);
-
-                //this.placeLayer(tileX, tileY, this.currentTileType, this.redSlider.value, this.greenSlider.value, this.blueSlider.value, this.alphaSlider.value );
-                //this.layerOn = false;
-                this.canvas.cursor = '';
-            }
-    };
-
-    onMouseMove = (event) => {
-        //possible preview window for eyedropper color picking goes here
-        if(!this.eyeDropperOn && !this.layerOn){
-            //Handle tile placement
-            if (this.mouseDown) {
-                //Get tile position
-                let mousePosition = this.getMousePosition(event);
-                let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
-                let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
-                let positionsBetween = this.getPointsOnLine(this.previouslyPlacedTileX, this.previouslyPlacedTileY, tileX, tileY);
-                positionsBetween.forEach(coordinate =>{
-                        this.placeTile(coordinate.x, coordinate.y);
-                });
-                this.previouslyPlacedTileX = tileX;
-                this.previouslyPlacedTileY = tileY;
-            }
-
-        } else {
-            
+        else if (this.layerOn) {
             //get mouse coordinates
             let mousePosition = this.getMousePosition(event);
             //get information about pixel at mouse coordinates from canvas
@@ -609,18 +654,94 @@ export class GameLogic {
             let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
             let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
 
-            if(this.eyeDropperOn){
+            let tile = this.board.getTile(tileX, tileY);
+            if (tile === null) {
+                return;
+            }
+            let pixelRed = tile.getR();
+            let pixelGreen = tile.getG();
+            let pixelBlue = tile.getB();
+            let pixelAlpha = tile.getA();
+
+            //set background color to a hex representation of the value pulled from canvas
+            //this.previewColor = '#' + this.rgbToHex(pixelRed) + this.rgbToHex(pixelGreen) + this.rgbToHex(pixelBlue);
+            //set background color to a rgba representation of the value pulled from canvas
+            //this.previewColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha + ")";
+
+            this.previewSquare.style.backgroundColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha / 255 + ")";
+
+            //set slider values to color selected
+            this.redSlider.value = pixelRed;
+            this.greenSlider.value = pixelGreen;
+            this.blueSlider.value = pixelBlue;
+            this.alphaSlider.value = pixelAlpha;
+
+            //turn off the eyedropper
+            //this.eyeDropperOn = false;
+
+            this.updateSliderLabels();
+            //Handle tile placement
+            this.previouslyPlacedTileX = null;
+            this.previouslyPlacedTileY = null;
+            this.mouseDown = true;
+            //Get tile position
+            this.previouslyPlacedTileX = this.convertScreenXCoordinateToTile(mousePosition.x);
+            this.previouslyPlacedTileY = this.convertScreenYCoordinateToTile(mousePosition.y);
+
+            this.placeTile(tileX, tileY);
+
+            //this.placeLayer(tileX, tileY, this.currentTileType, this.redSlider.value, this.greenSlider.value, this.blueSlider.value, this.alphaSlider.value );
+            //this.layerOn = false;
+            this.canvas.cursor = '';
+        } else if (this.fillOn) {
+            //Fill tool
+            
+        }
+    };
+
+    onMouseMove = (event) => {
+        //possible preview window for eyedropper color picking goes here
+        if (!this.eyeDropperOn && !this.layerOn) {
+            if (this.drawOn) {
+                //Handle tile placement
+                if (this.mouseDown) {
+                    //Get tile position
+                    let mousePosition = this.getMousePosition(event);
+                    let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
+                    let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
+                    let positionsBetween = this.getPointsOnLine(this.previouslyPlacedTileX, this.previouslyPlacedTileY, tileX, tileY);
+                    positionsBetween.forEach(coordinate => {
+                        this.placeTile(coordinate.x, coordinate.y);
+                    });
+                    this.previouslyPlacedTileX = tileX;
+                    this.previouslyPlacedTileY = tileY;
+                }
+            }
+        } else {
+
+            //get mouse coordinates
+            let mousePosition = this.getMousePosition(event);
+            //get information about pixel at mouse coordinates from canvas
+            //let pixelInfo = this.ctx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
+            let tileX = this.convertScreenXCoordinateToTile(mousePosition.x);
+            let tileY = this.convertScreenYCoordinateToTile(mousePosition.y);
+
+            if (this.eyeDropperOn) {
                 //Set current tile type to eyedrop
                 let tile = this.board.getTile(tileX, tileY);
-                if(tile !== null){
-                    switch (tile.getTypeID()){
-                        case 3: this.backgroundTileTypeClicked();
+                if (tile !== null) {
+                    switch (tile.getTypeID()) {
+                        case 3:
+                            this.backgroundTileTypeClicked();
                             break;
-                        case 4: this.solidTileTypeClicked();
+                        case 4:
+                            this.solidTileTypeClicked();
                             break;
-                        case 5: this.foregroundTileTypeClicked();
+                        case 5:
+                            this.foregroundTileTypeClicked();
                             break;
-                        case 6: this.deleteTileTypeClicked();
+                        case 6:
+                            this.deleteTileTypeClicked();
                             break;
                     }
                 }
@@ -635,7 +756,7 @@ export class GameLogic {
             let pixelBlue = tile.getB();
             let pixelAlpha = tile.getA();
 
-            this.previewSquare.style.backgroundColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha/255 + ")";
+            this.previewSquare.style.backgroundColor = 'rgba(' + pixelRed + ", " + pixelGreen + ", " + pixelBlue + ", " + pixelAlpha / 255 + ")";
 
             //set slider values to color selected
             this.redSlider.value = pixelRed;
@@ -644,10 +765,10 @@ export class GameLogic {
             this.alphaSlider.value = pixelAlpha;
 
             //turn off the eyedropper
-            if (this.mouseDown && this.layerOn){
+            if (this.mouseDown && this.layerOn) {
 
                 let positionsBetween = this.getPointsOnLine(this.previouslyPlacedTileX, this.previouslyPlacedTileY, tileX, tileY);
-                positionsBetween.forEach(coordinate =>{
+                positionsBetween.forEach(coordinate => {
                     this.placeTile(coordinate.x, coordinate.y);
                 });
                 //this.placeLayer(tileX, tileY, this.currentTileType, this.redSlider.value, this.greenSlider.value, this.blueSlider.value, this.alphaSlider.value );
@@ -732,11 +853,11 @@ export class GameLogic {
     setVisibility = (visible) => {
         this.visible = visible;
         this.canvas.focus();
-        if(visible){
+        if (visible) {
             this.resize();
             this.startMusic();
         }
-        else{
+        else {
             this.stopMusic();
         }
     };
@@ -771,7 +892,7 @@ export class GameLogic {
         let bh = parseInt(this.blueSlider.value, 10);
         let ah = parseFloat(this.alphaSlider.value, 10);
 
-        this.previewSquare.style.backgroundColor = 'rgba(' + rh + ", " + gh + ", " + bh + ", " + ah/255 + ")";
+        this.previewSquare.style.backgroundColor = 'rgba(' + rh + ", " + gh + ", " + bh + ", " + ah / 255 + ")";
         this.updateSliderLabels();
 
         this.focusOnGameCanvas();
@@ -809,21 +930,27 @@ export class GameLogic {
         this.rgbaLabel.childNodes[7].innerText = this.alphaSlider.value;
     };
 
-    getPointsOnLine = (x0, y0, x1, y1) =>{
-        let dx = Math.abs(x1-x0);
-        let dy = Math.abs(y1-y0);
+    getPointsOnLine = (x0, y0, x1, y1) => {
+        let dx = Math.abs(x1 - x0);
+        let dy = Math.abs(y1 - y0);
         let sx = (x0 < x1) ? 1 : -1;
         let sy = (y0 < y1) ? 1 : -1;
-        let err = dx-dy;
+        let err = dx - dy;
 
         let predictedPoints = [];
 
-        while(true){
+        while (true) {
             predictedPoints.push({x: x0, y: y0});  // Do what you need to for this
-            if ((x0===x1) && (y0===y1)) break;
-            let e2 = 2*err;
-            if (e2 >-dy){ err -= dy; x0  += sx; }
-            if (e2 < dx){ err += dx; y0  += sy; }
+            if ((x0 === x1) && (y0 === y1)) break;
+            let e2 = 2 * err;
+            if (e2 > -dy) {
+                err -= dy;
+                x0 += sx;
+            }
+            if (e2 < dx) {
+                err += dx;
+                y0 += sy;
+            }
         }
         return predictedPoints;
     };
