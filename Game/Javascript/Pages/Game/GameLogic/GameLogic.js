@@ -726,6 +726,9 @@ export class GameLogic {
 
             //turn off the eyedropper
             this.eyeDropperOn = false;
+            this.fillOn =false;
+            this.layerOn = false;
+            this.drawOn = true;
             this.drawToolButton.classList.add('Selected');
             this.eyeDropButton.classList.remove('Selected');
 
