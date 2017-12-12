@@ -64,4 +64,11 @@ export class GameMessageCreator {
         message.addUint8(a);
         return message.toBuffer();
     }
+
+    static LoadFullWorld() {
+        let message = new MessageWriter();
+        message.addUint8(GameID);
+        message.addUint8(Messages.LoadFullWorld);
+        return message.toBuffer();
+    }
 }

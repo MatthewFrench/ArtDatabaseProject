@@ -27,6 +27,7 @@ export class GameLogic {
         MsgHandler.AddSetTileListener(this.handleSetTileMessage);
         MsgHandler.AddMovingRightListener(this.handleMovingRightMessage);
         MsgHandler.AddJumpingListener(this.handleJumpingMessage);
+        MsgHandler.AddLoadFullWorldListener(this.handleLoadFullWorldMessage);
         //Load all boards
         Query.GetAllBoards().then((boards) => {
             for (let board of boards) {
@@ -52,6 +53,14 @@ export class GameLogic {
             player.flushSendQueue();
         }
     };
+
+    handleLoadFullWorldMessage = async(player: Player) => {
+        if (player.getGameData().getCurrentBoardID() === -1) {
+            return;
+        }
+        player.getGameData().getCurrentBoard().tileWorld.sendAllChunksToPlayer(player);
+    };
+
     handleRequestBoardSwitchMessage = async(player: Player, boardID: number) => {
         this.switchPlayerToBoard(player, boardID);
     };
