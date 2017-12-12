@@ -32,7 +32,9 @@ export const Controllers = {
         //Set tile
         SetTile: 6,
         //Change Sprite
-        SpriteChange: 7
+        SpriteChange: 7,
+        //Load full world
+        LoadFullWorld: 8
     }
   }
 };

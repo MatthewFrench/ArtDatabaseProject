@@ -19,6 +19,8 @@ let JumpingListeners :
 let SetTileListeners :
     ((player: Player, x: number, y: number, typeID: number,
       r: number, g: number, b: number, a: number) =>Promise<void>)[] = [];
+let LoadFullWorldListeners :
+    ((player: Player) =>Promise<void>)[] = [];
 
 export class GameMessageHandler {
     static RouteMessage(player, message) {
@@ -44,6 +46,9 @@ export class GameMessageHandler {
             } break;
             case Messages.SetTile: {
                 GameMessageHandler.SetTile(player, message);
+            } break;
+            case Messages.LoadFullWorld: {
+                GameMessageHandler.LoadFullWorld(player, message);
             } break;
         }
     }
@@ -204,6 +209,18 @@ export class GameMessageHandler {
         }
     }
 
+    static LoadFullWorld(player, message) {
+        //Parse message with validation
+        if (!message.isAtEndOfData()) {
+            console.log('Invalid Try Create World Message');
+            return;
+        }
+        //Send to all listeners
+        for (let callback of LoadFullWorldListeners) {
+            callback(player).then();
+        }
+    }
+
     static AddNewCreateWorldListener(callback : (player: Player, worldName: string) =>Promise<void>) {
         CreateWorldListeners.push(callback);
     }
@@ -225,5 +242,8 @@ export class GameMessageHandler {
     static AddSetTileListener(callback: (player: Player, x: number, y: number, typeID: number,
                                          r: number, g: number, b: number, a: number) =>Promise<void>) {
         SetTileListeners.push(callback);
+    }
+    static AddLoadFullWorldListener(callback: (player: Player) =>Promise<void>) {
+        LoadFullWorldListeners.push(callback);
     }
 }

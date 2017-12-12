@@ -168,6 +168,14 @@ export class TileWorld {
         }
     }
 
+    public sendAllChunksToPlayer(player) {
+        this.tileChunks.forEach((column, x)=>{
+            column.forEach((chunk, y)=>{
+                this.sendChunkDataToPlayer(chunk, player);
+            })
+        });
+    }
+
     private sendChunkDataToPlayer = (chunk, player) => {
         chunk.sendTilesToPlayer(player);
     };

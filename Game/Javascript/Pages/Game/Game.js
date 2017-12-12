@@ -38,7 +38,7 @@ export class Game{
                 ]},
                 {type: 'div', elements: [
                     {type: 'div', text: 'Logout', className: 'LogoutBtn', onClick: () => {switchToLoginPage();}},
-                    {type: 'div', text: 'Score', className: 'ScoreButton', onClick: this.scoreButtonClicked},
+                    {type: 'div', text: 'Map', className: 'ScoreButton', onClick: this.scoreButtonClicked},
                     {type: 'div', text: 'Sprite Select', className: 'SpriteButton', onClick: this.spriteButtonClicked}
                 ]}
             ]}
@@ -144,6 +144,7 @@ export class Game{
     };
 
     scoreButtonClicked = () => {
+        this.scorePopover.setBoard(this.gameLogic.board);
         this.mainDiv.appendChild(this.scorePopover.getDiv());
     };
 
