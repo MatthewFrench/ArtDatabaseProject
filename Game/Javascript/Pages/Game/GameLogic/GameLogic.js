@@ -890,6 +890,38 @@ export class GameLogic {
         if ((event.keyCode === 40 || event.keyCode === 83) && this.downPressed === false) {
             this.downPressed = true;
         }
+        //1
+        if(event.keyCode === 49 ){
+            this.deleteTileTypeClicked();
+        }
+        //2
+        if(event.keyCode === 50){
+            this.backgroundTileTypeClicked();
+        }
+        //3
+        if(event.keyCode === 51){
+            this.solidTileTypeClicked();
+        }
+        //4
+        if(event.keyCode === 52){
+            this.foregroundTileTypeClicked();
+        }
+        //Q
+        if(event.keyCode === 81){
+            this.drawToolClicked();
+        }
+        //E
+        if(event.keyCode === 69){
+            this.eyeDropButtonClicked();
+        }
+        //F
+        if(event.keyCode === 70){
+            this.fillToolClicked();
+        }
+        //L
+        if(event.keyCode === 76){
+            this.layerToolClicked();
+        }
     };
 
     onKeyUp = (event) => {
