@@ -671,7 +671,7 @@ export class GameLogic {
                                 addTile = true;
                             }
                         } else {
-                            if (lookAtTile.getTypeID() === targetLayer &&
+                            if (lookAtTile !== null && lookAtTile.getTypeID() === targetLayer &&
                                 lookAtTile.getR() === targetR && lookAtTile.getG() === targetG &&
                                 lookAtTile.getB() === targetB && lookAtTile.getA() === targetA) {
                                 addTile = true;
