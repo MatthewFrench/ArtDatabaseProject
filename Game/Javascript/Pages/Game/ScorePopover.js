@@ -108,10 +108,6 @@ export class ScorePopover {
                 }
             });
         });
-        this.canvas.toBlob((blob) => {
-            this.link.href = URL.createObjectURL(blob);
-            this.link.download = 'Map';
-        });
 
         let ctx2 = this.onSreenCanvas.getContext('2d');
         ctx2.imageSmoothingEnabled= false;
@@ -129,6 +125,13 @@ export class ScorePopover {
         ctx2.translate(-width/2 * scale, -height/2 * scale);
         ctx2.scale(scale, scale);
         ctx2.drawImage(this.canvas, 0, 0);
+
+
+        this.canvas.toBlob((blob) => {
+            console.dir(blob);
+            this.link.href = URL.createObjectURL(blob);
+            this.link.download = 'Map';
+        });
     };
 
     closeSelf = () =>{
