@@ -46,6 +46,62 @@ export class Query {
         return success;
     }
 
+    static async GetAllGriefedTiles() {
+        let result = [];
+        await Query.UseConnection(async (connection)=>{
+            //Create SQL
+            let sql = 'SELECT * from Tile left join Bans on Tile.last_modified_id = Bans.player_id ' +
+                'where Bans.player_id is not null';
+            //Execute Query
+            [result] = await connection.query(sql, []);
+        });
+        return result;
+    }
+
+    static async GetEntireHistoryOfTiles() {
+        let result = [];
+        await Query.UseConnection(async (connection)=>{
+            //Create SQL
+            let sql = 'SELECT History.*, HistoryTileType.type_id, Tile.x as x, Tile.y as y, Tile.board_id as board_id from History ' +
+                'left join HistoryTileType on HistoryTileType.history_id = History.history_id ' +
+                'left join Tile on Tile.tile_id = History.tile_id';
+            //Execute Query
+            [result] = await connection.query(sql, []);
+        });
+        return result;
+    }
+
+    static async GetBannedPlayers() {
+        let result = [];
+        await Query.UseConnection(async (connection)=>{
+            //Create SQL
+            let sql = 'SELECT * from Bans';
+            //Execute Query
+            [result] = await connection.query(sql, []);
+        });
+        return result;
+    }
+
+    static async GetLastGoodHistoryForGriefedTiles() {
+        let result = [];
+        await Query.UseConnection(async (connection)=>{
+            //Create SQL
+            let sql = 'Select history.*, BadTiles.board_id, BadTiles.x, BadTiles.y, IFNULL(HistoryTileType.type_id, 3) as type_id from (SELECT a.* ' +
+                'FROM (SELECT History.* from History left join Bans on History.player_id = Bans.player_id where Bans.player_id is null) as a ' +
+                'LEFT OUTER JOIN (SELECT History.* from History left join Bans on History.player_id = Bans.player_id where Bans.player_id is null) as b ' +
+                '    ON a.tile_id = b.tile_id AND a.history_id < b.history_id ' +
+                'WHERE b.tile_id IS NULL) as history ' +
+                'inner join (SELECT * from Tile left join Bans on Tile.last_modified_id = Bans.player_id ' +
+                'where Bans.player_id is not null) as BadTiles ' +
+                'on history.tile_id = BadTiles.tile_id ' +
+                'left join HistoryTileType on HistoryTileType.history_id = history.history_id ' +
+                'ORDER BY `HistoryTileType`.`type_id`  ASC';
+            //Execute Query
+            [result] = await connection.query(sql, []);
+        });
+        return result;
+    }
+
     static async GetSprites() {
         let result = [];
         await Query.UseConnection(async (connection)=>{
