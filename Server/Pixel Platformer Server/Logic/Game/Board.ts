@@ -128,10 +128,10 @@ export class Board {
             player.getAccountData().getPlayerID(), player.getAccountData().getPlayerID());
 
         TileUpdateQueue.AddTileUpdateToQueue(this.boardID, x, y, r, g, b, a,
-            player.getAccountData().getPlayerID(), tileType);
+            player.getAccountData().getPlayerID(), tileType).then();
 
         let chunk = this.tileWorld.getChunkForTile(x, y);
-        let chunkUpdateMessage = GameMessageCreator.UpdateTile(tile)
+        let chunkUpdateMessage = GameMessageCreator.UpdateTile(tile);
         for (let player of chunk.getPlayersInSight()) {
             player.send(chunkUpdateMessage);
         }

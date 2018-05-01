@@ -8,11 +8,11 @@ let maxQueueSize = 500;
 let flushRunning = false;
 
 export class TileUpdateQueue {
-    static AddTileUpdateToQueue = (boardID, x, y, r, g, b, a, creatorOrLastModifiedID, tileTypeID) => {
+    static AddTileUpdateToQueue = async (boardID, x, y, r, g, b, a, creatorOrLastModifiedID, tileTypeID) => {
         queueList.push({boardID: boardID, x:x, y:y, r:r, g:g, b:b, a:a,
             creatorOrLastModifiedID: creatorOrLastModifiedID, tileTypeID:tileTypeID, time: new Date()});
         if (queueList.length >= maxQueueSize) {
-            TileUpdateQueue.FlushTileUpdateQueue().then();
+            await TileUpdateQueue.FlushTileUpdateQueue();
         }
     };
 
