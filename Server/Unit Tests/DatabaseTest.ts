@@ -9,11 +9,16 @@ export class DatabaseTest {
         console.log('Running Database Tests');
         Configuration.Initialize(); //Load the config file
         Query.Initialize();
-        this.testAllDataValues().then();
+        this.createBoardFail();
+        var curBoard;
+        //this.testAllDataValues().then();
     }
+
 
     async testAllDataValues() {
         console.log('Testing Database Queries');
+
+
 
         await this.getSpriteTest();
 
@@ -27,6 +32,16 @@ export class DatabaseTest {
 
         console.log('\nDatabase Test Success');
     }
+
+    async createBoardFail(){
+
+        var info = await Query.CreateBoard("hello", "hahahahahaahaahhaahaeiordwfjakf");
+
+        assert.equal(info, 38, "Did not pass")
+
+
+    }
+
 
     async getSpriteTest() {
         let timeStamp = process.hrtime();
