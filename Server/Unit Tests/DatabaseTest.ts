@@ -59,6 +59,8 @@ export class DatabaseTest {
     async insertTileTest() {
         let timeStamp = process.hrtime();
 
+        
+
         //Query
         let results = await Query.UpdateOrInsertTile(0, 0, 0, 0,
             0, 0, 0, 0, 3);

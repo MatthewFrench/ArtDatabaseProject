@@ -395,8 +395,9 @@ export class GameLogic {
 
     //Called by the mouse handler to set a tile change to the server
     placeTile = (x, y) => {
-        Network.Send(GameMessageCreator.SetTile(x, y, this.currentTileType, parseInt(this.redSlider.value),
-            parseInt(this.greenSlider.value), parseInt(this.blueSlider.value), parseInt(this.alphaSlider.value)));
+        console.log('x: ' + x + ', y: ' + y);
+        //Network.Send(GameMessageCreator.SetTile(x, y, this.currentTileType, parseInt(this.redSlider.value),
+        //    parseInt(this.greenSlider.value), parseInt(this.blueSlider.value), parseInt(this.alphaSlider.value)));
     };
 
     logicLoop = (delta) => {
