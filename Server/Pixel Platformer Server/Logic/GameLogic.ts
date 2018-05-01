@@ -7,6 +7,7 @@ import {Stopwatch} from "../Utility/Stopwatch";
 import {TileUpdateQueue} from "./Game/TileUpdateQueue";
 import {Benchmark} from "../Utility/Benchmark";
 import {NanoTimer} from "../Utility/Nanotimer";
+import {AdminTools} from "./Game/AdminTools";
 const MsgHandler = require("./../Networking/Game/GameMessageHandler").GameMessageHandler;
 
 export class GameLogic {
@@ -36,6 +37,8 @@ export class GameLogic {
                 this.boards.set(boardID, new Board(boardID, () => {}));
             }
         });
+
+        //AdminTools.HardCoreRevertCauseIScrewedUp().then();
 
         this.logicLoopTimer = new NanoTimer(this.logic, 1000.0/60.0);
         this.logicLoopTimer.start();
@@ -119,6 +122,35 @@ export class GameLogic {
 
         //Assign the player to a board
         this.switchPlayerToBoard(player, sendToBoard, sendToX, sendToY);
+
+
+        //await AdminTools.HardCoreRevertCauseIScrewedUp();
+/*
+        let badTiles1 = await Query.GetAllGriefedTiles();
+        console.dir(badTiles1);
+
+        //Get stuff
+        let lastGoodHistory = await Query.GetLastGoodHistoryForGriefedTiles();
+        console.dir(lastGoodHistory);
+        for (let historyRow of lastGoodHistory) {
+            let boardID = historyRow['board_id'];
+            let r = historyRow['color_r'];
+            let g = historyRow['color_g'];
+            let b = historyRow['color_b'];
+            let a = historyRow['color_a'];
+            let x = historyRow['x'];
+            let y = historyRow['y'];
+            let typeID = historyRow['type_id'];
+            let playerID = historyRow['player_id'];
+            await TileUpdateQueue.AddTileUpdateToQueue(boardID, x, y, r, g, b, a, playerID, typeID);
+        }
+        await TileUpdateQueue.FlushTileUpdateQueue();
+        console.dir(lastGoodHistory);
+
+        //Now reset the rest of the tiles
+        let badTiles = await Query.GetAllGriefedTiles();
+        console.dir(badTiles);
+*/
     };
     playerDisconnected = async (player : Player) => {
         //Save the player board and location if he was in a board
