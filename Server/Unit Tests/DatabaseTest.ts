@@ -13,9 +13,9 @@ export class DatabaseTest {
         Query.Initialize();
         //this.createBoard();
         //this.getAllTilesTest();
-        this.getBoardInfoTest(); //passes
-        this.getSpriteTest(); //passes
-        //this.insertTileTest();
+        //this.getBoardInfoTest(); //passes
+        //this.getSpriteTest(); //passes
+        //this.insertTileTest(); //passes
         //this.testAllDataValues().then();
     }
 
@@ -41,8 +41,7 @@ export class DatabaseTest {
 
         var info = await Query.CreateBoard("hello", "hahahahahaahaahhaahaeiordwfjakf");
 
-        assert.equal(info, 42, "Did not pass")
-
+        assert.equal(info, 42, "Did not pass");
 
     }
 
@@ -61,7 +60,8 @@ export class DatabaseTest {
 
 
         assert.equal(JSON.stringify(spriteResults),correct, "Sprites didn't equal")
-        console.log("getSpriteTest passed")
+        console.log("getSpriteTest Passed")
+
     }
 
     async getAllTilesTest() {
@@ -81,18 +81,17 @@ export class DatabaseTest {
     async insertTileTest() {
         let timeStamp = process.hrtime();
 
-        
-
         //Query
-        let results = await Query.UpdateOrInsertTile(0, 0, 0, 0,
+        let results = await Query.UpdateOrInsertTile(1, 0, 0, 0,
             0, 0, 0, 0, 3);
 
         let difference = process.hrtime(timeStamp);
         let milliseconds = (difference[0] + difference[1] / NS_PER_SEC) * 1000;
         console.log('Insert Tile Test Duration(ms): ' + milliseconds);
 
-        //Test print out sprites
-        console.log("Insert Tile: " + JSON.stringify(results));
+
+        assert.equal(results,74, "Tile is expected to be 74")
+        console.log("insertTileTest Passed")
     }
 
     async getBoardInfoTest() {
@@ -115,8 +114,6 @@ export class DatabaseTest {
         assert.equal(info.max_width,-1,"Max width should be -1")
         assert.equal(info.max_height, -1, "Max height should be -1")
         console.log("getBoardInfoTest Passed");
-
-
 
     }
 }
