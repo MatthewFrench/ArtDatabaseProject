@@ -198,31 +198,56 @@ test( 'RemoveAdmin', async function(done){
     done();
 
 });
-/*
-test( '', async function(done){
-    let result = await Query.();
 
-    expect(result);
-    done();
+test( 'BatchUpdateTileColors', async function(done){
+    await Query.UseConnection(async function(connection) {
+        let result = await Query.BatchUpdateTileColors(connection,
+            [{boardID : 1,
+                x: 0,
+                y: 0,
+                r: 0,
+                g: 0,
+                b: 0,
+                a: 0,
+                creatorOrLastModifiedID: 1}]);
+
+        expect(result);
+        done();
+    });
+});
+
+test( 'BatchUpdateTileTypes', async function(done){
+    await Query.UseConnection(async function(connection) {
+        let result = await Query.BatchUpdateTileTypes(connection,
+            [{boardID : 1,
+                x: 0,
+                y: 0,
+                tileTypeID: 1}]);
+        expect(result);
+        done();
+    });
+});
+
+test( 'BatchInsertHistoryAndHistoryType', async function(done){
+    await Query.UseConnection(async function(connection) {
+        let result = await Query.BatchInsertHistoryAndHistoryType(connection,
+            [{boardID : 1,
+                x: 0,
+                y: 0,
+                r: 0,
+                g: 0,
+                b: 0,
+                a: 0,
+                tileTypeID: 1,
+                time: new Date(),
+                creatorOrLastModifiedID: 1}]);
+
+        expect(result);
+        done();
+    });
 
 });
 
-test( '', async function(done){
-    let result = await Query.();
-
-    expect(result);
-    done();
-
-});
-
-test( '', async function(done){
-    let result = await Query.();
-
-    expect(result);
-    done();
-
-});
-*/
 test('getSpriteTest', async function(done) {
     //Query
     let spriteResults = await Query.GetSprites();

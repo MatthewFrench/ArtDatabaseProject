@@ -40,13 +40,10 @@ export class Query {
                 connection.release();
             }
         } catch (err) {
-            if (connection !== null) {
-                connection.destroy();
-            }
             //Assume the entire pool has been compromised
             databaseInstance.resetConnectionPool();
-            console.log(err);
-            console.log(err.stack);
+            //console.log(err);
+            //console.log(err.stack);
             success = false;
         }
         return success;
@@ -64,16 +61,13 @@ export class Query {
         return result;
     }
 
-    static async GetEntireHistoryOfTiles(limit = 0) {
+    static async GetEntireHistoryOfTiles(limit) {
         let result = [];
         await Query.UseConnection(async (connection)=>{
             //Create SQL
             let sql = 'SELECT History.*, HistoryTileType.type_id, Tile.x as x, Tile.y as y, Tile.board_id as board_id from History ' +
                 'left join HistoryTileType on HistoryTileType.history_id = History.history_id ' +
-                'left join Tile on Tile.tile_id = History.tile_id';
-            if (limit != 0) {
-                sql += ' limit ' + limit;
-            }
+                'left join Tile on Tile.tile_id = History.tile_id' + ' limit ' + limit;
             //Execute Query
             [result] = await connection.query(sql, []);
         });
@@ -164,35 +158,17 @@ export class Query {
                 creatorOrLastModifiedID, creatorOrLastModifiedID,
                 r, g, b, a, creatorOrLastModifiedID];
             //Execute Query
-            try {
                 await connection.query(sql, data);
-            } catch(err) {
-                console.log('SQL error: ' + sql);
-                console.log('Data: ' + JSON.stringify(data));
-                throw err;
-            }
             sql = 'select tile_id from Tile where board_id = ? and x = ? and y = ?';
             data = [boardID, x, y];
             let results;
-            try {
                 [results] = await connection.query(sql, data);
-            } catch(err) {
-                console.log('SQL error: ' + sql);
-                console.log('Data: ' + JSON.stringify(data));
-                throw err;
-            }
             //Set the tile type
             tileID = results[0]['tile_id'];
             sql = 'insert into TileType (tile_id, type_id) values (?, ?) ' +
                 'on duplicate key update type_id = ?';
             data = [tileID, tileTypeID, tileTypeID];
-            try {
                 await connection.query(sql, data);
-            } catch(err) {
-                console.log('SQL error: ' + sql);
-                console.log('Data: ' + JSON.stringify(data));
-                throw err;
-            }
 
             //Add to history
             let historyID = await Query.SetHistory(connection, new Date(), tileID, creatorOrLastModifiedID, r, g, b, a);
@@ -552,14 +528,8 @@ export class Query {
             "last_modified_id = VALUES(last_modified_id)";
 
         //Execute Query
-        try {
             await connection.query(sql, [data]);
-        } catch (err) {
-            console.log('SQL error: ' + sql);
-            console.log('Data: ' + JSON.stringify(data));
-            throw err;
-        }
-        console.log('Inserting Just Tiles: ' + Math.round(justTileStopwatch.getMilliseconds()) + 'ms');
+        //console.log('Inserting Just Tiles: ' + Math.round(justTileStopwatch.getMilliseconds()) + 'ms');
     }
 
     public static async BatchUpdateTileTypes(connection, tileDataQueueList) {
@@ -578,15 +548,9 @@ export class Query {
                 'ON DUPLICATE KEY UPDATE type_id=VALUES(type_id); ';
             tileTypeData.push(tileTypeID, x, y, boardID);
         }
-        try {
             await connection.query(tileTypeSQL, tileTypeData);
-        } catch (err) {
-            console.log('SQL error: ' + tileTypeSQL);
-            console.log('Data: ' + JSON.stringify(tileTypeData));
-            throw err;
-        }
 
-        console.log('Setting Tile Types: ' + Math.round(tileTypeStopwatch.getMilliseconds()) + 'ms');
+        //console.log('Setting Tile Types: ' + Math.round(tileTypeStopwatch.getMilliseconds()) + 'ms');
     }
     static async BatchInsertHistoryAndHistoryType(connection, tileDataQueueList) {
         let historyStopwatch = new Stopwatch();
@@ -611,14 +575,8 @@ export class Query {
                 '  VALUES(LAST_INSERT_ID(), ?); ';
             historyData.push(modifiedTime, creatorOrLastModifiedID, r, g, b, a, x, y, boardID, tileTypeID);
         }
-        try {
             await connection.query(historySQL, historyData);
-        } catch (err) {
-            console.log('SQL error: ' + historySQL);
-            console.log('Data: ' + JSON.stringify(historyData));
-            throw err;
-        }
 
-        console.log('Inserting History: ' + Math.round(historyStopwatch.getMilliseconds()) + 'ms');
+        //console.log('Inserting History: ' + Math.round(historyStopwatch.getMilliseconds()) + 'ms');
     }
 }

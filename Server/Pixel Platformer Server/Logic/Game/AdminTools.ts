@@ -12,7 +12,7 @@ export class AdminTools {
             return;
         }
         console.log('Loading entire history of tiles');
-        let entireTileHistory = await Query.GetEntireHistoryOfTiles();
+        let entireTileHistory = await Query.GetEntireHistoryOfTiles(65000);
         console.log('Finished loading entire history of tiles');
         console.log('Loading banned players');
         let bannedPlayersResults = await Query.GetBannedPlayers();
