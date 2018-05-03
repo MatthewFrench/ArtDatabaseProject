@@ -13,6 +13,7 @@
   "include": [
     "main.ts",
     "Unit Tests/**/*.ts",
+    "test/**/*.ts",
     "Pixel Platformer Server/**/*.ts"
   ],
   "exclude": [
