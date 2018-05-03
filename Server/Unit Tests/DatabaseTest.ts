@@ -11,9 +11,9 @@ export class DatabaseTest {
         console.log('Running Database Tests');
         Configuration.Initialize(); //Load the config file
         Query.Initialize();
-        this.createBoardTest(); // passes
-        this.userLoginTest();
-        //this.getAllTilesTest();
+        this.createBoardTest(); //passes
+        this.userLoginTest(); //passes
+        this.getAllTilesTest(); //passes
         this.getBoardInfoTest(); //passes
         this.getSpriteTest(); //passes
         this.insertTileTest(); //passes
@@ -50,12 +50,11 @@ export class DatabaseTest {
     async userLoginTest(){
         var response = await Query.UserLogin('username','password');
 
-        //console.log(response);
 
-        //assert.equal(response.player_id,117,"Player id is wrong");
-        //assert.equal(response.display_name, 'username', "Username is wrong");
-        //assert.equal(response.email, 'na@na.com', "User email is wrong");
-        //console.log("userLoginTest Passes")
+        assert.equal(response['player_id'],117,"Player id is wrong");
+        assert.equal(response['display_name'], 'username', "Username is wrong");
+        assert.equal(response['email'], 'na@na.com', "User email is wrong");
+        console.log("userLoginTest Passes")
     }
 
     async getSpriteTest() {
@@ -82,12 +81,14 @@ export class DatabaseTest {
         //Query
         let results = await Query.GetAllTiles(1);
 
-        let difference = process.hrtime(timeStamp);
-        let milliseconds = (difference[0] + difference[1] / NS_PER_SEC) * 1000;
-        console.log('Tiles Test Duration(ms): ' + milliseconds);
+        //let difference = process.hrtime(timeStamp);
+        //let milliseconds = (difference[0] + difference[1] / NS_PER_SEC) * 1000;
+        //console.log('Tiles Test Duration(ms): ' + milliseconds);
 
         //Test print out sprites
-        console.log("Tiles: " + JSON.stringify(results));
+        //console.log("Tiles: " + JSON.stringify(results));
+        assert.ok(JSON.stringify(results), "Did not receive tiles");
+        console.log("getAllTilesTest passed");
     }
 
     async insertTileTest() {
