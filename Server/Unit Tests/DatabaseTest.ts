@@ -11,12 +11,14 @@ export class DatabaseTest {
         console.log('Running Database Tests');
         Configuration.Initialize(); //Load the config file
         Query.Initialize();
-        this.createBoardTest(); //passes
+        //this.createBoardTest(); //passes
         this.userLoginTest(); //passes
         this.getAllTilesTest(); //passes
         this.getBoardInfoTest(); //passes
         this.getSpriteTest(); //passes
         this.insertTileTest(); //passes
+        this.changeBoardNameTest(); //passes
+        this.getPlayerSpriteTest(); //passes
         //this.testAllDataValues().then();
     }
 
@@ -36,12 +38,28 @@ export class DatabaseTest {
         assert.equal(true, true, "True is not true");
 
         console.log('\nDatabase Test Success');
+
+        
+
+    }
+
+    async getPlayerSpriteTest(){
+        var info = await Query.GetPlayerSprite(117);
+        assert.equal(info[0]['sprite_id'], 1, "Wrong sprite selected");
+        console.log("getPlayerSpriteTest passed")
+    }
+
+    async changeBoardNameTest(){
+        await Query.ChangeBoardName(58, "New Name");
+        let results = await Query.GetBoardByID(58);
+        assert.equal(results.name, "New Name", "Board Name is wrong");
+        console.log("changeBoardNameTest passed")
     }
 
     async createBoardTest(){
 
         var info = await Query.CreateBoard("hello", "hahahahahaahaahhaahaeiordwfjakf");
-
+        console.log(info);
         assert.ok(Number.isInteger(info), "Did not pass");
         console.log("createBoardTest passed")
 
