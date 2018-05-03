@@ -20,6 +20,12 @@ export class Query {
             Configuration.GETDBPassword());
     }
 
+    static MockDestroyDatabaseInstanceForTesting() {
+        databaseInstance = {getConnection: async function() {
+            throw "Blah Died";
+        }, resetConnectionPool: function(){}};
+    }
+
     static async UseConnection(callback) {
         let connection = null;
         let success = false;
@@ -58,13 +64,16 @@ export class Query {
         return result;
     }
 
-    static async GetEntireHistoryOfTiles() {
+    static async GetEntireHistoryOfTiles(limit = 0) {
         let result = [];
         await Query.UseConnection(async (connection)=>{
             //Create SQL
             let sql = 'SELECT History.*, HistoryTileType.type_id, Tile.x as x, Tile.y as y, Tile.board_id as board_id from History ' +
                 'left join HistoryTileType on HistoryTileType.history_id = History.history_id ' +
                 'left join Tile on Tile.tile_id = History.tile_id';
+            if (limit != 0) {
+                sql += ' limit ' + limit;
+            }
             //Execute Query
             [result] = await connection.query(sql, []);
         });
@@ -372,13 +381,7 @@ export class Query {
             let data = [boardName, playerID];
             //Execute Query
             let results, fields;
-            try {
                 [results, fields] = await connection.query(sql, data);
-            } catch(err) {
-                console.log('SQL error: ' + sql);
-                console.log('Data: ' + JSON.stringify(data));
-                throw err;
-            }
             insertID = results.insertId;
         });
         return insertID;
