@@ -24,6 +24,9 @@ export class DatabaseTest {
 
 
     async testAllDataValues() {
+
+
+
         console.log('Testing Database Queries');
 
 
@@ -39,7 +42,7 @@ export class DatabaseTest {
 
         console.log('\nDatabase Test Success');
 
-        
+
 
     }
 
