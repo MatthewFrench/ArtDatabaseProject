@@ -1,7 +1,7 @@
 //Require all project CSS
 import './CSS/Global.scss';
 //Require game
-import {PixelPlatformerGame} from './Javascript/PixelplatformerGame';
+import {PixelPlatformerGame} from './Javascript/PixelPlatformerGame';
 import {Interface} from "./Javascript/Utility/Interface";
 import {HashTest} from "./Javascript/Utility/Unit Tests/HashTest";
 
