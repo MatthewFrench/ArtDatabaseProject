@@ -1,4 +1,4 @@
-import {MessageWriter} from "../../Utility/Message/MessageWriter.js";
+import {MessageWriter} from "../../Utility/Message/MessageWriter";
 const GameID = require("./../MessageDefinitions/ServerMessageDefinitions.js").Controllers.Game.ID;
 const Messages = require("./../MessageDefinitions/ServerMessageDefinitions.js").Controllers.Game.Messages;
 

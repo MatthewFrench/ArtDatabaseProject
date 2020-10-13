@@ -1,7 +1,7 @@
 
 
-import {Interface} from "../Utility/Interface.js";
-import {ScorePopover} from "./Game/ScorePopover.js";
+import {Interface} from "../Utility/Interface";
+import {ScorePopover} from "./Game/ScorePopover";
 import {AccountMessageHandler} from "../Networking/Account/AccountMessageHandler";
 import {AccountMessageCreator} from "../Networking/Account/AccountMessageCreator";
 import {Network} from "../Networking/Network";

@@ -1,4 +1,4 @@
-import {Interface} from "./Utility/Interface.js";
+import {Interface} from "./Utility/Interface";
 import {Registration} from "./Pages/Registration";
 import {Login} from "./Pages/Login";
 import {Game} from "./Pages/Game/Game";

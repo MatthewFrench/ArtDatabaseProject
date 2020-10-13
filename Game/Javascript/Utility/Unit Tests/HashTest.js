@@ -1,5 +1,5 @@
 const assert = require('assert');
-import {Hashing} from "../Hashing.js";
+import {Hashing} from "../Hashing";
 const NS_PER_SEC = 1e9;
 
 export class HashTest {
