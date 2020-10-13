@@ -1,8 +1,8 @@
 //Require all project CSS
 import './CSS/Global.scss';
 //Require game
-import {PixelPlatformerGame} from './Javascript/PixelplatformerGame.js';
-import {Interface} from "./Javascript/Utility/Interface.js";
+import {PixelPlatformerGame} from './Javascript/PixelplatformerGame';
+import {Interface} from "./Javascript/Utility/Interface";
 import {HashTest} from "./Javascript/Utility/Unit Tests/HashTest";
 
 window.onload = () => {

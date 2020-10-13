@@ -1,4 +1,4 @@
-import {Interface} from "../../Utility/Interface.js";
+import {Interface} from "../../Utility/Interface";
 import {GameMessageCreator} from "../../Networking/Game/GameMessageCreator";
 import {Network} from "../../Networking/Network";
 import spriteSheet from "../../../Images/walkcyclevarious.png";

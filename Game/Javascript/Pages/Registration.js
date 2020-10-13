@@ -1,4 +1,4 @@
-import {Interface} from "../Utility/Interface.js";
+import {Interface} from "../Utility/Interface";
 import {AccountMessageCreator} from "../Networking/Account/AccountMessageCreator";
 import {AccountMessageHandler} from "../Networking/Account/AccountMessageHandler";
 import {Network} from "../Networking/Network";

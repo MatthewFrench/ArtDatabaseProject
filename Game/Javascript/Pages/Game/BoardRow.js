@@ -1,4 +1,4 @@
-import {Interface} from "../../Utility/Interface.js";
+import {Interface} from "../../Utility/Interface";
 import {Utility} from "../../Utility/Utility";
 
 export class BoardRow{

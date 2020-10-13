@@ -1,5 +1,5 @@
-import {Interface} from "../../Utility/Interface.js";
-import {BoardRow} from "./BoardRow.js";
+import {Interface} from "../../Utility/Interface";
+import {BoardRow} from "./BoardRow";
 
 export class BoardSelector {
     constructor(game) {
