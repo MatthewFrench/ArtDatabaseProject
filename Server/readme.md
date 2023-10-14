@@ -16,3 +16,5 @@ How to run:
 "node main.js" - In Build folder runs the server
 
 "node Unit Tests/run.js" - In Build folder runs the unit tests
+
+Run "docker-compose up" to create the local mysql database. Then create the configuration.json file to connect.

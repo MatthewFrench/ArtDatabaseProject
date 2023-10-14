@@ -20,6 +20,7 @@ export class Configuration {
     }
     let data = FileSystem.readFileSync(ConfigurationPath, 'utf8');
     LoadedConfigurationJSON = JSON.parse(data);
+    console.log("Loaded configuration: " + data);
   }
   static GetHost() {
     return LoadedConfigurationJSON[HOST_KEY];
