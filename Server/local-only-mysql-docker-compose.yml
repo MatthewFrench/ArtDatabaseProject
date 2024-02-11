@@ -1,7 +1,8 @@
 version: '3.3'
 services:
   db:
-    image: mysql:5.7
+    # Previously was mysql:5.7, but mariadb has better support and is faster
+    image: mariadb:10.5.8
     restart: always
     environment:
       MYSQL_DATABASE: 'ArtGame'

@@ -3,7 +3,6 @@ Configuration.json
 .idea/
 Build/
 Game/Build
-Game/package-lock.json
 Game/.idea/workspace.xml
 Game/.idea/watcherTasks.xml
 Game/Build/bundle.js
