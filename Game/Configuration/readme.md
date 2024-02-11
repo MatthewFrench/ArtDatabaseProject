@@ -5,3 +5,5 @@ npm install webpack webpack-dev-server html-webpack-plugin sass-loader node-sass
 npm link webpack
 
 Sudo everything if it doesn't work.
+
+Todo: The above instructions are awful.
