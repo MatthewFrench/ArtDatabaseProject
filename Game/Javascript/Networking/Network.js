@@ -6,8 +6,8 @@ let Buffer = require('buffer/').Buffer;
 let socketIO = require('socket.io-client');
 let port = '7777';
 //let ip = 'localhost';
-let ip = '38.44.161.81';
-let server = `http://${ip}:${port}`;
+//let ip = '38.44.161.81';
+//let server = `http://${ip}:${port}`;
 let connection = null;
 let connected = false;
 let pingTime = 0;
@@ -15,7 +15,8 @@ let pingTimeArray = [];
 
 export class Network {
     static Initialize() {
-        connection = socketIO.connect(server);
+        //connection = socketIO.connect('https://art.matthewfrench.io/', {path: '/server/'});
+        connection = socketIO.connect('https://server.matthewfrench.io:7777');
         connection.on('connect_failed', Network.ConnectFailed);
         connection.on('connect', Network.Connected);
         connection.on('message', Network.GotMessage);

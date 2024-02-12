@@ -12,3 +12,5 @@ Game/Javascript/Pages/Login.js
 Game/Javascript/Pages/Login.js
 Game/Images/walkcyclevarious.xcf
 .DS_Store
+Server/cert.pem
+Server/key.pem

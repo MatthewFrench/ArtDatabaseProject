@@ -1,14 +1,21 @@
 //Socket.io code goes here, managed here
 const {NetworkHandler} = require("./NetworkHandler");
+const { readFileSync } = require("fs");
+const { createSecureServer } = require("http2");
+const Server = require("socket.io");
 
-let socketIO = require('socket.io');
 let port = 7777;
 let server = null;
 
 export class Network {
     static Initialize() {
-        server = socketIO(port, {pingInterval: 5000});
-        console.log(`Websocket server is online at ${port}!`);
+        const httpServer = createSecureServer({
+            allowHTTP1: true,
+            key: readFileSync("./key.pem"),
+            cert: readFileSync("./cert.pem")
+        });
+
+        server = Server(httpServer, {pingInterval: 5000});
 
         server.on('connection', function (socket) {
             Network.ClientConnected(socket);
@@ -19,6 +26,8 @@ export class Network {
                 Network.ClientDisconnected(socket);
             });
         });
+        httpServer.listen(port);
+        console.log(`Websocket server is online at ${port}!`);
     }
 
     static ClientConnected(socket) {
