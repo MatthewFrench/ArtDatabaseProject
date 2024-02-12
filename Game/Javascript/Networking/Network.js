@@ -5,8 +5,8 @@ let Buffer = require('buffer/').Buffer;
 
 let socketIO = require('socket.io-client');
 let port = '7777';
-let ip = 'localhost';
-//let ip = '18.221.216.221';
+//let ip = 'localhost';
+let ip = '38.44.161.81';
 let server = `http://${ip}:${port}`;
 let connection = null;
 let connected = false;
