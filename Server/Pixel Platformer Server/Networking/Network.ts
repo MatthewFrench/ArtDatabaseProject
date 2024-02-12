@@ -11,8 +11,10 @@ export class Network {
     static Initialize() {
         const httpServer = createSecureServer({
             allowHTTP1: true,
-            key: readFileSync("./key.pem"),
-            cert: readFileSync("./cert.pem")
+            // Note: This is hardcoded now for speed. This should be configurable and passed in from docker.
+            // Dev server should not use SSL since it will be blocked.
+            key: readFileSync("/certs/privkey.pem"),
+            cert: readFileSync("/certs/fullchain.pem")
         });
 
         server = Server(httpServer, {pingInterval: 5000});
