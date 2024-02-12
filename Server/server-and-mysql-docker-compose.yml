@@ -1,6 +1,7 @@
-version: '3.3'
+version: '3.9'
+name: 'art-game-server'
 services:
-  db:
+  art-db:
     # Previously was mysql:5.7, but mariadb has better support and is faster
     image: mariadb:10.5.8
     restart: unless-stopped
@@ -17,14 +18,14 @@ services:
     volumes:
       - my-db:/var/lib/mysql
       - ./docker-sql:/docker-entrypoint-initdb.d
-  server:
+  art-server:
     # Build the image from the dockerfile if it does not already exist
     build:
       context: ./
       dockerfile: art-server.Dockerfile
     image: art-server
-    restart: unless-stopped
     container_name: art-server
+    restart: unless-stopped
     ports:
       - '7777:7777'
     expose:
