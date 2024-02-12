@@ -13,8 +13,8 @@ export class Network {
             allowHTTP1: true,
             // Note: This is hardcoded now for speed. This should be configurable and passed in from docker.
             // Dev server should not use SSL since it will be blocked.
-            key: readFileSync("/certs/privkey.pem"),
-            cert: readFileSync("/certs/fullchain.pem")
+            key: readFileSync('./certs/privkey1.pem'),
+            cert: readFileSync("./certs/fullchain1.pem")
         });
 
         server = Server(httpServer, {pingInterval: 5000});

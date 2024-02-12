@@ -28,7 +28,7 @@ services:
     restart: unless-stopped
     # Assume we have generated valid certificates at this location to pull in
     volumes:
-      - "C:/letsencrypt/etc/live/server.matthewfrench.io/:/certs"
+      - "C:/letsencrypt/etc/archive/server.matthewfrench.io:/certs"
     ports:
       - '7777:7777'
     expose:
