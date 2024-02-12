@@ -18,3 +18,8 @@ How to run:
 "node Unit Tests/run.js" - In Build folder runs the unit tests
 
 Run `docker-compose -f "local-only-mysql-docker-compose.yml" up` to create the local mysql database. Then create the configuration.json file to connect.
+
+## To run server and mysql in docker
+Run `docker-compose -f "server-and-mysql-docker-compose.yml" up`.  
+The mysql database will only be accessible by the server docker instance. The server docker instance will be accessible on 7777.
+To rebuild only the server, add `--build server` to the above command.

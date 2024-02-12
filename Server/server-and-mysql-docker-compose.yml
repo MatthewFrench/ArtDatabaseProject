@@ -1,0 +1,34 @@
+version: '3.3'
+services:
+  db:
+    # Previously was mysql:5.7, but mariadb has better support and is faster
+    image: mariadb:10.5.8
+    restart: unless-stopped
+    container_name: art-db
+    environment:
+      MYSQL_DATABASE: 'ArtGame'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'user'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'password'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'password'
+    # Where our data will be persisted
+    volumes:
+      - my-db:/var/lib/mysql
+      - ./docker-sql:/docker-entrypoint-initdb.d
+  server:
+    # Build the image from the dockerfile if it does not already exist
+    build:
+      context: ./
+      dockerfile: art-server.Dockerfile
+    image: art-server
+    restart: unless-stopped
+    container_name: art-server
+    ports:
+      - '7777:7777'
+    expose:
+      - '7777'
+# Names our volume
+volumes:
+  my-db:
